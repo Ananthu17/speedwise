@@ -43,9 +43,13 @@ class ClientView(TemplateView):
 
 
 def delete_user(request, user_pk):
-    user = Client.objects.get(pk=user_pk).user
-    user.delete()
-    return redirect('clients')
+    try:
+        user = Client.objects.get(pk=user_pk).user
+        user.delete()
+        return redirect('clients')
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('clients')
 
 def edit_user(request,user_pk):
     return redirect('clients')
@@ -61,18 +65,26 @@ class ClientProfile(TemplateView):
 
 
 def add_client_credit(request,user_pk):
-    client_object = Client.objects.get(pk=user_pk)
-    credit_amount = request.POST.get('credit')
-    client_object.credit_in+=float(credit_amount)
-    client_object.save()
-    return redirect('clientprofile',user_pk)
+    try:
+        client_object = Client.objects.get(pk=user_pk)
+        credit_amount = request.POST.get('credit')
+        client_object.credit_in+=float(credit_amount)
+        client_object.save()
+        return redirect('clientprofile',user_pk)
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('clientprofile', user_pk)
 
 def change_client_logo(request,user_pk):
-    client_object = Client.objects.get(pk=user_pk)
-    logo = request.FILES['logo']
-    client_object.logo = logo
-    client_object.save()
-    return redirect('clientprofile',user_pk)
+    try:
+        client_object = Client.objects.get(pk=user_pk)
+        logo = request.FILES['logo']
+        client_object.logo = logo
+        client_object.save()
+        return redirect('clientprofile',user_pk)
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('clientprofile', user_pk)
 
 
 class Operators(TemplateView):
@@ -95,3 +107,4 @@ class Operators(TemplateView):
             return redirect('operators')
         except:
             messages.error(request,"Something went wrong")
+            return redirect('operators')

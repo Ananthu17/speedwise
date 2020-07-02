@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" afterDir="false" />
+    <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="Client profile and its operations">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/speedwise/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/speedwise/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/speedwise/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/speedwise/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,26 +63,34 @@
       <option name="project" value="LOCAL" />
       <updated>1593584723254</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Client profile and its operations">
+      <created>1593662148811</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1593662148811</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial Commit" />
     <MESSAGE value="Clients and Operators table with clients.html template" />
-    <option name="LAST_COMMIT_MESSAGE" value="Clients and Operators table with clients.html template" />
+    <MESSAGE value="Client profile and its operations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Client profile and its operations" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1593584722441">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1593662198140">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1593584722441" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1593662198140" />
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1593580976403">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1593580976403" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1593584730404">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1593662215218">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1593584730404" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1593662215218" />
   </component>
 </project>

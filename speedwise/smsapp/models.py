@@ -16,10 +16,7 @@ class Operator(models.Model):
 
 class Client(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    first_name =  models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    email = models.CharField(max_length=100)
-    mobile = models.CharField(max_length=20)
+    mobile = models.CharField(max_length=20,blank=True, null=True)
     logo = models.FileField(upload_to='media/logos',blank=True, null=True)
     operator = models.ForeignKey(Operator, on_delete=models.CASCADE, null=True, blank=True)
     credit_in = models.FloatField(null=True, blank=True, default=0.0)
@@ -27,4 +24,4 @@ class Client(models.Model):
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.first_name
+        return self.user.first_name

@@ -5,8 +5,15 @@
     <title>Title</title>
 </head>
 <body>
-{{ contacts }}
-<form action="{% url 'messaging' %}" method="POST" enctype="multipart/form-data">
+
+{% for contact in contacts %}
+    <a href="{% url 'contactprofile' contact.id %}" <li>{{contact}}</li></a>
+    <a href="{% url 'deletecontact' contact.id %}">Delete</a>
+    <a href="{% url 'editcontact' contact.id %}">Edit</a>
+    <br>
+{% endfor %}
+
+<form action="{% url 'contacts' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ contactsform.as_p }}
     <button type="submit">Submit</button>

@@ -5,7 +5,15 @@
     <title>Title</title>
 </head>
 <body>
-{{ messages }}
+{% for message in messages %}
+    <a href="{% url 'messageprofile' message.id %}" <li>{{message}}</li></a>
+    <a href="{% url 'deletemessage' message.id %}">Delete</a>
+    <a href="{% url 'editmessage' message.id %}">Edit</a>
+    <br>
+{% endfor %}
+
+{{contacts}}
+
 <form action="{% url 'messaging' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ messagingform.as_p }}

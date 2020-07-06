@@ -5,3 +5,5 @@ from .models import *
 
 admin.site.register(Operator)
 admin.site.register(Client)
+admin.site.register(Contact)
+admin.site.register(Messages)

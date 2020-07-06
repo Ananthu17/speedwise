@@ -17,6 +17,11 @@
     <button type="submit">Add Credit</button>
 </form>
 <br>
+<form action="{% url 'removecredit' client.id %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" id="removecredit" name="removecredit">
+    <button type="submit">Remove Credit</button>
+</form>
 <br>
 <br>
 <br>

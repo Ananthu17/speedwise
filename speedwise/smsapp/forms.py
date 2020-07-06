@@ -19,4 +19,15 @@ class UsercreateForm(UserCreationForm):
 class OperatorForm(forms.ModelForm):
     class Meta:
         model=Operator
-        fields=['name','token','create_date','is_active']
+        fields=['name','code','token','create_date','is_active']
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model=Contact
+        fields=['name','mobile','client','is_active','create_date']
+
+class MessagesForm(forms.ModelForm):
+    class Meta:
+        model=Messages
+        fields=['client','contact','message_out','message_reply','create_date','reply_date']

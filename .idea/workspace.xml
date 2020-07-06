@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="Client profile and its operations">
+    <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -21,7 +30,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="speedwise-backend" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -36,7 +45,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pcrr-webapp" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/speedwise" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/speedwise" />
+      <recent name="$PROJECT_DIR$/speedwise/smsapp" />
+      <recent name="$PROJECT_DIR$/speedwise/smsapp/templates" />
+    </key>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -88,9 +107,9 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1593580976403" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1593662215218">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1594027574945">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1593662215218" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1594027574945" />
   </component>
 </project>

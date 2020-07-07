@@ -241,10 +241,23 @@ class Messages_View(TemplateView):
 
     def post(self, request):
         try:
-            messagesform = MessagesForm(request.POST, request.FILES or None)
-            if messagesform.is_valid():
-                message= messagesform
-                message.save()
+            destination_contacts = [3,4]
+            client = Client.objects.get(pk=request.POST.get("client"))
+            token = client.operator.token
+            source_number = client.operator.operator_number
+            msg = request.POST.get("message_out")
+            for item in destination_contacts:
+                destination_contact = Contact.objects.get(id=item)
+                destination_contact_number = destination_contact.mobile
+                telnyx.api_key = token
+                telnyx.Message.create(
+                    from_=source_number,
+                    to=destination_contact_number,
+                    text=msg,
+                )
+                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
+                print(message_entry)
+
             return redirect('messaging')
         except:
             messages.error(request, "Something went wrong")

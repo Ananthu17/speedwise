@@ -5,7 +5,15 @@
     <title>Title</title>
 </head>
 <body>
-{{ operators }}
+
+    {% for operator in operators %}
+    <a href="{% url 'operatorprofile' operator.id %}"<li>{{operator}}</li></a>
+    <a href="{% url 'deleteoperator' operator.id %}">Delete</a>
+    <a href="{% url 'editoperator' operator.id %}">Edit</a>
+    <br>
+    {% endfor %}
+
+
 <form action="{% url 'operators' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ operatorform.as_p }}

@@ -7,7 +7,7 @@ from .models import *
 class ClientForm(forms.ModelForm):
     class Meta:
         model=Client
-        fields=['mobile','logo','operator','credit_in','credit_out','is_active']
+        fields=['user','mobile','logo','operator','credit_in','credit_out','is_active','create_date']
 
 
 class UsercreateForm(UserCreationForm):
@@ -19,4 +19,15 @@ class UsercreateForm(UserCreationForm):
 class OperatorForm(forms.ModelForm):
     class Meta:
         model=Operator
-        fields=['name','token','create_date','is_active']
+        fields=['name','code','token','operator_number','create_date','is_active']
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model=Contact
+        fields=['name','mobile','client','is_active','create_date']
+
+class MessagesForm(forms.ModelForm):
+    class Meta:
+        model=Messages
+        fields=['client','contact','message_out','message_reply','create_date','reply_date']

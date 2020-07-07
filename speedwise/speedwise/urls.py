@@ -25,5 +25,4 @@ urlpatterns = [
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('smsapp.urls'))
-]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('',include('smsapp.urls'))]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

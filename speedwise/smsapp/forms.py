@@ -7,7 +7,7 @@ from .models import *
 class ClientForm(forms.ModelForm):
     class Meta:
         model=Client
-        fields=['user','mobile','logo','operator','credit_in','credit_out','is_active','create_date']
+        fields=['mobile','logo','operator','credit_in','credit_out','is_active','create_date']
 
 
 class UsercreateForm(UserCreationForm):

@@ -241,13 +241,14 @@ class Messages_View(TemplateView):
 
     def post(self, request):
         try:
-            destination_contacts = [3,4]
+            destination_contacts = [1,2]
             client = Client.objects.get(pk=request.POST.get("client"))
             token = client.operator.token
             source_number = client.operator.operator_number
             msg = request.POST.get("message_out")
             for item in destination_contacts:
                 destination_contact = Contact.objects.get(id=item)
+                print(destination_contact)
                 destination_contact_number = destination_contact.mobile
                 telnyx.api_key = token
                 telnyx.Message.create(

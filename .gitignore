@@ -1,2 +1,3 @@
 /speedwise/venv/
 /speedwise/smsapp/migrations/
+/speedwise/db.sqlite3

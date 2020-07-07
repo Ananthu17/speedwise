@@ -13,10 +13,13 @@
 {% endfor %}
 
 {{contacts}}
+<br>
+<br><br>
 
 <form action="{% url 'messaging' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ messagingform.as_p }}
+    {{ messagingform.client }}<br><br>
+    {{ messagingform.message_out }}<br>
     <button type="submit">Submit</button>
 </form>
 </body>

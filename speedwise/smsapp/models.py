@@ -9,7 +9,7 @@ class Operator(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=3,validators=[MinLengthValidator(3)],default="NIL")
     token = models.CharField(max_length=500)
-    operator_number = models.CharField(max_length=500)
+    operator_number = models.CharField(max_length=500,blank=True, null=True)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
     is_active = models.BooleanField(default=False)
 

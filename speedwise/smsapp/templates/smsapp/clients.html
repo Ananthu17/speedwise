@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a>
+    {% for client in clients %}
+    <a href="{% url 'clientprofile' client.id %}"<li>{{client}}</li></a>
+    <a href="{% url 'deleteuser' client.id %}">Delete</a>
+    <a href="{% url 'edituser' client.id %}">Edit</a>
+    <br>
+    {% endfor %}
+</ul>
+<div class="modal fade" id="add_Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog " role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-danger">
+              <h5 class="modal-title text-white" id="exampleModalLabel">Create Client</h5>
+              <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+           <form action="{% url 'clients' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ userform.as_p }}
+                {{ clientform.as_p }}
+               <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+</body>
+</html>

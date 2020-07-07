@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{{ client.user }}<br>
+{{ client.mobile }}<br>
+{{ client.credit_in }}<br>
+{{ client.logo }}
+{{ client.operator }}
+<br><br><br><br>
+<form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" id="credit" name="credit">
+    <button type="submit">Add Credit</button>
+</form>
+<br>
+<form action="{% url 'removecredit' client.id %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" id="removecredit" name="removecredit">
+    <button type="submit">Remove Credit</button>
+</form>
+<br>
+<br>
+<br>
+<br>
+<br>
+<form action="{% url 'changeclientlogo' client.id %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" id="logo" name="logo">
+    <button type="submit">Change Logo</button>
+</form>
+
+</body>
+</html>

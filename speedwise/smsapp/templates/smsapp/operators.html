@@ -1,23 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "smsapp/index.html" %}
 
-    {% for operator in operators %}
-    <a href="{% url 'operatorprofile' operator.id %}"<li>{{operator}}</li></a>
-    <a href="{% url 'deleteoperator' operator.id %}">Delete</a>
-    <a href="{% url 'editoperator' operator.id %}">Edit</a>
-    <br>
-    {% endfor %}
+{% block title %}Speedwise : operators{% endblock %}
 
+{% block navbar_title %}Operators{% endblock %}
 
-<form action="{% url 'operators' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ operatorform.as_p }}
-    <button type="submit">Submit</button>
-</form>
-</body>
-</html>
+{% block content %}
+    <div class="">
+        <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
+    </div>
+    <div class="table-responsive mt-4">
+        <table class="table  mt-4 ml-4" style="width:100%;">
+        <thead class="text-primary">
+            <tr class="mt-0" >
+            <th><h5>Operators</h5></th>
+            <th><h5>Edit</h5></th>
+            <th><h5>Delete</h5></th>
+            </tr>
+        </thead>
+        <tbody >
+            {% for operator in operators %}
+            <tr>
+            <td><a href="{% url 'operatorprofile' operator.id  %}" class="text-dark"><h6>{{operator}}</h6></a></td>
+            <td ><h6 class="ml-2"><a href="{% url 'editoperator' operator.id %}" class="text-success"><i class="far fa-edit"></i></a></h6></i></td>
+            <td ><h6 class="ml-2"><a href="{% url 'deleteoperator' operator.id %}"s class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+        </table>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{% url 'operators' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Operator</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ operatorform.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+{% endblock %}

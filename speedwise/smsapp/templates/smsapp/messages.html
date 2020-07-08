@@ -1,26 +1,106 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% for message in messages %}
-    <a href="{% url 'messageprofile' message.id %}" <li>{{message}}</li></a>
-    <a href="{% url 'deletemessage' message.id %}">Delete</a>
-    <a href="{% url 'editmessage' message.id %}">Edit</a>
-    <br>
-{% endfor %}
+{% extends "smsapp/index.html" %}
 
-{{contacts}}
-<br>
-<br><br>
+{% block title %}Speedwise : messaging {% endblock %}
 
-<form action="{% url 'messaging' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ messagingform.client }}<br><br>
-    {{ messagingform.message_out }}<br>
-    <button type="submit">Submit</button>
-</form>
-</body>
-</html>
+{% block navbar_title %}Messaging{% endblock %}
+
+{% block content %}
+    <div class="">
+        <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
+    </div>
+    <div class="table-responsive mt-4">
+        <table class="table  mt-4 ml-4" style="width:100%;">
+        <thead class="text-primary">
+            <tr class="mt-0" >
+            <th><h5>Messages</h5></th>
+            <th><h5>Edit</h5></th>
+            <th><h5>Delete</h5></th>
+            </tr>
+        </thead>
+        <tbody >
+            {% for message in messages %}
+            <tr>
+            <td><a href="{% url 'messageprofile' message.id %}" class="text-dark"><h6>{{message}}</h6></a></td>
+            <td ><h6 class="ml-2"><a href="{% url 'editmessage' message.id %}" class="text-success"><i class="far fa-edit"></i></a></h6></i></td>
+            <td ><h6 class="ml-2"><a href="{% url 'deletemessage' message.id %}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+        </table>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{% url 'messaging' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="msg" class="">
+                        {{ messagingform.client }}<br><br>
+                        {{ messagingform.message_out }}<br>
+                    </div>
+                    <div class="d-none" id="contactsTable">
+                        <table id="table_id" class="display">
+                            <tr>
+                                <th>Name</th>
+                                <th>Select</th>
+                            </tr>
+                            {% for name in contacts %}
+                            <tr>
+                                <td>{{name}}</td>
+                                <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="contactsList"  id="con" value="">
+                    <button type="button" class="btn btn-primary btn-sm" id="next" onclick="rem()">Next</button>
+                    <button type="submit" class="btn btn-primary btn-sm d-none" id="submit">Send</button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block add_script %}
+        <script
+            src="https://code.jquery.com/jquery-2.2.4.js"
+            integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+            crossorigin="anonymous">
+        </script>
+        <script>
+            $(document).ready( function () {
+                $('#table_id').DataTable();
+            } );
+        </script>
+        <script>
+            let rem = ()=>{
+                $('#msg').addClass('d-none')
+                $('#contactsTable').removeClass('d-none')
+                $('#submit').removeClass('d-none')
+                $('#next').addClass('d-none')
+            }
+        </script>
+        <script>
+            let array=[]
+            const add_id = (data)=>{
+                console.log(data)
+                array.push(data)
+                console.log(array)
+                $('#con').attr('value',`${array}`)
+            }
+        </script>
+    {% endblock %}
+    
+
+    

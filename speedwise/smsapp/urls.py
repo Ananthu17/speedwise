@@ -2,10 +2,13 @@ from django.urls import path
 from .models import *
 from . import views
 from django.views.generic.base import View
-from .views import ClientView,DashboardView,ClientProfile,Operators,OperatorProfile,Contacts_View,ContactProfile,Messages_View,MessageProfile
+from .views import ClientView,DashboardView,ClientProfile,Operators,OperatorProfile,Contacts_View,ContactProfile,Messages_View,MessageProfile,LoginView
 
 urlpatterns = [
     path('', DashboardView.as_view(), name='index'),
+    path('register', views.register, name='register'),
+    path('login', LoginView.as_view(), name='login'),
+    path('logout', views.logout_view, name='logout'),
     path('clients', ClientView.as_view(), name='clients'),
     path('clients/delete/<user_pk>', views.delete_user, name='deleteuser'),
     path('clients/edit/<user_pk>', views.edit_user, name='edituser'),

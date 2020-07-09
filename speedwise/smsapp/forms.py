@@ -8,26 +8,59 @@ class ClientForm(forms.ModelForm):
     class Meta:
         model=Client
         fields=['mobile','logo','operator','credit_in','credit_out','is_active','create_date']
-
+        widgets={
+            'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile Number'}),
+            'logo':forms.FileInput(attrs={'class': 'form-control'}),
+            'operator':forms.Select(attrs={'class': 'form-control'}),
+            'credit_in':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
+            'credit_out':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
+            'is_active':forms.CheckboxInput(attrs={'class':'mt-1'}),
+        }
 
 class UsercreateForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2','first_name','last_name']
-
+        widgets={
+            'username':forms.TextInput(attrs={'class': 'form-control','placeholder':'User Name'}),
+            'password1':forms.TextInput(attrs={'class': 'form-control'}),
+            'password2':forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name':forms.TextInput(attrs={'class': 'form-control','placeholder':'First Name'}),
+            'last_name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Last Name'}),
+        }
 
 class OperatorForm(forms.ModelForm):
     class Meta:
         model=Operator
         fields=['name','code','token','operator_number','create_date','is_active']
+        widgets={
+            'name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Name'}),
+            'code':forms.TextInput(attrs={'class': 'form-control','placeholder':'Code'}),
+            'token':forms.TextInput(attrs={'class': 'form-control','placeholder':'Token'}),
+            'operator_number':forms.TextInput(attrs={'class': 'form-control','placeholder':'Number'}),
+            'create_date':forms.TextInput(attrs={'class': 'form-control'}),
+            'is_active':forms.CheckboxInput(attrs={'class':'ml-1 mt-2'}),
+
+        }
 
 
 class ContactForm(forms.ModelForm):
     class Meta:
         model=Contact
         fields=['name','mobile','client','is_active','create_date']
+        widgets = {
+            'name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Name'}),
+            'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile'}),
+            'client':forms.Select(attrs={'class': 'form-control',}),
+            'create_date':forms.TextInput(attrs={'class': 'form-control','placeholder':''}),
+        }
 
 class MessagesForm(forms.ModelForm):
     class Meta:
         model=Messages
         fields=['client','contact','message_out','message_reply','create_date','reply_date']
+        widgets={
+            
+            'client':forms.Select(attrs={'class': 'form-control'}),
+            'message_out':forms.Textarea(attrs={'class': 'form-control','placeholder':'Enter Your Messages..'})
+        }

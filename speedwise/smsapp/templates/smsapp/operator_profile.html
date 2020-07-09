@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{{operator}}
-</body>
-</html>
+{% extends "smsapp/index.html" %}
+
+{% block title %}Speedwise : operators{% endblock %}
+
+{% block navbar_title %}Operator Profile{% endblock %}
+{% block link %}
+    <ul class="navbar-nav">
+        <a href="{% url 'operators' %}" class="ml-2">Back</a>
+    </ul>
+{% endblock %}
+{% block content %}
+    {% for operator in operators %}
+        <h6>{{operator}}</h6>
+    {% endfor %}
+{% endblock %}

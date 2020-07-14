@@ -11,7 +11,6 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm
 import telnyx
-from django.db import OperationalError
 
 
 
@@ -82,7 +81,7 @@ class LoginView(TemplateView):
                     return redirect('index')
                 else:
                     messages.error(request,
-                                   "Invalid Login Credentials")
+                                   "Username or password does not match,please retry with correct credentaials")
                     return redirect('login')
             else:
                 messages.error(request,
@@ -90,7 +89,7 @@ class LoginView(TemplateView):
                 return redirect('login')
         except:
             messages.error(request,
-                           "Invalid Login Credentials")
+                           "Username or password does not match,please retry with correct credentaials")
             return redirect('login')
 
 
@@ -118,7 +117,7 @@ def register(request):
                 client.save()
                 return redirect(reverse('login'))
         else:
-            messages.info(request,'Invalid Login Credentials')
+            messages.info(request,'password not matching')
             return render(request, 'smsapp/register.html')
     else:
         return render(request,'smsapp/register.html')

@@ -32,8 +32,33 @@ class ClientView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ClientView, self).get_context_data(**kwargs)
         client_objects = Client.objects.all()
+        clientform = ClientForm
+        userform = UsercreateForm
         context['clients'] = client_objects
+        context['clientform'] = clientform
+        context['userform'] = userform
         return context
+
+    def post(self,request):
+        try:
+            clientform = ClientForm(request.POST,request.FILES or None)
+
+            userform = UsercreateForm(request.POST or None)
+
+            if userform.is_valid() and clientform.is_valid():
+                user = userform.save()
+                user.is_staff = False
+                user.save()
+                client = clientform.save()
+                client.user=user
+                print(client)
+                client.save()
+
+
+            return redirect('clients')
+        except:
+            messages.error(request,"Somethin went wrong")
+            return redirect('clients')
 
 def delete_user(request, user_pk):
     try:

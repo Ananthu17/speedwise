@@ -1,21 +1,171 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-<form action="{% url 'login' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username"><br>
-        <input type="text" name="password" placeholder="Password"><br>
-        <button type="submit">Login</button>
-    </form>
-<a href="{% url 'register' %}">New User/Register</a><br>
-<a href="{% url 'register' %}">Forgot/Reset Password</a>
 
-{% for message in messages%}
-{{message}}
-{%endfor%}
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'login/img/apple-icon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'login/img/favicon.png' %}">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+    Speed Wise : LOGIN
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <!-- CSS Files -->
+  <link href="{% static 'login/css/material-kit.css' %}" rel="stylesheet" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link href="{% static 'login/demo/demo.css' %}" rel="stylesheet" />
+
+  
+</head>
+
+<body class="login-page sidebar-collapse">
+  <nav class="navbar navbar-transparent navbar-color-on-scroll fixed-top navbar-expand-lg" color-on-scroll="100" id="sectionsNav">
+    <div class="container">
+      <div class="navbar-translate">
+        <a class="navbar-brand" href="https://demos.creative-tim.com/material-kit/index.html">
+          Speedwise </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+          
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="https://twitter.com/CreativeTim" target="_blank" data-original-title="Follow us on Twitter" rel="nofollow">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="https://www.facebook.com/CreativeTim" target="_blank" data-original-title="Like us on Facebook" rel="nofollow">
+              <i class="fa fa-facebook-square"></i>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank" data-original-title="Follow us on Instagram" rel="nofollow">
+              <i class="fa fa-instagram"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="page-header header-filter" style="background-image: url('{% static 'login/img/bg7.jpg' %}'); background-size: cover; background-position: top center;">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 ml-auto mr-auto">
+          <div class="card card-login">
+            <form class="form" action="{% url 'login' %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="card-header card-header-primary text-center">
+                <h4 class="card-title">Login</h4>
+                <div class="social-line">
+                  <a href="#pablo" class="btn btn-just-icon btn-link">
+                    <i class="fa fa-facebook-square"></i>
+                  </a>
+                  <a href="#pablo" class="btn btn-just-icon btn-link">
+                    <i class="fa fa-twitter"></i>
+                  </a>
+                  <a href="#pablo" class="btn btn-just-icon btn-link">
+                    <i class="fa fa-google-plus"></i>
+                  </a>
+                </div>
+              </div>
+              <p class="description text-center">Or Be Classical</p>
+              <div class="card-body">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="material-icons">face</i>
+                    </span>
+                  </div>
+                  
+                  {% if messages %}
+                  <input type="text" name="username" class="form-control border-bottom border-danger" placeholder="First Name...">
+                  {% else %}
+                  <input type="text" name="username" class="form-control" placeholder="First Name...">
+                  {% endif %}
+                </div>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="material-icons">lock_outline</i>
+                    </span>
+                  </div>
+                  {% if messages %}
+                  <input type="password" name="password" class="form-control border-bottom border-danger" placeholder="Password...">
+                  {% else %}
+                  <input type="password" name="password" class="form-control" placeholder="Password...">
+                  {% endif %}
+                </div>
+                {% for message in messages %}
+                <div class="input-group" id="msg">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="material-icons text-danger">error</i>
+                    </span>
+                  </div>
+                    <span class="text-danger font-weight-bold">{{message}}</span>
+                </div>   
+                {% endfor %}
+              </div>
+              <div class="text-center mt-5">
+                <button type="submit" class="btn btn-primary btn-link btn-wd btn-lg">Get Started</button>
+              </div>
+            </form>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <a href="{% url 'register' %}" class="btn btn-success text-light btn-sm shadow"><i class="material-icons">person_add</i>&nbsp&nbspNew User / Register</a>
+            </div>
+            <div class="col-6">
+              <a href="javascript:void(0)" class="btn btn-warning text-light btn-sm shadow"><i class="material-icons">engineering</i>&nbsp&nbspReset Password</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <nav class="float-left">
+          
+        </nav>
+        <div class="copyright float-right">
+          &copy;
+          <script>
+            document.write(new Date().getFullYear())
+          </script>, made with <i class="material-icons">favorite</i> by
+          <a href="https://www.creative-tim.com/" target="_blank">GoodBits Tech</a> 
+        </div>
+      </div>
+    </footer>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{% static 'login/js/core/jquery.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'login/js/core/popper.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'login/js/core/bootstrap-material-design.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'login/js/plugins/moment.min.js' %}"></script>
+  <!--	Plugin for the Datepicker, full documentation here: https://github.com/Eonasdan/bootstrap-datetimepicker -->
+  <script src="{% static 'login/js/plugins/bootstrap-datetimepicker.js' %}" type="text/javascript"></script>
+  <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+  <script src="{% static 'login/js/plugins/nouislider.min.js' %}" type="text/javascript"></script>
+  <!--  Google Maps Plugin    -->
+  <!-- Control Center for Material Kit: parallax effects, scripts for the example pages etc -->
+  <script src="{% static 'login/js/material-kit.js' %}" type="text/javascript"></script>
+  <script>
+    $(document).ready(() => {
+      setTimeout(()=>{
+        $('#msg').addClass('d-none');
+      }, 2000);
+    })
+  </script>
 </body>
+
 </html>

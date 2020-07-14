@@ -7,13 +7,14 @@ from .models import *
 class ClientForm(forms.ModelForm):
     class Meta:
         model=Client
-        fields=['mobile','logo','operator','credit_in','credit_out','is_active','create_date']
+        fields=['mobile','logo','operator','credit_in','credit_out','credit_limit','is_active','create_date']
         widgets={
             'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile Number'}),
             'logo':forms.FileInput(attrs={'class': 'form-control'}),
             'operator':forms.Select(attrs={'class': 'form-control'}),
             'credit_in':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
             'credit_out':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
+            'credit_limit':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
             'is_active':forms.CheckboxInput(attrs={'class':'mt-1'}),
         }
 
@@ -47,20 +48,32 @@ class OperatorForm(forms.ModelForm):
 class ContactForm(forms.ModelForm):
     class Meta:
         model=Contact
-        fields=['name','mobile','client','is_active','create_date']
+        fields=['name','mobile','client','country','is_active','create_date']
         widgets = {
             'name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Name'}),
             'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile'}),
             'client':forms.Select(attrs={'class': 'form-control',}),
+            'country':forms.Select(attrs={'class': 'form-control',}),
             'create_date':forms.TextInput(attrs={'class': 'form-control','placeholder':''}),
         }
 
 class MessagesForm(forms.ModelForm):
     class Meta:
         model=Messages
-        fields=['client','contact','message_out','message_reply','create_date','reply_date']
+        fields=['client','contact','template','message_out','message_reply','create_date','reply_date']
         widgets={
-            
+            'template': forms.Select(attrs={'class': 'form-control'}),
             'client':forms.Select(attrs={'class': 'form-control'}),
             'message_out':forms.Textarea(attrs={'class': 'form-control','placeholder':'Enter Your Messages..'})
         }
+
+
+class TemplateForm(forms.ModelForm):
+    class Meta:
+        model = Templates
+        fields = ['message_title', 'message_template', 'created_by', 'create_date']
+
+class CountryForm(forms.ModelForm):
+    class Meta:
+        model = Country
+        fields = ['country_name', 'country_code', 'country_tele_code']

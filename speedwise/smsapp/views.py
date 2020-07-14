@@ -2,17 +2,17 @@ from django.shortcuts import render,redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.forms import UserCreationForm
 from .models import *
+import pandas as pd
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.models import User,auth
+from django.core.mail import send_mail
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm
+from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm,TemplateForm,CountryForm
 import telnyx
-from django.db import OperationalError
-
 
 
 class DashboardView(TemplateView):
@@ -82,7 +82,7 @@ class LoginView(TemplateView):
                     return redirect('index')
                 else:
                     messages.error(request,
-                                   "Invalid Login Credentials")
+                                   "Username or password does not match,please retry with correct credentials")
                     return redirect('login')
             else:
                 messages.error(request,
@@ -90,7 +90,7 @@ class LoginView(TemplateView):
                 return redirect('login')
         except:
             messages.error(request,
-                           "Invalid Login Credentials")
+                           "Username or password does not match,please retry with correct credentaials")
             return redirect('login')
 
 
@@ -118,7 +118,7 @@ def register(request):
                 client.save()
                 return redirect(reverse('login'))
         else:
-            messages.info(request,'Invalid Login Credentials')
+            messages.info(request,'password not matching')
             return render(request, 'smsapp/register.html')
     else:
         return render(request,'smsapp/register.html')
@@ -138,6 +138,14 @@ class ClientProfile(TemplateView):
         context['client'] = client_object
         return context
 
+    # def post(self,request,user_pk):
+    #     if request.method == "POST":
+    #         client = Operator.objects.get(pk=user_pk)
+    #         client.user = User.objects.get(pk=request.POST.get('client_user'))
+    #         client.email = request.POST.get('client_email')
+    #         client.operator = request.POST.get('client_operator')
+    #         client.save()
+
 
 def add_client_credit(request,user_pk):
     try:
@@ -155,6 +163,17 @@ def remove_client_credit(request,user_pk):
         client_object = Client.objects.get(pk=user_pk)
         remove_amount = request.POST.get('removecredit')
         client_object.credit_in-=float(remove_amount)
+        client_object.save()
+        return redirect('clientprofile',user_pk)
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('clientprofile', user_pk)
+
+def set_client_credit_limit(request,user_pk):
+    try:
+        client_object = Client.objects.get(pk=user_pk)
+        credit_limit = request.POST.get('credit_limit')
+        client_object.credit_limit=float(credit_limit)
         client_object.save()
         return redirect('clientprofile',user_pk)
     except:
@@ -204,6 +223,15 @@ class OperatorProfile(TemplateView):
         context['operator'] = operator_object
         return context
 
+    def post(self,request,operator_pk):
+        if request.method == "POST":
+            operator = Operator.objects.get(pk=operator_pk)
+            operator.name = request.POST.get('operator_name')
+            operator.code = request.POST.get('operator_code')
+            operator.token = request.POST.get('operator_token')
+            operator.operator_number = request.POST.get('operator_operator_number')
+            operator.save()
+
 
 def delete_operator(request, operator_pk):
     try:
@@ -233,7 +261,11 @@ class Contacts_View(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Contacts_View, self).get_context_data(**kwargs)
         contactform = ContactForm
-        contacts = Contact.objects.all()
+        if self.request.user.is_superuser:
+            contacts = Contact.objects.all()
+        else:
+            client = Client.objects.get(user=self.request.user)
+            contacts = Contact.objects.filter(client=client)
         context['contactsform'] = contactform
         context['contacts'] = contacts
         return context
@@ -243,12 +275,47 @@ class Contacts_View(TemplateView):
             contactsform = ContactForm(request.POST, request.FILES or None)
             if contactsform.is_valid():
                 contacts = contactsform.save()
+                mobile = [character for character in str(contacts.mobile) if character.isalnum()]
+                contacts.mobile = "".join(mobile)
                 contacts.save()
             return redirect('contacts')
         except:
             messages.error(request, "Something went wrong")
             return redirect('contacts')
 
+
+def import_contacts(request):
+    try:
+        if request.method == 'POST' and request.FILES['file_upload']:
+            file = request.FILES['file_upload']
+            file_format = str(file).split('.')[-1]
+            if file_format == 'csv':
+                data = pd.read_csv(file)
+            else:
+                data = pd.read_excel(file)
+            for i,j in data.iterrows():
+                if i not in [0,1,2]:
+                    if not request.user.is_superuser:
+                        client = Client.objects.get(user=request.user)
+                        country = Country.objects.get(country_code=j[2])
+                        mobile = [character for character in str(j[1]) if character.isalnum()]
+                        mobile = "".join(mobile)
+                        if not Contact.objects.filter(name=j[0],mobile=mobile):
+                            contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
+                            contact.save()
+                    else:
+                        country = Country.objects.get(country_code=j[3])
+                        mobile = [character for character in str(j[1]) if character.isalnum()]
+                        mobile = "".join(mobile)
+                        client = Client.objects.filter(name=j[2])
+                        if not Contact.objects.filter(name=j[0],mobile=mobile):
+                            contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
+                            contact.save()
+            return redirect('contacts')
+
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('contacts')
 
 class ContactProfile(TemplateView):
     template_name = 'smsapp/contact_profile.html'
@@ -258,6 +325,14 @@ class ContactProfile(TemplateView):
         contact_object = Contact.objects.get(pk=kwargs['contact_pk'])
         context['contact'] = contact_object
         return context
+
+    def post(self,request,contact_pk):
+        if request.method == "POST":
+            contact = Operator.objects.get(pk=contact_pk)
+            contact.name = request.POST.get('operator_name')
+            contact.mobile = request.POST.get('operator_mobile')
+            contact.client = Contact.objects.get(pk=request.POST.get('operator_client'))
+            contact.save()
 
 
 def delete_contact(request, contact_pk):
@@ -291,6 +366,7 @@ class Messages_View(TemplateView):
         messagingform = MessagesForm
         messages = Messages.objects.all()
         contacts = Contact.objects.all()
+        templates = Templates.objects.all()
         context['messagingform'] = messagingform
         context['messages'] = messages
         context['contacts'] = contacts
@@ -298,24 +374,39 @@ class Messages_View(TemplateView):
 
     def post(self, request):
         try:
-            destination_contacts = [request.POST.get('contactsList')]
+            contacts = request.POST.get('contactsList')
+            destination_contacts = contacts.split(",")
+            print(destination_contacts)
             client = Client.objects.get(pk=request.POST.get("client"))
             token = client.operator.token
             source_number = client.operator.operator_number
             msg = request.POST.get("message_out")
-            for item in destination_contacts:
-                destination_contact = Contact.objects.get(id=item)
-                print(destination_contact)
-                destination_contact_number = destination_contact.mobile
-                telnyx.api_key = token
-                telnyx.Message.create(
-                    from_=source_number,
-                    to=destination_contact_number,
-                    text=msg,
-                )
-                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
-                print(message_entry)
-
+            if client.credit_limit == (client.credit_in-client.credit_out):
+                messages.info(request,"You  have reached your credit limit. Kindly add credits.")
+                send_mail('Add your Credits','You have reached the credit limits','techspeedwise@gmail.com',[client.email], fail_silently=False)
+                for item in destination_contacts:
+                    destination_contact = Contact.objects.get(id=item)
+                    if not destination_contact.is_active == False:
+                        destination_contact_number = destination_contact.mobile
+                        telnyx.api_key = token
+                        telnyx.Message.create(
+                            from_=source_number,
+                            to=destination_contact_number,
+                            text=msg,
+                        )
+                        message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
+            else:
+                for item in destination_contacts:
+                    destination_contact = Contact.objects.get(id=item)
+                    if not destination_contact.is_active == False:
+                        destination_contact_number = destination_contact.mobile
+                        telnyx.api_key = token
+                        telnyx.Message.create(
+                            from_=source_number,
+                            to=destination_contact_number,
+                            text=msg,
+                        )
+                        message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
             return redirect('messaging')
         except:
             messages.error(request, "Something went wrong")
@@ -340,16 +431,45 @@ def delete_message(request, message_pk):
         messages.error(request, "Something went wrong")
         return redirect('messaging')
 
-def edit_message(request,message_pk):
-    message = Messages.objects.get(pk=message_pk)
-    if request.method == "POST":
-        form = MessagesForm(request.POST,instance=message)
-        if form.is_valid():
-            form.save()
-            return redirect('messaging')
-    else:
-        form = MessagesForm(instance=message)
-        print(form)
-        return redirect(request,'messages.html',{form:form})
+class Templates_View(TemplateView):
+    template_name = 'smsapp/sms_templates.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(Templates_View, self).get_context_data(**kwargs)
+        sms_templates_object = Templates.objects.all()
+        context['templateform'] = TemplateForm
+        context['templates'] = sms_templates_object
+        return context
 
+    def post(self, request):
+        try:
+            templateform = TemplateForm(request.POST, request.FILES or None)
+            print(templateform)
+            if templateform.is_valid():
+                templates = templateform.save()
+                templates.save()
+            return redirect('templates')
+        except:
+            messages.error(request, "Something went wrong")
+            return redirect('templates')
+
+class Country_View(TemplateView):
+    template_name = 'smsapp/countries.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Country_View, self).get_context_data(**kwargs)
+        countries = Country.objects.all()
+        context['countryform'] = CountryForm
+        context['countries'] = countries
+        return context
+
+    def post(self, request):
+        try:
+            countryform = CountryForm(request.POST, request.FILES or None)
+            if countryform.is_valid():
+                country = countryform.save()
+                country.save()
+            return redirect('countries')
+        except:
+            messages.error(request, "Something went wrong")
+            return redirect('countries')

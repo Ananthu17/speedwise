@@ -13,16 +13,16 @@
         <thead class="text-primary">
             <tr class="mt-0" >
             <th><h5>Operators</h5></th>
-            <th><h5>Edit</h5></th>
             <th><h5>Delete</h5></th>
+            <th><h5>Enable/Disable</h5></th>
             </tr>
         </thead>
         <tbody >
             {% for operator in operators %}
             <tr>
             <td><a href="{% url 'operatorprofile' operator.id  %}" class="text-dark"><h6>{{operator}}</h6></a></td>
-            <td ><h6 class="ml-2"><a href="{% url 'editoperator' operator.id %}" class="text-success"><i class="far fa-edit"></i></a></h6></i></td>
             <td ><h6 class="ml-2"><a href="{% url 'deleteoperator' operator.id %}"s class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+            <td ><input type="checkbox" id="operator_enable" name="operator_enable" value="False"></td>
             </tr>
             {% endfor %}
 
@@ -51,4 +51,5 @@
         </div>
         </div>
     </div>
+
 {% endblock %}

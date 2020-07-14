@@ -20,11 +20,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/amazon_hNMpNsa.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/netflix_12wFiff.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/netflix_e5BzEGd.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/youtube_R1YZqZR.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/youtube_UEPZnQa.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/youtube_VH0C1sf.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/youtube_jXVZ2Kd.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/youtube_rSmwcnV.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/requirement.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/sms.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/countries.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/password_change_done.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/password_change_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/password_reset_done.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/password_reset_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/sms_templates.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operator_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operator_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/register.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
     </list>
@@ -57,7 +79,7 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="backend" />
+        <entry key="$PROJECT_DIR$" value="frontend_additions" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -72,17 +94,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pcrr-webapp" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/speedwise/smsapp" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp" />
-      <recent name="$PROJECT_DIR$/speedwise" />
-      <recent name="$PROJECT_DIR$/speedwise/smsapp" />
-      <recent name="$PROJECT_DIR$/speedwise/smsapp/templates" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/speedwise/smsapp" />
+      <recent name="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp" />
+      <recent name="$PROJECT_DIR$/speedwise" />
+      <recent name="$PROJECT_DIR$/speedwise/smsapp/templates" />
     </key>
   </component>
   <component name="SvnConfiguration">

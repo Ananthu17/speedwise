@@ -9,7 +9,7 @@
     </ul>
 {% endblock %}
 {% block content %}
-    {% for operator in operators %}
+    {% csrf_token %}
         <h6>{{operator}}</h6>
-    {% endfor %}
+</form>
 {% endblock %}

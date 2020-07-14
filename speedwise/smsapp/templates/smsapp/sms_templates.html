@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+{{ templates }}
+<form action="{% url 'templates' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ templateform.as_p }}
+    <input type="submit">
+</form>
+</body>
+</html>

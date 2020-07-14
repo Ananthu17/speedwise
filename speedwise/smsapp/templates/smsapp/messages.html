@@ -13,7 +13,6 @@
         <thead class="text-primary">
             <tr class="mt-0" >
             <th><h5>Messages</h5></th>
-            <th><h5>Edit</h5></th>
             <th><h5>Delete</h5></th>
             </tr>
         </thead>
@@ -21,7 +20,6 @@
             {% for message in messages %}
             <tr>
             <td><a href="{% url 'messageprofile' message.id %}" class="text-dark"><h6>{{message}}</h6></a></td>
-            <td ><h6 class="ml-2"><a href="{% url 'editmessage' message.id %}" class="text-success"><i class="far fa-edit"></i></a></h6></i></td>
             <td ><h6 class="ml-2"><a href="{% url 'deletemessage' message.id %}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             {% endfor %}
@@ -44,6 +42,7 @@
                 <div class="modal-body">
                     <div id="msg" class="">
                         {{ messagingform.client }}<br><br>
+                        {{ messagingform.template }}<br><br>
                         {{ messagingform.message_out }}<br>
                     </div>
                     <div class="d-none" id="contactsTable">

@@ -18,8 +18,9 @@ class Operator(models.Model):
 
 
 class Client(models.Model):
-    user=models.OneToOneField(User,on_delete=models.CASCADE)
+    user=models.OneToOneField(User,on_delete=models.CASCADE,blank=True, null=True)
     mobile = models.CharField(max_length=20,blank=True, null=True)
+    email = models.CharField(max_length=150, blank=True, null=True)
     logo = models.FileField(upload_to='media/logos',blank=True, null=True)
     operator = models.ForeignKey(Operator, on_delete=models.CASCADE, null=True, blank=True)
     credit_in = models.FloatField(null=True, blank=True, default=0.0)

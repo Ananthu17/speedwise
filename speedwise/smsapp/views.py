@@ -6,13 +6,24 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib import messages
+from django.contrib.auth.models import User,auth
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.decorators import login_required
 from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm
 import telnyx
+from django.db import OperationalError
 
 
 
 class DashboardView(TemplateView):
     template_name = 'smsapp/index.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('login'))
+        else:
+            context = super(DashboardView, self).dispatch(request, *args, **kwargs)
+        return context
 
 
 class ClientView(TemplateView):
@@ -21,34 +32,8 @@ class ClientView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ClientView, self).get_context_data(**kwargs)
         client_objects = Client.objects.all()
-        clientform = ClientForm
-        userform = UsercreateForm
         context['clients'] = client_objects
-        context['clientform'] = clientform
-        context['userform'] = userform
         return context
-
-    def post(self,request):
-        try:
-            clientform = ClientForm(request.POST,request.FILES or None)
-
-            userform = UsercreateForm(request.POST or None)
-
-            if userform.is_valid() and clientform.is_valid():
-                user = userform.save()
-                user.is_staff = False
-                user.save()
-                client = clientform.save()
-                client.user=user
-                print(client)
-                client.save()
-
-
-            return redirect('clients')
-        except:
-            messages.error(request,"Somethin went wrong")
-            return redirect('clients')
-
 
 def delete_user(request, user_pk):
     try:
@@ -71,6 +56,78 @@ def edit_user(request,user_pk):
         print(form)
         return redirect(request,'clients.html',{form:form})
 
+class LoginView(TemplateView):
+    template_name = 'smsapp/login.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse('index'))
+        else:
+            context = super(LoginView, self).dispatch(request, *args, **kwargs)
+        return context
+
+    def get_context_data(self, **kwargs):
+        context = super(LoginView, self).get_context_data(**kwargs)
+        return context
+
+    def post(self, request):
+        try:
+            username = request.POST.get('username', '')
+            password = request.POST.get('password', '')
+            if username and password:
+                user = authenticate(username=username, password=password)
+
+                if user is not None:
+                    login(request, user)
+                    return redirect('index')
+                else:
+                    messages.error(request,
+                                   "Invalid Login Credentials")
+                    return redirect('login')
+            else:
+                messages.error(request,
+                               "Username or password are required")
+                return redirect('login')
+        except:
+            messages.error(request,
+                           "Invalid Login Credentials")
+            return redirect('login')
+
+
+def register(request):
+    if request.method == 'POST':
+        first_name =request.POST['first_name']
+        last_name =request.POST['last_name']
+        mobile =request.POST['mobile']
+        email =request.POST['email']
+        username =request.POST['username']
+        password1 =request.POST['password1']
+        password2 =request.POST['password2']
+        logo =request.POST['logo']
+        if password1 == password2:
+            if User.objects.filter(username=username).exists():
+                messages.info(request,'User already exists')
+                return render(request, 'smsapp/register.html')
+            elif Client.objects.filter(email=email).exists():
+                messages.info(request, 'Email already taken')
+                return render(request, 'smsapp/register.html')
+            else:
+                user = User.objects.create_user(username=username,password=password1,first_name=first_name,last_name=last_name)
+                user.save()
+                client = Client.objects.create(user=user,mobile=mobile,email=email)
+                client.save()
+                return redirect(reverse('login'))
+        else:
+            messages.info(request,'Invalid Login Credentials')
+            return render(request, 'smsapp/register.html')
+    else:
+        return render(request,'smsapp/register.html')
+
+def logout_view(request):
+    print(request)
+    if request.user.is_authenticated:
+        logout(request)
+    return redirect(reverse('login'))
 
 class ClientProfile(TemplateView):
     template_name = 'smsapp/client_profile.html'
@@ -241,7 +298,7 @@ class Messages_View(TemplateView):
 
     def post(self, request):
         try:
-            destination_contacts = [1,2]
+            destination_contacts = [request.POST.get('contactsList')]
             client = Client.objects.get(pk=request.POST.get("client"))
             token = client.operator.token
             source_number = client.operator.operator_number

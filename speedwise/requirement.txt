@@ -1,0 +1,14 @@
+asgiref==3.2.10
+certifi==2020.6.20
+cffi==1.14.0
+chardet==3.0.4
+Django==3.0.7
+idna==2.10
+pycparser==2.20
+PyNaCl==1.4.0
+pytz==2020.1
+requests==2.24.0
+six==1.15.0
+sqlparse==0.3.1
+telnyx==1.0.0b5
+urllib3==1.25.9

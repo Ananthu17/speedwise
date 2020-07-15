@@ -66,31 +66,20 @@
               {% csrf_token %}
               <div class="card-header card-header-primary text-center">
                 <h4 class="card-title">Login</h4>
-                <div class="social-line">
-                  <a href="#pablo" class="btn btn-just-icon btn-link">
-                    <i class="fa fa-facebook-square"></i>
-                  </a>
-                  <a href="#pablo" class="btn btn-just-icon btn-link">
-                    <i class="fa fa-twitter"></i>
-                  </a>
-                  <a href="#pablo" class="btn btn-just-icon btn-link">
-                    <i class="fa fa-google-plus"></i>
-                  </a>
-                </div>
+                
               </div>
-              <p class="description text-center">Or Be Classical</p>
               <div class="card-body">
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      <i class="material-icons">face</i>
+                    <span class="input-group-text mt-5">
+                      <i class="material-icons">person</i>
                     </span>
                   </div>
                   
                   {% if messages %}
-                  <input type="text" name="username" class="form-control border-bottom border-danger" placeholder="First Name...">
+                  <input type="text" name="username" class="form-control border-bottom border-danger mt-5" placeholder="First Name...">
                   {% else %}
-                  <input type="text" name="username" class="form-control" placeholder="First Name...">
+                  <input type="text" name="username" class="form-control mt-5" placeholder="First Name...">
                   {% endif %}
                 </div>
                 <div class="input-group">

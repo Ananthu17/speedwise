@@ -107,7 +107,7 @@ class LoginView(TemplateView):
                     return redirect('index')
                 else:
                     messages.error(request,
-                                   "Username or password does not match,please retry with correct credentials")
+                                   "Invalid Credentials")
                     return redirect('login')
             else:
                 messages.error(request,

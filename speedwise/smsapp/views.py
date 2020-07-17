@@ -119,7 +119,7 @@ class LoginView(TemplateView):
                 return redirect('login')
         except:
             messages.error(request,
-                           "Username or password does not match,please retry with correct credentaials")
+                           "Username or password incorrect")
             return redirect('login')
 
 

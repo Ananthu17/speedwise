@@ -21,30 +21,37 @@
               <p>messaging</p>
             </a>
         </li>
+        {% if user.is_superuser %}
         <li  id="li2">
           <a href="{% url 'clients' %}">
             <i class="nc-icon nc-circle-10"></i>
             <p>Clients</p>
           </a>
         </li>
+        {% endif %}
+        {% if user.is_superuser %}
         <li  id="li3">
           <a href="{% url 'operators' %}">
             <i class="nc-icon nc-chat-33"></i>
             <p>Operators</p>
           </a>
         </li>
+        {% endif %}
+
         <li id="li4">
           <a href="{% url 'contacts' %}">
             <i class="far fa-address-book"></i>
             <p>Contacts</p>
           </a>
         </li>
+        {% if user.is_superuser %}
         <li id="li5">
           <a href="{% url 'countries' %}">
             <i class="fas fa-globe-americas"></i>
             <p>Blacklistings</p>
           </a>
         </li>
+        {% endif %}
         <li id="li6">
           <a href="{% url 'templates' %}">
             <i class="fas fa-mail-bulk"></i>

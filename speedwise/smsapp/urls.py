@@ -3,11 +3,11 @@ from .models import *
 from . import views
 from django.views.generic.base import View
 from django.contrib.auth import views as auth_views
-from .views import ClientView,DashboardView,ClientProfile,Operators,OperatorProfile,Contacts_View,ContactProfile,Messages_View,MessageProfile,LoginView,Templates_View,Country_View
+from .views import ClientView,DashboardView,ClientProfile,Operators,OperatorProfile,Contacts_View,ContactProfile,Messages_View,MessageProfile,LoginView,Templates_View,Country_View,RegisterView
 
 urlpatterns = [
     path('', DashboardView.as_view(), name='index'),
-    path('register', views.register, name='register'),
+    path('register', RegisterView.as_view(), name='register'),
     path('login', LoginView.as_view(), name='login'),
     path('logout', views.logout_view, name='logout'),
     path('password_reset', auth_views.PasswordResetView.as_view(template_name='smsapp/password_reset_form.html'), name='password_reset'),

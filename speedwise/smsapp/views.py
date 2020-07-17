@@ -99,7 +99,10 @@ class LoginView(TemplateView):
         try:
             email = request.POST.get('email', '')
             password = request.POST.get('password', '')
+
+            print(email,password)
             username = Client.objects.get(email=email.lower()).user.username
+            print(username)
             print(username,password)
             if username and password:
                 user = authenticate(username=username, password=password)
@@ -120,34 +123,42 @@ class LoginView(TemplateView):
             return redirect('login')
 
 
-def register(request):
-    if request.method == 'POST':
-        first_name =request.POST['first_name']
-        last_name =request.POST['last_name']
-        mobile =request.POST['mobile']
-        email =request.POST['email']
-        username =request.POST['username']
-        password1 =request.POST['password1']
-        password2 =request.POST['password2']
-        logo =request.POST['logo']
-        if password1 == password2:
-            if User.objects.filter(username=username).exists():
-                messages.info(request,'User already exists')
-                return render(request, 'smsapp/register.html')
-            elif Client.objects.filter(email=email).exists():
-                messages.info(request, 'Email already taken')
-                return render(request, 'smsapp/register.html')
+class RegisterView(TemplateView):
+    template_name = 'smsapp/register.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RegisterView, self).get_context_data(**kwargs)
+        return context
+
+    def post(self,request):
+        if request.method == 'POST':
+            first_name =request.POST['first_name']
+            last_name =request.POST['last_name']
+            mobile =request.POST['mobile']
+            email =request.POST['email']
+            username =request.POST['username']
+            password1 =request.POST['password1']
+            password2 =request.POST['password2']
+            logo =request.FILES['logo']
+            print(logo)
+            if password1 == password2:
+                if User.objects.filter(username=username).exists():
+                    messages.info(request,'User already exists')
+                    return render(request, 'smsapp/register.html')
+                elif Client.objects.filter(email=email).exists():
+                    messages.info(request, 'Email already taken')
+                    return render(request, 'smsapp/register.html')
+                else:
+                    user = User.objects.create_user(username=username,password=password1,first_name=first_name,last_name=last_name)
+                    user.save()
+                    client = Client.objects.create(user=user,mobile=mobile,email=email,logo=logo)
+                    client.save()
+                    return redirect(reverse('login'))
             else:
-                user = User.objects.create_user(username=username,password=password1,first_name=first_name,last_name=last_name)
-                user.save()
-                client = Client.objects.create(user=user,mobile=mobile,email=email)
-                client.save()
-                return redirect(reverse('login'))
+                messages.info(request,'password not matching')
+                return render(request, 'smsapp/register.html')
         else:
-            messages.info(request,'password not matching')
-            return render(request, 'smsapp/register.html')
-    else:
-        return render(request,'smsapp/register.html')
+            return render(request,'smsapp/register.html')
 
 def logout_view(request):
     print(request)
@@ -496,7 +507,11 @@ class Templates_View(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Templates_View, self).get_context_data(**kwargs)
-        sms_templates_object = Templates.objects.all()
+        if self.request.user.is_superuser:
+            sms_templates_object = Templates.objects.all()
+        else:
+            client = Client.objects.get(user=self.request.user)
+            sms_templates_object = Templates.objects.filter(created_by=client)
         context['templateform'] = TemplateForm
         context['templates'] = sms_templates_object
         return context

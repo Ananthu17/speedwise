@@ -455,31 +455,33 @@ class Messages_View(TemplateView):
                 send_mail('Add your Credits','You have reached the credit limits','techspeedwise@gmail.com',[client.email], fail_silently=False)
                 for item in destination_contacts:
                     destination_contact = Contact.objects.get(id=item)
-                    if not destination_contact.is_active == False and destination_contact.country.is_active == False:
-                        # Need to cross check country many to many
-                        if destination_contact.country in client.countries.all():
-                            destination_contact_number = destination_contact.mobile
-                            telnyx.api_key = token
-                            telnyx.Message.create(
-                                from_=source_number,
-                                to=destination_contact_number,
-                                text=msg,
-                            )
-                            message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
+                    country_tele_code = destination_contact.country.country_tele_code
+                    if not destination_contact.is_active == False:
+                        if not destination_contact.country.is_active == False:
+                            if destination_contact.country in client.countries.all():
+                                destination_contact_number = destination_contact.mobile
+                                telnyx.api_key = token
+                                telnyx.Message.create(
+                                    from_=source_number,
+                                    to=country_tele_code+destination_contact_number,
+                                    text=msg,
+                                )
+                                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
             else:
                 for item in destination_contacts:
                     destination_contact = Contact.objects.get(id=item)
-                    if not destination_contact.is_active == False and destination_contact.country.is_active == False:
-                        # Need to cross check country many to many
-                        if destination_contact.country in client.countries.all():
-                            destination_contact_number = destination_contact.mobile
-                            telnyx.api_key = token
-                            telnyx.Message.create(
-                                from_=source_number,
-                                to=destination_contact_number,
-                                text=msg,
-                            )
-                            message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
+                    country_tele_code = destination_contact.country.country_tele_code
+                    if not destination_contact.is_active == False:
+                        if not destination_contact.country.is_active == False:
+                            if destination_contact.country in client.countries.all():
+                                destination_contact_number = destination_contact.mobile
+                                telnyx.api_key = token
+                                telnyx.Message.create(
+                                    from_=source_number,
+                                    to=country_tele_code+destination_contact_number,
+                                    text=msg,
+                                )
+                                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
             return redirect('messaging')
         except:
             messages.error(request, "Something went wrong")

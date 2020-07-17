@@ -14,14 +14,16 @@
       <thead class="text-primary">
         <tr class="mt-0" >
           <th><h5>Clients</h5></th>
+          <th><h5>Edit</h5></th>
           <th><h5>Delete</h5></th>
         </tr>
       </thead>
       <tbody >
         {% for client in clients %}
         <tr>
-          <td><a href="{% url 'clientprofile' client.id %}" class="text-dark"><h6>{{client}}</h6></a></td>
-          <td ><h6 class="ml-2"><a href="{% url 'deleteuser' client.id %}"s class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+          <td><h6>{{client}}</h6></td>
+          <td><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary"><i class="fa fa-edit"></i></a></h6></td>
+          <td ><h6 class="ml-2"><a href="{% url 'deleteuser' client.id %}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
         </tr>
         {% endfor %}
 
@@ -110,6 +112,8 @@
       console.log("reshmi raj")
       $('#id_password1').attr('class','form-control')
       $('#id_password2').attr('class','form-control')
+      $('li').removeClass('active')
+      $('#li2').addClass('active')
     })
   </script>
 {% endblock %}

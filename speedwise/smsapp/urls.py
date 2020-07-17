@@ -35,4 +35,6 @@ urlpatterns = [
     path('messaging/delete/<message_pk>', views.delete_message, name='deletemessage'),
     path('templates', Templates_View.as_view(), name='templates'),
     path('countries', Country_View.as_view(), name='countries'),
+    path('clients/<user_pk>/allowed_countries', views.allowed_countries_for_clients, name='allowedcountriesforclients'),
+
 ]

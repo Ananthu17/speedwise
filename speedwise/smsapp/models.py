@@ -16,6 +16,15 @@ class Operator(models.Model):
     def __str__(self):
         return self.name
 
+class Country(models.Model):
+    country_name = models.CharField(max_length=100, blank=True, null=True)
+    country_code = models.CharField(max_length=5, blank=True, null=True)
+    country_tele_code = models.CharField(max_length=8, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+
+    def __str__(self):
+        return self.country_name
 
 class Client(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,blank=True, null=True)
@@ -28,17 +37,12 @@ class Client(models.Model):
     credit_limit = models.FloatField(null=True, blank=True, default=0.0)
     is_active = models.BooleanField(default=False)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
+    countries = models.ManyToManyField(Country)
 
     def __str__(self):
         return self.user.first_name
 
-class Country(models.Model):
-    country_name = models.CharField(max_length=100, blank=True, null=True)
-    country_code = models.CharField(max_length=5, blank=True, null=True)
-    country_tele_code = models.CharField(max_length=8, blank=True, null=True)
 
-    def __str__(self):
-        return self.country_name
 
 class Contact(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)

@@ -97,11 +97,12 @@ class LoginView(TemplateView):
 
     def post(self, request):
         try:
-            username = request.POST.get('username', '')
+            email = request.POST.get('email', '')
             password = request.POST.get('password', '')
+            username = Client.objects.get(email=email.lower()).user.username
+            print(username,password)
             if username and password:
                 user = authenticate(username=username, password=password)
-
                 if user is not None:
                     login(request, user)
                     return redirect('index')
@@ -160,6 +161,9 @@ class ClientProfile(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ClientProfile, self).get_context_data(**kwargs)
         client_object = Client.objects.get(pk=kwargs['user_pk'])
+        # print(client_object.countries.all(),"ffffffff")
+        # for item in client_object.countries.all():
+        #     print(item)
         context['client'] = client_object
         return context
 
@@ -215,6 +219,27 @@ def change_client_logo(request,user_pk):
     except:
         messages.error(request, "Something went wrong")
         return redirect('clientprofile', user_pk)
+
+def allowed_countries_for_clients(request,user_pk):
+    client = Client.objects.get(pk=user_pk)
+    if request.method == "POST":
+        allowed_countries = request.POST.get('allowed_countries')
+        if allowed_countries:
+            client.countries.clear()
+            try:
+                for country in allowed_countries:
+                    country_object = Country.objects.get(pk=country)
+                    client.countries.add(country_object)
+                    client.save()
+                return redirect('clientprofile', user_pk)
+            except:
+                messages.error(request, "Something went wrong")
+                return redirect('clientprofile', user_pk)
+        else:
+            return redirect('clientprofile', user_pk)
+    else:
+        return redirect('clientprofile', user_pk)
+
 
 
 class Operators(TemplateView):
@@ -411,27 +436,31 @@ class Messages_View(TemplateView):
                 send_mail('Add your Credits','You have reached the credit limits','techspeedwise@gmail.com',[client.email], fail_silently=False)
                 for item in destination_contacts:
                     destination_contact = Contact.objects.get(id=item)
-                    if not destination_contact.is_active == False:
-                        destination_contact_number = destination_contact.mobile
-                        telnyx.api_key = token
-                        telnyx.Message.create(
-                            from_=source_number,
-                            to=destination_contact_number,
-                            text=msg,
-                        )
-                        message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
+                    if not destination_contact.is_active == False and destination_contact.country.is_active == False:
+                        # Need to cross check country many to many
+                        if destination_contact.country in client.countries.all():
+                            destination_contact_number = destination_contact.mobile
+                            telnyx.api_key = token
+                            telnyx.Message.create(
+                                from_=source_number,
+                                to=destination_contact_number,
+                                text=msg,
+                            )
+                            message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
             else:
                 for item in destination_contacts:
                     destination_contact = Contact.objects.get(id=item)
-                    if not destination_contact.is_active == False:
-                        destination_contact_number = destination_contact.mobile
-                        telnyx.api_key = token
-                        telnyx.Message.create(
-                            from_=source_number,
-                            to=destination_contact_number,
-                            text=msg,
-                        )
-                        message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
+                    if not destination_contact.is_active == False and destination_contact.country.is_active == False:
+                        # Need to cross check country many to many
+                        if destination_contact.country in client.countries.all():
+                            destination_contact_number = destination_contact.mobile
+                            telnyx.api_key = token
+                            telnyx.Message.create(
+                                from_=source_number,
+                                to=destination_contact_number,
+                                text=msg,
+                            )
+                            message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
             return redirect('messaging')
         except:
             messages.error(request, "Something went wrong")

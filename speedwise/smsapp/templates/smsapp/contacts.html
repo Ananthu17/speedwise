@@ -7,21 +7,23 @@
 {% block content %}
     <div class="">
         <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
-        <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#modal_upload"> <i class="nc-icon nc-simple-add mr-1"></i>Import Contacts</button>
+        <button class="btn btn-success btn-sm  float-right mr-2" data-toggle="modal" data-target="#importModal"> <i class="nc-icon nc-cloud-download-93 mr-1" ></i>Import</button>
     </div>
     <div class="table-responsive mt-4">
         <table class="table  mt-4 ml-4" style="width:100%;">
         <thead class="text-primary">
             <tr class="mt-0" >
             <th><h5>Contacts</h5></th>
+            <th><h5>Edit</h5></th>
             <th><h5>Delete</h5></th>
             </tr>
         </thead>
         <tbody >
             {% for contact in contacts %}
             <tr>
-            <td><a href="{% url 'contactprofile' contact.id  %}" class="text-dark"><h6>{{contact}}</h6></a></td>
-            <td ><h6 class="ml-2"><a href="{% url 'deletecontact' contact.id%}"s class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+            <td><h6>{{contact}}</h6></td>
+            <td ><h6 class="ml-2"><a href="{% url 'contactprofile' contact.id  %}" class="text-secondary"><i class="fa fa-edit"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="{% url 'deletecontact' contact.id%}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             {% endfor %}
 
@@ -50,30 +52,46 @@
         </div>
         </div>
     </div>
-
-    <div class="modal fade" id="modal_upload" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <form action="{% url 'importcontact' %}" method="POST" enctype="multipart/form-data" >
-                        {% csrf_token %}
-                        <div class="modal-header bg-success">
-                        <h5 class="modal-title text-white" id="exampleModalLongTitle">Upload Excel File</h5>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                        <div class="modal-body bg-light">
-                            <input type="file" name=file_upload class="dropify" data-allowed-file-extensions="csv xlsx" required>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success btn-sm shadow">Import <i class="dripicons-cloud-download"></i></button>
-                        </div>
-                    </form>
-
+    <!-- Modal Import  -->
+    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Import Contacts</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
+                <div class="modal-body">
+                    <input type="file">
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-sm">Import</button>
+                </div>
+            </form>
+        </div>
+        </div>
+    </div>
+
+    
 
 
 
 {% endblock %}
+
+{% block add_script %}
+<script
+src="https://code.jquery.com/jquery-2.2.4.js"
+integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+crossorigin="anonymous">
+</script>
+<script>
+    $(document).ready(()=>{
+    console.log("reshmi raj")
+    $('li').removeClass('active')
+    $('#li4').addClass('active')
+    })
+</script>
+{% endblock%}

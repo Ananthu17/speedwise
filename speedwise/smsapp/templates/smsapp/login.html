@@ -27,7 +27,7 @@
     <div class="container">
       <div class="navbar-translate">
         <a class="navbar-brand" href="https://demos.creative-tim.com/material-kit/index.html">
-          Speedwise </a>
+          <img src="media/media/logos/Speedwise.png" alt="logo"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="sr-only">Toggle navigation</span>
           <span class="navbar-toggler-icon"></span>
@@ -36,24 +36,7 @@
         </button>
       </div>
       <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ml-auto">
-          
-          <li class="nav-item">
-            <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="https://twitter.com/CreativeTim" target="_blank" data-original-title="Follow us on Twitter" rel="nofollow">
-              <i class="fa fa-twitter"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="https://www.facebook.com/CreativeTim" target="_blank" data-original-title="Like us on Facebook" rel="nofollow">
-              <i class="fa fa-facebook-square"></i>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" rel="tooltip" title="" data-placement="bottom" href="https://www.instagram.com/CreativeTimOfficial" target="_blank" data-original-title="Follow us on Instagram" rel="nofollow">
-              <i class="fa fa-instagram"></i>
-            </a>
-          </li>
-        </ul>
+        
       </div>
     </div>
   </nav>
@@ -66,31 +49,20 @@
               {% csrf_token %}
               <div class="card-header card-header-primary text-center">
                 <h4 class="card-title">Login</h4>
-                <div class="social-line">
-                  <a href="#pablo" class="btn btn-just-icon btn-link">
-                    <i class="fa fa-facebook-square"></i>
-                  </a>
-                  <a href="#pablo" class="btn btn-just-icon btn-link">
-                    <i class="fa fa-twitter"></i>
-                  </a>
-                  <a href="#pablo" class="btn btn-just-icon btn-link">
-                    <i class="fa fa-google-plus"></i>
-                  </a>
-                </div>
+                
               </div>
-              <p class="description text-center">Or Be Classical</p>
               <div class="card-body">
                 <div class="input-group">
                   <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      <i class="material-icons">face</i>
+                    <span class="input-group-text mt-5">
+                      <i class="material-icons">person</i>
                     </span>
                   </div>
                   
                   {% if messages %}
-                  <input type="text" name="email" class="form-control border-bottom border-danger" placeholder="Email">
+                  <input type="text" name="username" class="form-control border-bottom border-danger mt-5" placeholder="Username...">
                   {% else %}
-                  <input type="text" name="email" class="form-control" placeholder="Email">
+                  <input type="text" name="username" class="form-control mt-5" placeholder="Username...">
                   {% endif %}
                 </div>
                 <div class="input-group">
@@ -141,8 +113,8 @@
           &copy;
           <script>
             document.write(new Date().getFullYear())
-          </script>, made with <i class="material-icons">favorite</i> by
-          <a href="https://www.creative-tim.com/" target="_blank">GoodBits Tech</a> 
+          </script>, made with <i class="material-icons">favorite</i> by Speedwise
+          <a href="https://www.creative-tim.com/" target="_blank">
         </div>
       </div>
     </footer>

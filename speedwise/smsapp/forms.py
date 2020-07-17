@@ -72,6 +72,12 @@ class TemplateForm(forms.ModelForm):
     class Meta:
         model = Templates
         fields = ['message_title', 'message_template', 'created_by', 'create_date']
+        widgets={
+            'message_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'message_template':forms.Textarea(attrs={'class': 'form-control','placeholder':'Enter Your Messages..'}),
+            'created_by':forms.Select(attrs={'class': 'form-control'}),
+            'create_date':forms.DateInput(attrs={'class': 'form-control'})
+        }
 
 class CountryForm(forms.ModelForm):
     class Meta:

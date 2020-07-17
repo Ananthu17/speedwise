@@ -108,7 +108,7 @@ class LoginView(TemplateView):
                     return redirect('index')
                 else:
                     messages.error(request,
-                                   "Username or password does not match,please retry with correct credentials")
+                                   "Invalid Credentials")
                     return redirect('login')
             else:
                 messages.error(request,
@@ -311,13 +311,18 @@ class Contacts_View(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Contacts_View, self).get_context_data(**kwargs)
         contactform = ContactForm
-        if self.request.user.is_superuser:
-            contacts = Contact.objects.all()
+        user=self.request.user
+        if user.is_authenticated:
+            if self.request.user.is_superuser:
+                contacts = Contact.objects.all()
+            else:
+                client = Client.objects.get(user=self.request.user)
+                contacts = Contact.objects.filter(client=client)
+                context['contactsform'] = contactform
+                context['contacts'] = contacts
         else:
-            client = Client.objects.get(user=self.request.user)
-            contacts = Contact.objects.filter(client=client)
-        context['contactsform'] = contactform
-        context['contacts'] = contacts
+            pass
+        
         return context
 
     def post(self, request):

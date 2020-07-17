@@ -1,4 +1,28 @@
-<!DOCTYPE html>
+{% extends "smsapp/index.html" %}
+
+{% block title %}Speedwise : Countries{% endblock %}
+
+{% block navbar_title %}Country Blacklisting{% endblock %}
+
+{% block content %}
+    
+{% endblock %}
+
+{% block add_script %}
+<script
+src="https://code.jquery.com/jquery-2.2.4.js"
+integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+crossorigin="anonymous">
+</script>
+<script>
+    $(document).ready(()=>{
+    console.log("reshmi raj")
+    $('li').removeClass('active')
+    $('#li5').addClass('active')
+    })
+</script>
+{% endblock%}
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,4 +35,4 @@
     <input type="submit">
 </form>
 </body>
-</html>
+</html> -->

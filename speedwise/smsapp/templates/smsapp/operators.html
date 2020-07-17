@@ -13,16 +13,16 @@
         <thead class="text-primary">
             <tr class="mt-0" >
             <th><h5>Operators</h5></th>
+            <th><h5>Activate</h5></th>
             <th><h5>Delete</h5></th>
-            <th><h5>Enable/Disable</h5></th>
             </tr>
         </thead>
         <tbody >
             {% for operator in operators %}
             <tr>
-            <td><a href="{% url 'operatorprofile' operator.id  %}" class="text-dark"><h6>{{operator}}</h6></a></td>
+            <td><a href="{% url 'operatorprofile' operator.id  %}" class="text-dark"><h6 class="ml-2">{{operator}}</h6></a></td>
+            <td ><h6 class="ml-2"><input type="checkbox" id="operator_enable" name="operator_enable" value="False"></h6></td>
             <td ><h6 class="ml-2"><a href="{% url 'deleteoperator' operator.id %}"s class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
-            <td ><input type="checkbox" id="operator_enable" name="operator_enable" value="False"></td>
             </tr>
             {% endfor %}
 
@@ -53,3 +53,17 @@
     </div>
 
 {% endblock %}
+{% block add_script %}
+<script
+src="https://code.jquery.com/jquery-2.2.4.js"
+integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+crossorigin="anonymous">
+</script>
+<script>
+    $(document).ready(()=>{
+    console.log("reshmi raj")
+    $('li').removeClass('active')
+    $('#li3').addClass('active')
+    })
+</script>
+{% endblock%}

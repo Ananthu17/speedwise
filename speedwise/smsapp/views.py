@@ -420,6 +420,7 @@ class Messages_View(TemplateView):
         context = super(Messages_View, self).get_context_data(**kwargs)
         messagingform = MessagesForm
         messages = Messages.objects.all()
+        print(messages)
         contacts = Contact.objects.all()
         templates = Templates.objects.all()
         context['messagingform'] = messagingform

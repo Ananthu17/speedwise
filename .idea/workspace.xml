@@ -20,13 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/netflix_5lEuwj3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/netflix_dstYiOv.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/media/media/logos/youtube_7f4zfBm.jpeg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -153,7 +147,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594970207581</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Registration backend">
+      <created>1594980248275</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1594980248275</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -168,17 +169,18 @@
     <MESSAGE value="Merged frondend_login and dev_backend" />
     <MESSAGE value="Fixed client add pop-up issue" />
     <MESSAGE value="Merged branch" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merged branch" />
+    <MESSAGE value="Registration backend" />
+    <option name="LAST_COMMIT_MESSAGE" value="Registration backend" />
   </component>
   <component name="WindowStateProjectService">
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594120959657">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser/52.27.1868.1053@52.27.1868.1053" timestamp="1594120959657" />
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1594970206991">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1594980247091">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1594970206991" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1594980247091" />
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1594819807066">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -187,10 +189,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1594967217915" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1594970277523">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1594980258478">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1594970277523" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1594980258478" />
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1594972788063">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>

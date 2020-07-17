@@ -326,6 +326,8 @@ class Contacts_View(TemplateView):
         if user.is_authenticated:
             if self.request.user.is_superuser:
                 contacts = Contact.objects.all()
+                context['contactsform'] = contactform
+                context['contacts'] = contacts
             else:
                 client = Client.objects.get(user=self.request.user)
                 contacts = Contact.objects.filter(client=client)

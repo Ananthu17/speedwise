@@ -11,6 +11,7 @@ from django.contrib.auth.models import User,auth
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm,TemplateForm,CountryForm
 import telnyx
 
@@ -26,36 +27,55 @@ class DashboardView(TemplateView):
         return context
 
 
-class ClientView(TemplateView):
+class ClientView(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/clients.html'
+    login_url = 'login'
+
 
     def get_context_data(self, **kwargs):
         context = super(ClientView, self).get_context_data(**kwargs)
-        client_objects = Client.objects.all()
-        clientform = ClientForm
-        userform = UsercreateForm
-        context['clients'] = client_objects
-        context['clientform'] = clientform
-        context['userform'] = userform
+
+        if self.request.user.is_superuser:
+            client_objects = Client.objects.all()
+            operators = Operator.objects.all()
+            clientform = ClientForm
+            userform = UsercreateForm
+            context['clients'] = client_objects
+            context['clientform'] = clientform
+            context['userform'] = userform
+            context['operators'] = operators
+        else:
+            messages.info(self.request, "You are not authourized to access this records")
         return context
 
     def post(self,request):
         try:
-            clientform = ClientForm(request.POST,request.FILES or None)
+            if not User.objects.filter(id=request.POST.get('user')):
+                clientform = ClientForm(request.POST, request.FILES or None)
+                userform = UsercreateForm(request.POST or None)
+                if userform.is_valid() and clientform.is_valid():
+                    user = userform.save()
+                    user.is_staff = False
+                    user.save()
+                    client = clientform.save()
+                    client.user = user
+                    print(client)
+                    client.save()
+                return redirect('clients')
 
-            userform = UsercreateForm(request.POST or None)
-
-            if userform.is_valid() and clientform.is_valid():
-                user = userform.save()
-                user.is_staff = False
-                user.save()
-                client = clientform.save()
-                client.user=user
-                print(client)
+            else:
+                user = User.objects.get(id=request.POST.get('user'))
+                client = Client.objects.get(user=user)
+                client.mobile = request.POST.get('mobile', '')
+                client.email = request.POST.get('email', '')
+                client.logo = request.FILES.get('logo', '')
+                client.operator = Operator.objects.get(id=request.POST.get('operator', ''))
+                client.credit_in = request.POST.get('credin', '')
+                client.credit_out = request.POST.get('credout', '')
+                client.credit_limit = request.POST.get('credlimit', '')
                 client.save()
+                return redirect('clients')
 
-
-            return redirect('clients')
         except:
             messages.error(request,"Somethin went wrong")
             return redirect('clients')
@@ -69,17 +89,17 @@ def delete_user(request, user_pk):
         messages.error(request, "Something went wrong")
         return redirect('clients')
 
-def edit_user(request,user_pk):
-    user = Client.objects.get(pk=user_pk)
-    if request.method == "POST":
-        form = ClientForm(request.POST,instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('clients')
-    else:
-        form = ClientForm(instance=user)
-        print(form)
-        return redirect(request,'clients.html',{form:form})
+# def edit_user(request,user_pk):
+#     user = Client.objects.get(pk=user_pk)
+#     if request.method == "POST":
+#         form = ClientForm(request.POST,instance=user)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('clients')
+#     else:
+#         form = ClientForm(instance=user)
+#         print(form)
+#         return redirect(request,'clients.html',{form:form})
 
 class LoginView(TemplateView):
     template_name = 'smsapp/login.html'
@@ -166,8 +186,9 @@ def logout_view(request):
         logout(request)
     return redirect(reverse('login'))
 
-class ClientProfile(TemplateView):
+class ClientProfile(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/client_profile.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(ClientProfile, self).get_context_data(**kwargs)
@@ -178,13 +199,13 @@ class ClientProfile(TemplateView):
         context['client'] = client_object
         return context
 
-    # def post(self,request,user_pk):
-    #     if request.method == "POST":
-    #         client = Operator.objects.get(pk=user_pk)
-    #         client.user = User.objects.get(pk=request.POST.get('client_user'))
-    #         client.email = request.POST.get('client_email')
-    #         client.operator = request.POST.get('client_operator')
-    #         client.save()
+    def post(self,request,user_pk):
+        if request.method == "POST":
+            client = Operator.objects.get(pk=user_pk)
+            client.user = User.objects.get(pk=request.POST.get('client_user'))
+            client.email = request.POST.get('client_email')
+            client.operator = request.POST.get('client_operator')
+            client.save()
 
 
 def add_client_credit(request,user_pk):
@@ -253,30 +274,42 @@ def allowed_countries_for_clients(request,user_pk):
 
 
 
-class Operators(TemplateView):
+class Operators(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/operators.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(Operators, self).get_context_data(**kwargs)
         operatorform = OperatorForm
-        operators = Operator.objects.all()
         context['operatorform'] = operatorform
-        context['operators'] = operators
+        if self.request.user.is_superuser:
+            operators = Operator.objects.all()
+            context['operators'] = operators
         return context
 
     def post(self,request):
         try:
-            operatorform = OperatorForm(request.POST,request.FILES or None)
-            if operatorform.is_valid():
-                operator = operatorform.save()
+            if Operator.objects.filter(id=request.POST.get('operator_id')):
+                operator = Operator.objects.get(id=request.POST.get('operator_id'))
+                operator.name = request.POST.get('name')
+                operator.code = request.POST.get('code')
+                operator.token = request.POST.get('token')
+                operator.operator_number = request.POST.get('number')
                 operator.save()
-            return redirect('operators')
+                return redirect('operators')
+            else:
+                operatorform = OperatorForm(request.POST,request.FILES or None)
+                if operatorform.is_valid():
+                    operator = operatorform.save()
+                    operator.save()
+                return redirect('operators')
         except:
             messages.error(request,"Something went wrong")
             return redirect('operators')
 
-class OperatorProfile(TemplateView):
+class OperatorProfile(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/operator_profile.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(OperatorProfile, self).get_context_data(**kwargs)
@@ -303,21 +336,22 @@ def delete_operator(request, operator_pk):
         messages.error(request, "Something went wrong")
         return redirect('operators')
 
-def edit_operator(request,operator_pk):
-    operator = Operator.objects.get(pk=operator_pk)
-    if request.method == "POST":
-        form = OperatorForm(request.POST,instance=operator)
-        if form.is_valid():
-            form.save()
-            return redirect('operators')
-    else:
-        form = OperatorForm(instance=operator)
-        print(form)
-        return redirect(request,'operators.html',{form:form})
+# def edit_operator(request,operator_pk):
+#     operator = Operator.objects.get(pk=operator_pk)
+#     if request.method == "POST":
+#         form = OperatorForm(request.POST,instance=operator)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('operators')
+#     else:
+#         form = OperatorForm(instance=operator)
+#         print(form)
+#         return redirect(request,'operators.html',{form:form})
 
 
-class Contacts_View(TemplateView):
+class Contacts_View(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/contacts.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(Contacts_View, self).get_context_data(**kwargs)
@@ -340,13 +374,22 @@ class Contacts_View(TemplateView):
 
     def post(self, request):
         try:
-            contactsform = ContactForm(request.POST, request.FILES or None)
-            if contactsform.is_valid():
-                contacts = contactsform.save()
-                mobile = [character for character in str(contacts.mobile) if character.isalnum()]
-                contacts.mobile = "".join(mobile)
-                contacts.save()
-            return redirect('contacts')
+            if Contact.objects.filter(id=request.POST.get('contact_id')):
+                contact = Contact.objects.get(id=request.POST.get('contact_id'))
+                contact.name = request.POST.get('name')
+                contact.mobile = request.POST.get('mobile')
+                contact.country = Country.objects.get(pk=request.POST.get('country'))
+                contact.client = Client.objects.get(pk=request.POST.get('clients'))
+                contact.save()
+                return redirect('contacts')
+            else:
+                contactsform = ContactForm(request.POST, request.FILES or None)
+                if contactsform.is_valid():
+                    contacts = contactsform.save()
+                    mobile = [character for character in str(contacts.mobile) if character.isalnum()]
+                    contacts.mobile = "".join(mobile)
+                    contacts.save()
+                return redirect('contacts')
         except:
             messages.error(request, "Something went wrong")
             return redirect('contacts')
@@ -361,8 +404,10 @@ def import_contacts(request):
                 data = pd.read_csv(file)
             else:
                 data = pd.read_excel(file)
+            print(data)
             for i,j in data.iterrows():
-                if i not in [0,1,2]:
+                if i not in [0]:
+                    print("eeeeeeeeeeeee")
                     if not request.user.is_superuser:
                         client = Client.objects.get(user=request.user)
                         country = Country.objects.get(country_code=j[2])
@@ -376,6 +421,7 @@ def import_contacts(request):
                         mobile = [character for character in str(j[1]) if character.isalnum()]
                         mobile = "".join(mobile)
                         client = Client.objects.filter(name=j[2])
+                        print(j[0],mobile,client,country)
                         if not Contact.objects.filter(name=j[0],mobile=mobile):
                             contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
                             contact.save()
@@ -385,13 +431,17 @@ def import_contacts(request):
         messages.error(request, "Something went wrong")
         return redirect('contacts')
 
-class ContactProfile(TemplateView):
+class ContactProfile(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/contact_profile.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(ContactProfile, self).get_context_data(**kwargs)
         contact_object = Contact.objects.get(pk=kwargs['contact_pk'])
-        context['contact'] = contact_object
+        if contact_object.client == self.request.user:
+            context['contact'] = contact_object
+        else:
+            messages.info(self.request,"You are not authourized to access this record")
         return context
 
     def post(self,request,contact_pk):
@@ -426,14 +476,18 @@ def edit_contact(request,contact_pk):
 
 
 
-class Messages_View(TemplateView):
+class Messages_View(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/messages.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(Messages_View, self).get_context_data(**kwargs)
         messagingform = MessagesForm
-        messages = Messages.objects.all()
-        print(messages)
+        if self.request.user.is_superuser:
+            messages = Messages.objects.all()
+        else:
+            client = Client.objects.get(user=self.request.user)
+            messages = Messages.objects.filter(client=client)
         contacts = Contact.objects.all()
         templates = Templates.objects.all()
         context['messagingform'] = messagingform
@@ -461,12 +515,15 @@ class Messages_View(TemplateView):
                             if destination_contact.country in client.countries.all():
                                 destination_contact_number = destination_contact.mobile
                                 telnyx.api_key = token
-                                telnyx.Message.create(
+                                send_msg = telnyx.Message.create(
                                     from_=source_number,
                                     to=country_tele_code+destination_contact_number,
                                     text=msg,
                                 )
-                                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
+                                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                client.credit_out+=1
+                                client.save()
+                                return redirect('messaging')
             else:
                 for item in destination_contacts:
                     destination_contact = Contact.objects.get(id=item)
@@ -476,25 +533,31 @@ class Messages_View(TemplateView):
                             if destination_contact.country in client.countries.all():
                                 destination_contact_number = destination_contact.mobile
                                 telnyx.api_key = token
-                                telnyx.Message.create(
+                                send_msg = telnyx.Message.create(
                                     from_=source_number,
                                     to=country_tele_code+destination_contact_number,
                                     text=msg,
                                 )
-                                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
-            return redirect('messaging')
+                                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                client.credit_out += 1
+                                client.save()
+                                return redirect('messaging')
         except:
             messages.error(request, "Something went wrong")
             return redirect('messaging')
 
 
-class MessageProfile(TemplateView):
+class MessageProfile(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/message_profile.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(MessageProfile, self).get_context_data(**kwargs)
         message_object = Messages.objects.get(pk=kwargs['message_pk'])
-        context['message'] = message_object
+        if message_object.client == self.request.user:
+            context['message'] = message_object
+        else:
+            messages.info(self.request,"You are not authourized to access this record")
         return context
 
 def delete_message(request, message_pk):
@@ -506,8 +569,9 @@ def delete_message(request, message_pk):
         messages.error(request, "Something went wrong")
         return redirect('messaging')
 
-class Templates_View(TemplateView):
+class Templates_View(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/sms_templates.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(Templates_View, self).get_context_data(**kwargs)
@@ -532,8 +596,19 @@ class Templates_View(TemplateView):
             messages.error(request, "Something went wrong")
             return redirect('templates')
 
-class Country_View(TemplateView):
+def delete_template(request, template_pk):
+    try:
+        template = Templates.objects.get(pk=template_pk)
+        template.delete()
+        return redirect('templates')
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('templates')
+
+
+class Country_View(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/countries.html'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(Country_View, self).get_context_data(**kwargs)
@@ -552,3 +627,14 @@ class Country_View(TemplateView):
         except:
             messages.error(request, "Something went wrong")
             return redirect('countries')
+
+
+
+def delete_country(request, country_pk):
+    try:
+        country = Country.objects.get(pk=country_pk)
+        country.delete()
+        return redirect('countries')
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('countries')

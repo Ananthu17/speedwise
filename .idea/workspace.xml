@@ -21,7 +21,16 @@
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/image.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/sms.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp_models.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/static.zip" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +61,7 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="dev-backend" />
+        <entry key="$PROJECT_DIR$" value="front_back_merge" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -201,21 +210,21 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1594819807066" />
-    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1594967217915">
+    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1595232520760">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1594967217915" />
+    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595232520760" />
     <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1594980715278">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1594980715278" />
-    <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1594972788063">
+    <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1595233255295">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1594972788063" />
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1594719835482">
+    <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595233255295" />
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1595232512402">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1594719835482" />
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595232512402" />
   </component>
 </project>

@@ -68,6 +68,7 @@ class Messages(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True)
     template = models.ForeignKey(Templates, on_delete=models.CASCADE, null=True, blank=True)
+    message_telnyx_id = models.CharField(max_length=150, blank=True, null=True)
     message_out = models.TextField(blank=True, null=True)
     message_reply = models.TextField(blank=True, null=True)
     create_date = models.DateTimeField(default=datetime.now, blank=True)

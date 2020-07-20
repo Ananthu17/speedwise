@@ -29,7 +29,7 @@
             <div class="modal fade" id="exampleeditModal{{contact.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="{% url 'contacts' %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Contacts Profile</h5>
@@ -38,17 +38,18 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <input type="text" name="contact_id" class="form-control" value="{{contact.id}}">
                             <label for="name"> Name :</label>
                             <input type="text" name="name" class="form-control" value="{{contact.name}}">
                             <label for="mobile"> Mobile :</label>
                             <input type="text" name="mobile" class="form-control" value="{{contact.mobile}}">
                             <label for="clients">Clients :</label>
                             <select name="clients" id="clients" class="form-control">
-                                <option value="{{contact.client}}" selected >{{contact.client}}</option>
+                                <option value="{{contact.client.id}}" selected >{{contact.client}}</option>
                             </select>
                             <label for="country">Country :</label>
                             <select name="country" id="country" class="form-control" >
-                                <option value="{{contact.country}}" selected >{{contact.country}}</option>
+                                <option value="{{contact.country.id}}" selected >{{contact.country}}</option>
                             </select>
                             <div class="mt-1">
                                 <label for="country">Status :</label>

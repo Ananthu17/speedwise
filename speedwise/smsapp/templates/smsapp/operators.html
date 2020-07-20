@@ -5,10 +5,72 @@
 {% block navbar_title %}Operators{% endblock %}
 
 {% block content %}
+<style>
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+    
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+    
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+    
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    </style>
+      
     <div class="">
         <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
     </div>
-    <div class="table-responsive mt-4">
+    <div class="table mt-4" style="width: 96% !important;">
         <table class="table  mt-4 ml-4" style="width:100%;">
         <thead class="text-primary">
             <tr class="mt-0" >
@@ -20,10 +82,47 @@
         <tbody >
             {% for operator in operators %}
             <tr>
-            <td><a href="{% url 'operatorprofile' operator.id  %}" class="text-dark"><h6 class="ml-2">{{operator}}</h6></a></td>
-            <td ><h6 class="ml-2"><input type="checkbox" id="operator_enable" name="operator_enable" value="False"></h6></td>
+            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{operator.id}}"><h6 class="ml-2">{{operator}}</h6></a></td>
+            <td ><h6 class="ml-2"><label class="switch">
+                <input type="checkbox" id="operator_enable" name="operator_enable" value="False">
+                <span class="slider"></span>
+              </label></h6></td>
             <td ><h6 class="ml-2"><a href="{% url 'deleteoperator' operator.id %}"s class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
+            <!-- Modal edit -->
+            <div class="modal fade" id="exampleeditModal{{operator.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Operator Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="name"> Name :</label>
+                            <input type="text" name="name" class="form-control" value="{{operator.name}}">
+                            <label for="mobile"> Code :</label>
+                            <input type="text" name="code" class="form-control" value={{operator.code}}>
+                            <label for="clients">Token :</label>
+                            <input type="text" name="token" class="form-control" value={{operator.token}}>
+                            <label for="clients">Operator Number :</label>
+                            <input type="text" name="number" class="form-control" value={{operator.operator_number}}>
+                            <div class="mt-1">
+                                <label for="country">Status :</label>
+                                <input type="checkbox" name="active_status" class="mt-1" value={{operator.is_active}}>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btn-sm">change</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            <!-- edit modal end  -->
             {% endfor %}
 
         </tbody>

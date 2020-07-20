@@ -40,7 +40,7 @@ class Client(models.Model):
     countries = models.ManyToManyField(Country)
 
     def __str__(self):
-        return self.user.first_name
+        return self.user.username
 
 
 

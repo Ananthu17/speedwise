@@ -8,7 +8,7 @@
     <div class="">
         <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
     </div>
-    <div class="table-responsive mt-4">
+    <div class="table mt-4">
         <table class="table  mt-4 ml-4" style="width:100%;">
         <thead class="text-primary">
             <tr class="mt-0" >
@@ -21,9 +21,47 @@
             {% for message in messages %}
             <tr>
             <td><h6>{{message}}</h6></td>
-            <td ><h6 class="ml-2"><a href="{% url 'messageprofile' message.id %}" class="text-secondary"><i class="fa fa-edit"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{message.id}}"><i class="fa fa-edit"></i></a></h6></td>
             <td ><h6 class="ml-2"><a href="{% url 'deletemessage' message.id %}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
+            <!-- Modal edit -->
+            <div class="modal fade" id="exampleeditModal{{message.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Message Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="name"> Client :</label>
+                            <select name="name" id="name" class="form-control">
+                                <option value="{{message.client}}" selected>{{message.client}}</option>
+                            </select>
+                            <label for="contact"> Contact :</label>
+                            <select name="contact" id="contact" class="form-control">
+                                <option value="{{message.contact}}" selected>{{message.contact}}</option>
+                            </select>
+                            <label for="template"> Template :</label>
+                            <select name="template" id="template" class="form-control">
+                                <option value="{{message.template}}" selected>{{message.template}}</option>
+                            </select>
+                            <label for="msgout">Message Out :</label>
+                            <textarea name="msgout" id="msgout"  value="{{message.message_out}}" class="form-control"></textarea>
+                            <label for="msgrply">Message Replay :</label>
+                            <textarea name="msgrply" id="msgrply"  value="{{message.message_replay}}" class="form-control"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btn-sm">change</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            <!-- edit modal end  -->
             {% endfor %}
 
         </tbody>

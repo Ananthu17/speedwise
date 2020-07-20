@@ -22,9 +22,47 @@
             {% for contact in contacts %}
             <tr>
             <td><h6>{{contact}}</h6></td>
-            <td ><h6 class="ml-2"><a href="{% url 'contactprofile' contact.id  %}" class="text-secondary"><i class="fa fa-edit"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{contact.id}}"><i class="fa fa-edit"></i></a></h6></td>
             <td ><h6 class="ml-2"><a href="{% url 'deletecontact' contact.id%}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
+            <!-- Modal edit -->
+            <div class="modal fade" id="exampleeditModal{{contact.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Contacts Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="name"> Name :</label>
+                            <input type="text" name="name" class="form-control" value="{{contact.name}}">
+                            <label for="mobile"> Mobile :</label>
+                            <input type="text" name="mobile" class="form-control" value="{{contact.mobile}}">
+                            <label for="clients">Clients :</label>
+                            <select name="clients" id="clients" class="form-control">
+                                <option value="{{contact.client}}" selected >{{contact.client}}</option>
+                            </select>
+                            <label for="country">Country :</label>
+                            <select name="country" id="country" class="form-control" >
+                                <option value="{{contact.country}}" selected >{{contact.country}}</option>
+                            </select>
+                            <div class="mt-1">
+                                <label for="country">Status :</label>
+                                <input type="checkbox" name="active_status" class="mt-1" value="{{contact.is_active}}">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btn-sm">change</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            <!-- edit modal end  -->
             {% endfor %}
 
         </tbody>
@@ -52,6 +90,7 @@
         </div>
         </div>
     </div>
+    
     <!-- Modal Import  -->
     <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

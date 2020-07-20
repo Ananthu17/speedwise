@@ -9,7 +9,7 @@
   <div class="">
     <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
   </div>
-  <div class="table-responsive mt-4">
+  <div class="table mt-4">
     <table class="table  mt-4 ml-4" style="width:100%;">
       <thead class="text-primary">
         <tr class="mt-0" >
@@ -22,9 +22,64 @@
         {% for client in clients %}
         <tr>
           <td><h6>{{client}}</h6></td>
-          <td><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary"><i class="fa fa-edit"></i></a></h6></td>
+          <td><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{client.id}}"><i class="fa fa-edit"></i></a></h6></td>
           <td ><h6 class="ml-2"><a href="{% url 'deleteuser' client.id %}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
         </tr>
+        <!-- Modal edit -->
+          <div class="modal fade" id="exampleeditModal{{client.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Client Profile</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="user"> User :</label>
+                        <select name="user" id="user" class="form-control mb-1">
+                          <option value="{{client.user}}" selected>{{client.user}}</option>
+                        </select>
+                        <label for="mobile"> Mobile :</label>
+                        <input type="text" name="mobile" class="form-control mb-1" value={{client.mobile}}>
+                        <label for="email">Email :</label>
+                        <input type="text" name="email" class="form-control mb-1" value={{client.email}}>
+                        <label for="logo">Operator Number :</label>
+                        <input type="file" name="logo" class="form-control mb-1" value={{client.logo}}>
+                        <label for="operator"> Operator :</label>
+                        <select name="operator" id="user" class="form-control mb-1">
+                          <option value="{{client.operator}}" selected>{{client.operator}}</option>
+                        </select>
+                        <label for="credin">Credit In :</label>
+                        <input type="number" name="credin" class="form-control mb-1" value={{client.credit_in}}>
+                        <label for="credout">Credit Out :</label>
+                        <input type="number" name="credout" class="form-control mb-1" value={{client.credit_out}}>
+                        <label for="credlimit">Credit Limit :</label>
+                        <input type="number" name="credlimit" class="form-control mb-1" value={{client.credit_limit}}>
+                        <div class="mt-2 mb-2">
+                            <label for="country">Status :</label>
+                        
+                            {% if client.is_active == True %}
+                              <input type="checkbox" name="active_status" class="mt-1" checked>
+                            {% else %}
+                              <input type="checkbox" name="active_status" class="mt-1">
+                            {% endif %}
+                        </div>
+                        <label for="country"> Country :</label>
+                        <select name="country" id="country" class="form-control mb-1">
+                          <option value="{{client.countries}}" selected>{{client.countries}}</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary btn-sm">change</button>
+                    </div>
+                </form>
+            </div>
+            </div>
+        </div>
+        <!-- edit modal end  -->
         {% endfor %}
 
       </tbody>
@@ -110,8 +165,8 @@
   <script>
     $(document).ready(()=>{
       console.log("reshmi raj")
-      $('#id_password1').attr('class','form-control')
-      $('#id_password2').attr('class','form-control')
+      $('#id_password1').attr('class','form-control mb-1')
+      $('#id_password2').attr('class','form-control mb-1')
       $('li').removeClass('active')
       $('#li2').addClass('active')
     })

@@ -275,30 +275,30 @@ class Operators(LoginRequiredMixin,TemplateView):
         return context
 
     def post(self,request):
-        # try:
-        if Operator.objects.filter(id=request.POST.get('operator_id')):
-            operator = Operator.objects.get(id=request.POST.get('operator_id'))
-            operator.name = request.POST.get('name')
-            operator.code = request.POST.get('code')
-            operator.token = request.POST.get('token')
-            operator.operator_number = request.POST.get('number')
-            operator.save()
-            return redirect('operators')
-        elif request.POST.get('action_type')=='enable_operator':
-            operator = Operator.objects.get(id=request.POST.get('id'))
-            operator.is_active = request.POST.get('is_active') == 'true'
-            operator.save()
-            print(operator.is_active)
-            return redirect('operators')
-        else:
-            operatorform = OperatorForm(request.POST,request.FILES or None)
-            if operatorform.is_valid():
-                operator = operatorform.save()
+        try:
+            if Operator.objects.filter(id=request.POST.get('operator_id')):
+                operator = Operator.objects.get(id=request.POST.get('operator_id'))
+                operator.name = request.POST.get('name')
+                operator.code = request.POST.get('code')
+                operator.token = request.POST.get('token')
+                operator.operator_number = request.POST.get('number')
                 operator.save()
+                return redirect('operators')
+            elif request.POST.get('action_type')=='enable_operator':
+                operator = Operator.objects.get(id=request.POST.get('id'))
+                operator.is_active = request.POST.get('is_active') == 'true'
+                operator.save()
+                print(operator.is_active)
+                return redirect('operators')
+            else:
+                operatorform = OperatorForm(request.POST,request.FILES or None)
+                if operatorform.is_valid():
+                    operator = operatorform.save()
+                    operator.save()
+                return redirect('operators')
+        except:
+            messages.error(request,"Something went wrong")
             return redirect('operators')
-        # except:
-        #     messages.error(request,"Something went wrong")
-        #     return redirect('operators')
 
 
 def delete_operator(request, operator_pk):

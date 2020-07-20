@@ -93,27 +93,28 @@
     </div>
     
     <!-- Modal Import  -->
-    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form action="" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Import Contacts</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <form action="{% url 'importcontact' %}" method="POST" enctype="multipart/form-data" >
+                        {% csrf_token %}
+                        <div class="modal-header bg-success">
+                        <h5 class="modal-title text-white" id="exampleModalLongTitle">Upload CSV File</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body bg-light">
+                            <input type="file" name=file_upload class="dropify" data-allowed-file-extensions="csv xlsx" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success btn-sm shadow">Import <i class="dripicons-cloud-download"></i></button>
+                        </div>
+                    </form>
+
                 </div>
-                <div class="modal-body">
-                    <input type="file">
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-sm">Import</button>
-                </div>
-            </form>
-        </div>
-        </div>
-    </div>
+            </div>
 
     
 

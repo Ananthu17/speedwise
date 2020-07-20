@@ -21,16 +21,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/image.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/sms.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp_models.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/static.zip" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +68,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
@@ -177,7 +173,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594980713234</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Merge frondend and backend">
+      <created>1595244077363</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1595244077363</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -195,17 +198,18 @@
     <MESSAGE value="Registration backend" />
     <MESSAGE value="Contacts view fix" />
     <MESSAGE value="Login message change" />
-    <option name="LAST_COMMIT_MESSAGE" value="Login message change" />
+    <MESSAGE value="Merge frondend and backend" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge frondend and backend" />
   </component>
   <component name="WindowStateProjectService">
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594120959657">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser/52.27.1868.1053@52.27.1868.1053" timestamp="1594120959657" />
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1594980712928">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1595244073932">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1594980712928" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1595244073932" />
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1594819807066">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -214,10 +218,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595232520760" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1594980715278">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1595244262771">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1594980715278" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1595244262771" />
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1595233255295">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>

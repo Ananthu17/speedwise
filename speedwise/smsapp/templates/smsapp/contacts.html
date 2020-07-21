@@ -25,9 +25,9 @@
                 <td><h6 data-toggle="modal" data-target="#exampleeditModal{{contact.id}}">{{contact}}</h6></td>
                 <td><h6><label class="switch">
                     {% if contact.is_active %}
-                    <input type="checkbox" id="operator_enable" name="{{operator.id}}" value="{{operator.is_active}}" checked>
+                    <input type="checkbox" id="contact_enable" name="{{contact.id}}" value="{{contact.is_active}}" checked>
                     {% else %}
-                    <input type="checkbox" id="operator_enable" name="{{operator.id}}" value="{{operator.is_active}}">
+                    <input type="checkbox" id="contact_enable" name="{{contact.id}}" value="{{contact.is_active}}">
                     {% endif %}
                     <span class="slider round"></span>
                 </label></h6></td>
@@ -171,5 +171,15 @@ crossorigin="anonymous">
     $('li').removeClass('active')
     $('#li4').addClass('active')
     })
+
+    $(document).ready(function() {
+    $('#contact_enable').change(function() {
+        $.post("{% url 'contacts' %}", {
+            action_type:'enable_contact',
+            id: this.name,
+            is_active: this.checked,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        });
+    });
 </script>
 {% endblock%}

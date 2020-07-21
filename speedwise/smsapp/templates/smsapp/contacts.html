@@ -14,8 +14,8 @@
         <thead class="text-primary">
             <tr class="mt-0" >
             <th><h5>Contacts</h5></th>
+            <th><h5>Country</h5></th>
             <th><h5>Activate</h5></th>
-            
             <th><h5>Delete</h5></th>
             </tr>
         </thead>
@@ -23,6 +23,7 @@
             {% for contact in contacts %}
             <tr>
                 <td><h6 data-toggle="modal" data-target="#exampleeditModal{{contact.id}}">{{contact}}</h6></td>
+                <td><h6>{{contact.country}}</h6></td>
                 <td><h6><label class="switch">
                     {% if contact.is_active %}
                     <input type="checkbox" id="contact_enable" name="{{contact.id}}" value="{{contact.is_active}}" checked>

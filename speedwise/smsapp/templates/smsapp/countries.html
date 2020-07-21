@@ -195,6 +195,15 @@ crossorigin="anonymous">
     $('li').removeClass('active')
     $('#li5').addClass('active')
     })
+    $(document).ready(function() {
+    $('#operator_enable').change(function() {
+        $.post("{% url 'countries' %}", {
+            action_type:'enable_operator',
+            id: this.name,
+            is_active: this.checked,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        });
+    });
 </script>
 {% endblock%}
 <!-- <!DOCTYPE html>

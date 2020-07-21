@@ -168,12 +168,9 @@ crossorigin="anonymous">
 </script>
 <script>
     $(document).ready(()=>{
-    console.log("reshmi raj")
+    
     $('li').removeClass('active')
     $('#li4').addClass('active')
-    })
-
-    $(document).ready(function() {
     $('#contact_enable').change(function() {
         $.post("{% url 'contacts' %}", {
             action_type:'enable_contact',
@@ -182,5 +179,9 @@ crossorigin="anonymous">
             csrfmiddlewaretoken: '{{ csrf_token }}'
         });
     });
+    })
+
+   
+    
 </script>
 {% endblock%}

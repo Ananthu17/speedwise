@@ -196,8 +196,6 @@ crossorigin="anonymous">
     console.log("reshmi raj")
     $('li').removeClass('active')
     $('#li5').addClass('active')
-    })
-    $(document).ready(function() {
     $('#operator_enable').change(function() {
         $.post("{% url 'countries' %}", {
             action_type:'enable_operator',
@@ -206,6 +204,9 @@ crossorigin="anonymous">
             csrfmiddlewaretoken: '{{ csrf_token }}'
         });
     });
+    })
+   
+   
 </script>
 {% endblock%}
 <!-- <!DOCTYPE html>

@@ -131,7 +131,7 @@ class LoginView(TemplateView):
                 return redirect('login')
         except:
             messages.error(request,
-                           "Username or password incorrect")
+                           "Invalid Credentials")
             return redirect('login')
 
 

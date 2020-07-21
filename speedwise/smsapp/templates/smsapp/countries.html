@@ -5,8 +5,183 @@
 {% block navbar_title %}Country Blacklisting{% endblock %}
 
 {% block content %}
+<style>
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
     
+    .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+    
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+    
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    </style>
+    <div class="">
+        <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
+    </div>
+    <div class="table mt-4" style="width: 96% !important;">
+        <table class="table  mt-4 ml-4" style="width:100%;">
+        <thead class="text-primary">
+            <tr class="mt-0" >
+            <th><h5>Countries</h5></th>
+            <th><h5>Activate</h5></th>
+            <th><h5>Delete</h5></th>
+            </tr>
+        </thead>
+        <tbody >
+            {% for operator in countries %}
+            <tr>
+            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{operator.id}}"><h6 class="ml-2">{{operator}}</h6></a></td>
+            <td ><h6 class="ml-2"><label class="switch">
+                {% if operator.is_active %}
+                <input type="checkbox" id="operator_enable" name="{{operator.id}}" value="{{operator.is_active}}" checked>
+                {% else %}
+                <input type="checkbox" id="operator_enable" name="{{operator.id}}" value="{{operator.is_active}}">
+                {% endif %}
+                <span class="slider round"></span>
+              </label></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash"></i></a></h6></td>
+            </tr>
+            <!-- Modal edit -->
+            <div class="modal fade" id="exampleeditModal{{operator.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Country Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            
+                            <label for="name"> Name :</label>
+                            <input type="text" name="name" class="form-control" value="{{operator.country_name}}">
+                            <label for="mobile"> Code :</label>
+                            <input type="text" name="code" class="form-control" value={{operator.country_code}}>
+                            <label for="clients">Tele Code :</label>
+                            <input type="text" name="token" class="form-control" value={{operator.country_tele_code}}>
+                    
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btn-sm">change</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            <!-- edit modal end  -->
+            <!-- Modal HTML -->
+            <div id="myModal" class="modal fade">
+                <div class="modal-dialog modal-confirm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="row " style="margin-left: 120px;">
+                                <div class="icon-box">
+                                    <i class="fas fa-times"></i>
+                                </div>	
+                            </div>
+                            <div class="row">
+                                
+                            </div>
+                                                
+                            
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h4 class="mb-3 mt-0">Are you sure?</h4>
+                            <p>Do you really want to delete these records? This process cannot be undone.</p>
+                        </div>
+                        <div class="modal-footer row" style="padding: 12px 53px 25px;">
+                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                            <a href="{% url 'deleteoperator' operator.id %}" class="btn btn-danger text-white pt-2">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            <!-- delete modal end  -->
+            {% endfor %}
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="{% url 'countries' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add Countries</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {{ countryform.as_p }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            <!-- Add modal end  -->
+            
+
+        </tbody>
+        </table>
+    </div>
 {% endblock %}
+
 
 {% block add_script %}
 <script

@@ -91,7 +91,7 @@
                 {% endif %}
                 <span class="slider round"></span>
               </label></h6></td>
-            <td ><h6 class="ml-2"><a href="{% url 'deleteoperator' operator.id %}"s class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
             <div class="modal fade" id="exampleeditModal{{operator.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -128,6 +128,35 @@
                 </div>
             </div>
             <!-- edit modal end  -->
+            <!-- Modal HTML -->
+            <div id="myModal" class="modal fade">
+                <div class="modal-dialog modal-confirm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="row " style="margin-left: 120px;">
+                                <div class="icon-box">
+                                    <i class="fas fa-times"></i>
+                                </div>	
+                            </div>
+                            <div class="row">
+                                
+                            </div>
+                                                
+                            
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h4 class="mb-3 mt-0">Are you sure?</h4>
+                            <p>Do you really want to delete these records? This process cannot be undone.</p>
+                        </div>
+                        <div class="modal-footer row" style="padding: 12px 53px 25px;">
+                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                            <a href="{% url 'deleteoperator' operator.id %}" class="btn btn-danger text-white pt-2">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            <!-- delete modal end  -->
             {% endfor %}
 
         </tbody>

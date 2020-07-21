@@ -62,9 +62,9 @@ class MessagesForm(forms.ModelForm):
         model=Messages
         fields=['client','contact','template','message_out','message_reply','create_date','reply_date']
         widgets={
-            'template': forms.Select(attrs={'class': 'form-control'}),
-            'client':forms.Select(attrs={'class': 'form-control'}),
-            'message_out':forms.Textarea(attrs={'class': 'form-control','placeholder':'Enter Your Messages..'})
+            'template': forms.Select(attrs={'class': 'form-control mb-1'}),
+            'client':forms.Select(attrs={'class': 'form-control mb-1'}),
+            'message_out':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'})
         }
 
 
@@ -83,3 +83,8 @@ class CountryForm(forms.ModelForm):
     class Meta:
         model = Country
         fields = ['country_name', 'country_code', 'country_tele_code']
+        widgets={
+            'country_name': forms.TextInput(attrs={'class': 'form-control','placeholder':'Country Name'}),
+            'country_code': forms.TextInput(attrs={'class': 'form-control','placeholder':'Country Code'}),
+            'country_tele_code': forms.TextInput(attrs={'class': 'form-control','placeholder':'Tele Code'}),
+        }

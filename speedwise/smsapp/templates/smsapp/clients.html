@@ -47,7 +47,7 @@
                         <label for="mobile"> Mobile :</label>
                         <input type="text" name="mobile" class="form-control mb-1" value={{client.mobile}}>
                         <label for="email">Email :</label>
-                        <input type="text" name="email" class="form-control mb-1" value={{client.email}}>
+                        <input type="text" name="email" class="form-control mb-1" value={{client.user.email}}>
                         <label for="logo">Operator Number :</label>
                         <input type="file" name="logo" class="form-control mb-1" value={{client.logo}}>
                         <label for="operator"> Operator :</label>
@@ -130,7 +130,7 @@
         <form action="{% url 'clients' %}" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Clients</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Add a Client</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -158,6 +158,10 @@
                 {{ userform.last_name }}
               </div>
               <div class="row p-2">
+                <span class="mb-1">Email :</span>
+                {{ userform.email }}
+              </div>
+              <div class="row p-2">
                 <span class="mb-1">Mobile :</span> 
                 {{ clientform.mobile }}
               </div>
@@ -176,6 +180,10 @@
               <div class="row p-2">
                 <span class="mb-1">Credits Out :</span> 
                 {{ clientform.credit_out }}
+              </div>
+              <div class="row p-2">
+                <span class="mb-1">Credits Limit :</span>
+                {{ clientform.credit_limit }}
               </div>
               <div class="row p-2">
                 <span class="mr-1">Active Status :</span> 

@@ -48,13 +48,13 @@
                         <input type="text" name="mobile" class="form-control mb-1" value={{client.mobile}}>
                         <label for="email">Email :</label>
                         <input type="text" name="email" class="form-control mb-1" value={{client.user.email}}>
-                        <label for="logo">Operator Number :</label>
+                        <label for="logo">Logo :</label>
                         <input type="file" name="logo" class="form-control mb-1" value={{client.logo}}>
                         <label for="operator"> Operator :</label>
                         <select name="operator" id="operator" class="form-control mb-1">
                           <option value="{{client.operator.id}}" selected>{{client.operator}}</option>
                           {% for operator in operators %}
-                            <option value="{{operator.operator.id}}" selected>{{operator.operator}}</option>
+                            <option value="{{operator.id}}">{{operator.name}}</option>
                           {% endfor %}
                         </select>
                         <label for="credin">Credit In :</label>
@@ -146,7 +146,7 @@
                 {{ userform.password1 }}
               </div>
               <div class="row p-2">
-                <span class="mb-1">Password :</span> 
+                <span class="mb-1">Retype password :</span>
                 {{ userform.password2 }}
               </div>
               <div class="row p-2">

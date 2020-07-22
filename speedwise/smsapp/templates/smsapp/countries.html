@@ -80,22 +80,22 @@
             </tr>
         </thead>
         <tbody >
-            {% for operator in countries %}
+            {% for country in countries %}
             <tr>
-            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{operator.id}}"><h6 class="ml-2">{{operator}}</h6></a></td>
-            <td><h6>{{operator.country_tele_code}}</h6></td>
+            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{country.id}}"><h6 class="ml-2">{{country}}</h6></a></td>
+            <td><h6>{{country.country_tele_code}}</h6></td>
             <td ><h6 class="ml-2"><label class="switch">
-                {% if operator.is_active %}
-                <input type="checkbox" id="operator_enable{{operator.id}}" name="{{operator.id}}" value="{{operator.is_active}}" checked>
+                {% if country.is_active %}
+                <input type="checkbox" id="country_enable{{country.id}}" name="{{country.id}}" value="{{country.is_active}}" checked>
                 {% else %}
-                <input type="checkbox" id="operator_enable{{operator.id}}" name="{{operator.id}}" value="{{operator.is_active}}">
+                <input type="checkbox" id="country_enable{{country.id}}" name="{{country.id}}" value="{{country.is_active}}">
                 {% endif %}
                 <span class="slider round"></span>
               </label></h6></td>
-            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{operator.id}}"><i class="fa fa-trash"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{country.id}}"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
-            <div class="modal fade" id="exampleeditModal{{operator.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="exampleeditModal{{country.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <form action="" method="POST" enctype="multipart/form-data">
@@ -107,13 +107,21 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            
+                            <input type="text" name="country_id" class="form-control" value="{{country.id}}">
                             <label for="name"> Name :</label>
-                            <input type="text" name="name" class="form-control" value="{{operator.country_name}}">
+                            <input type="text" name="name" class="form-control" value="{{country.country_name}}">
                             <label for="mobile"> Code :</label>
-                            <input type="text" name="code" class="form-control" value={{operator.country_code}}>
+                            <input type="text" name="code" class="form-control" value={{country.country_code}}>
                             <label for="clients">Tele Code :</label>
-                            <input type="text" name="token" class="form-control" value={{operator.country_tele_code}}>
+                            <input type="text" name="token" class="form-control" value={{country.country_tele_code}}>
+                            <div class="mt-1">
+                                <label for="country">Status :</label>
+                                {% if country.is_active == True %}
+                                <input type="checkbox" name="active_status" class="mt-1" checked>
+                                {% else %}
+                                <input type="checkbox" name="active_status" class="mt-1">
+                                {% endif %}
+                            </div>
                     
                         </div>
                         <div class="modal-footer">
@@ -125,7 +133,7 @@
             </div>
             <!-- edit modal end  -->
             <!-- Modal HTML -->
-            <div id="myModal{{operator.id}}" class="modal fade">
+            <div id="myModal{{country.id}}" class="modal fade">
                 <div class="modal-dialog modal-confirm">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -147,7 +155,7 @@
                         </div>
                         <div class="modal-footer row" style="padding: 12px 53px 25px;">
                             <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                            <a href="{% url 'deleteoperator' operator.id %}" class="btn btn-danger text-white pt-2">Delete</a>
+                            <a href="{% url 'deletecountry' country.id %}" class="btn btn-danger text-white pt-2">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -163,9 +171,9 @@
                     console.log("reshmi raj")
                     $('li').removeClass('active')
                     $('#li5').addClass('active')
-                    $('#operator_enable{{operator.id}}').change(function() {
+                    $('#country_enable{{country.id}}').change(function() {
                         $.post("{% url 'countries' %}", {
-                            action_type:'enable_operator',
+                            action_type:'enable_country',
                             id: this.name,
                             is_active: this.checked,
                             csrfmiddlewaretoken: '{{ csrf_token }}'

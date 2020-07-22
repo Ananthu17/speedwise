@@ -77,6 +77,7 @@ class ClientView(LoginRequiredMixin,TemplateView):
                 client.user.save()
                 client.logo = request.FILES.get('logo', '')
                 try:
+                    print(request.POST.get('operator',''),"gggg")
                     client.operator = Operator.objects.get(id=request.POST.get('operator',''))
                 except:
                     None
@@ -115,14 +116,20 @@ class ClientSubUserView(LoginRequiredMixin,TemplateView):
         context = super(ClientSubUserView, self).get_context_data(**kwargs)
 
         if self.request.user.is_superuser:
-            client_objects = Client.objects.all()
+            client_sub_user_objects = ClientSubUser.objects.all()
             userform = UsercreateForm
             clientsubuserform = ClientSubUserForm
-            context['clients'] = client_objects
+            context['clientsubusers'] = client_sub_user_objects
             context['clientsubuserform'] = clientsubuserform
             context['userform'] = userform
         else:
-            messages.info(self.request, "You are not authourized to access this records")
+            client_sub_user_objects = ClientSubUser.objects.filter(client=Client.objects.get(user=self.request.user))
+            print(client_sub_user_objects)
+            userform = UsercreateForm
+            clientsubuserform = ClientSubUserForm
+            context['clientsubusers'] = client_sub_user_objects
+            context['clientsubuserform'] = clientsubuserform
+            context['userform'] = userform
         return context
 
 
@@ -170,15 +177,21 @@ class LoginView(TemplateView):
                         login(request, user)
                         return redirect('index')
                     else:
-                        if Client.objects.get(user = user).is_active == True:
-                            login(request, user)
-                            return redirect('index')
-                        elif ClientSubUser.objects.get(user = user).is_active == True:
-                            login(request, user)
-                            return redirect('index')
+                        if ClientSubUser.objects.filter(user = user):
+                            if ClientSubUser.objects.get(user = user).is_active:
+                                login(request, user)
+                                return redirect('index')
+                            else:
+                                messages.error(request,"Contact administrator to activate the account")
+                                return redirect('login')
                         else:
-                            messages.error(request,"Contact administrator to activate the account")
-                            return redirect('login')
+                            if Client.objects.filter(user = user):
+                                if Client.objects.get(user = user).is_active:
+                                    login(request, user)
+                                    return redirect('index')
+                            else:
+                                messages.error(request,"Contact administrator to activate the account")
+                                return redirect('login')
 
                 else:
                     messages.error(request,
@@ -381,14 +394,20 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
         user=self.request.user
         if user.is_authenticated:
             if self.request.user.is_superuser:
+                clients = Client.objects.all()
+                countries = Country.objects.all()
                 contacts = Contact.objects.all()
                 context['contactsform'] = contactform
                 context['contacts'] = contacts
+                context['clients'] = clients
+                context['countries'] = countries
             else:
                 client = Client.objects.get(user=self.request.user)
+                countries = Country.objects.all() #Need to filter based on clients
                 contacts = Contact.objects.filter(client=client)
                 context['contactsform'] = contactform
                 context['contacts'] = contacts
+                context['countries'] = countries
         else:
             pass
         
@@ -426,7 +445,9 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
 
 def import_contacts(request):
     try:
+
         if request.method == 'POST' and request.FILES['file_upload']:
+
             file = request.FILES['file_upload']
             file_format = str(file).split('.')[-1]
             if file_format == 'csv':
@@ -436,14 +457,23 @@ def import_contacts(request):
                 return redirect('contacts')
 
             for i,j in data.iterrows():
-                client = Client.objects.get(user=request.user)
-                country = Country.objects.get(country_code=j[2])
-                mobile = [character for character in str(j[1]) if character.isalnum()]
-                mobile = "".join(mobile)
-                if not Contact.objects.filter(name=j[0],mobile=mobile):
-                    contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
-                    contact.save()
-                    print(contact)
+                if not request.user.is_superuser:
+                    client = Client.objects.get(user=request.user)
+                    country = Country.objects.get(country_code=j[2])
+                    mobile = [character for character in str(j[1]) if character.isalnum()]
+                    mobile = "".join(mobile)
+                    if not Contact.objects.filter(name=j[0],mobile=mobile):
+                        contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
+                        contact.save()
+                else:
+                    client = Client.objects.get(user=request.user)
+                    country = Country.objects.get(country_code=j[2])
+                    mobile = [character for character in str(j[1]) if character.isalnum()]
+                    mobile = "".join(mobile)
+                    if not Contact.objects.filter(name=j[0],mobile=mobile):
+                        contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
+                        contact.save()
+
             return redirect('contacts')
 
     except:
@@ -483,48 +513,84 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         try:
             contacts = request.POST.get('contactsList')
             destination_contacts = contacts.split(",")
-            client = Client.objects.get(pk=request.POST.get("client"))
-            token = client.operator.token
-            source_number = client.operator.operator_number
             msg = request.POST.get("message_out")
-            if client.credit_limit == (client.credit_in-client.credit_out):
-                messages.info(request,"You  have reached your credit limit. Kindly add credits.")
-                send_mail('Add your Credits','You have reached the credit limits','techspeedwise@gmail.com',[client.email], fail_silently=False)
-                for item in destination_contacts:
-                    destination_contact = Contact.objects.get(id=item)
-                    country_tele_code = destination_contact.country.country_tele_code
+            for item in destination_contacts:
+                destination_contact = Contact.objects.get(id=item)
+                country_tele_code = destination_contact.country.country_tele_code
+                client = destination_contact.client
+                if client.credit_limit == (client.credit_in - client.credit_out):
+                    messages.info(request, "You  have reached your credit limit. Kindly add credits.")
+                    send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
                     if not destination_contact.is_active == False:
                         if not destination_contact.country.is_active == False:
                             if destination_contact.country in client.countries.all():
-                                destination_contact_number = destination_contact.mobile
-                                telnyx.api_key = token
-                                send_msg = telnyx.Message.create(
-                                    from_=source_number,
-                                    to=country_tele_code+destination_contact_number,
-                                    text=msg,
-                                )
-                                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
-                                client.credit_out+=1
-                                client.save()
-                                return redirect('messaging')
-            else:
-                for item in destination_contacts:
-                    destination_contact = Contact.objects.get(id=item)
-                    country_tele_code = destination_contact.country.country_tele_code
+                                if client.operator.code == 'TLX':
+                                    token = client.operator.token
+                                    source_number = client.operator.operator_number
+                                    destination_contact_number = destination_contact.mobile
+                                    telnyx.api_key = token
+                                    send_msg = telnyx.Message.create(
+                                        from_=source_number,
+                                        to=country_tele_code+destination_contact_number,
+                                        text=msg,
+                                    )
+                                    message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                    client.credit_out+=1
+                                    client.save()
+                                if client.operator.code == 'THQ':
+                                    token = client.operator.token
+                                    source_number = client.operator.operator_number
+                                    destination_contact_number = destination_contact.mobile
+
+                                    url = "https://api.thinq.com/account/"+token+"/product/origination/sms/send"
+
+                                    payload = "{\n  \"from_did\": \""+source_number+"\",\n  \"to_did\": \""+str(country_tele_code+destination_contact_number)+"\",\n  \"message\": \""+str(msg)+"\"\n}"
+                                    headers = {
+                                        'Authorization': 'Basic ',
+                                        'Content-Type': 'application/json'
+                                    }
+
+                                    response = requests.request("POST", url, headers=headers, data=payload)
+
+                                    message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                    client.credit_out += 1
+                                    client.save()
+                else:
                     if not destination_contact.is_active == False:
                         if not destination_contact.country.is_active == False:
                             if destination_contact.country in client.countries.all():
-                                destination_contact_number = destination_contact.mobile
-                                telnyx.api_key = token
-                                send_msg = telnyx.Message.create(
-                                    from_=source_number,
-                                    to=country_tele_code+destination_contact_number,
-                                    text=msg,
-                                )
-                                message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
-                                client.credit_out += 1
-                                client.save()
-                                return redirect('messaging')
+                                if client.operator.code == 'TLX':
+                                    token = client.operator.token
+                                    source_number = client.operator.operator_number
+                                    destination_contact_number = destination_contact.mobile
+                                    telnyx.api_key = token
+                                    send_msg = telnyx.Message.create(
+                                        from_=source_number,
+                                        to=country_tele_code+destination_contact_number,
+                                        text=msg,
+                                    )
+                                    message_entry = Messages.objects.create(client=client, contact=destination_contact,message_telnyx_id=send_msg.get('id'),message_out=msg)
+                                    client.credit_out += 1
+                                    client.save()
+                                if client.operator.code == 'THQ':
+                                    token = client.operator.token
+                                    source_number = client.operator.operator_number
+                                    destination_contact_number = destination_contact.mobile
+
+                                    url = "https://api.thinq.com/account/" + token + "/product/origination/sms/send"
+
+                                    payload = "{\n  \"from_did\": \""+source_number+"\",\n  \"to_did\": \""+str(country_tele_code+destination_contact_number)+"\",\n  \"message\": \"" +str(msg)+ "\"\n}"
+                                    headers = {
+                                        'Authorization': 'Basic ',
+                                        'Content-Type': 'application/json'
+                                    }
+
+                                    response = requests.request("POST", url, headers=headers, data=payload)
+                                    print("dddddddddddddd",payload)
+                                    message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg)
+                                    client.credit_out += 1
+                                    client.save()
+            return redirect('messaging')
         except:
             messages.error(request, "Something went wrong")
             return redirect('messaging')
@@ -590,16 +656,29 @@ class Country_View(LoginRequiredMixin,TemplateView):
         return context
 
     def post(self, request):
-        try:
+        # try:
+        if Country.objects.filter(id=request.POST.get('country_id')):
+            country = Country.objects.get(id=request.POST.get('country_id'))
+            country.country_name=request.POST.get('name')
+            country.country_code=request.POST.get('code')
+            country.country_tele_code=request.POST.get('token')
+            country.save()
+            return redirect('countries')
+
+        elif request.POST.get('action_type') == 'enable_country':
+            country = Country.objects.get(id=request.POST.get('id'))
+            country.is_active = request.POST.get('is_active') == 'true'
+            country.save()
+            return redirect('countries')
+        else:
             countryform = CountryForm(request.POST, request.FILES or None)
             if countryform.is_valid():
                 country = countryform.save()
                 country.save()
             return redirect('countries')
-        except:
-            messages.error(request, "Something went wrong")
-            return redirect('countries')
-
+        # except:
+        #     messages.error(request, "Something went wrong")
+        #     return redirect('countries')
 
 
 def delete_country(request, country_pk):

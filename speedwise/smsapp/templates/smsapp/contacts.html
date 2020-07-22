@@ -56,19 +56,23 @@
                             <select name="clients" id="clients" class="form-control">
                                 <option value="{{contact.client.id}}" selected >{{contact.client}}</option>
                                 {% for client in clients %}
-                                    <option value="{{client.client.id}}" >{{client.operator}}</option>
+                                    <option value="{{client.id}}" >{{client}}</option>
                                 {% endfor %}
                             </select>
                             <label for="country">Country :</label>
                             <select name="country" id="country" class="form-control" >
                                 <option value="{{contact.country.id}}" selected >{{contact.country}}</option>
-                                {% for client in countries %}
-                                    <option value="{{client.client.id}}">{{client.operator}}</option>
+                                {% for country in countries %}
+                                    <option value="{{country.id}}">{{country.country_name}}</option>
                                 {% endfor %}
                             </select>
                             <div class="mt-1">
                                 <label for="country">Status :</label>
-                                <input type="checkbox" name="active_status" class="mt-1" value="{{contact.is_active}}">
+                                {% if contact.is_active == True %}
+                                <input type="checkbox" name="active_status" class="mt-1" checked>
+                                {% else %}
+                                <input type="checkbox" name="active_status" class="mt-1">
+                                {% endif %}
                             </div>
                         </div>
                         <div class="modal-footer">

@@ -5,7 +5,10 @@
 {% block navbar_title %}Sub Users{% endblock %}
 
 {% block content %}
-
+{{clientsubusers}}
+<br>
+<br>
+<br>
 <form action="{% url 'clients_sub_users' %}" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
             {{ userform.username }}

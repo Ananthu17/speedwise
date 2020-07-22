@@ -87,13 +87,13 @@
             <td><h6>{{operator.code}}</h6></td>
             <td ><h6 class="ml-2"><label class="switch">
                 {% if operator.is_active %}
-                <input type="checkbox" id="enable_operator" name="{{operator.id}}" checked>
+                <input type="checkbox" id="operator_enable{{operator.id}}" name="{{operator.id}}" value="{{operator.is_active}}" checked>
                 {% else %}
-                <input type="checkbox" id="enable_operator" name="{{operator.id}}">
+                <input type="checkbox" id="operator_enable{{operator.id}}" name="{{operator.id}}" value="{{operator.is_active}}">
                 {% endif %}
                 <span class="slider round"></span>
               </label></h6></td>
-            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{operator.id}}"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
             <div class="modal fade" id="exampleeditModal{{operator.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -118,7 +118,7 @@
                             <label for="clients">Operator Number :</label>
                             <input type="text" name="number" class="form-control" value={{operator.operator_number}}>
                             <div class="mt-1">
-                                <label for="country">Active :</label>
+                                <label for="country">Status :</label>
                                 <input type="checkbox" name="active_status" class="mt-1" value={{operator.is_active}}>
                             </div>
                         </div>
@@ -131,7 +131,7 @@
             </div>
             <!-- edit modal end  -->
             <!-- Modal HTML -->
-            <div id="myModal" class="modal fade">
+            <div id="myModal{{operator.id}}" class="modal fade">
                 <div class="modal-dialog modal-confirm">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -159,6 +159,29 @@
                 </div>
             </div>  
             <!-- delete modal end  -->
+            <script
+                src="https://code.jquery.com/jquery-2.2.4.js"
+                integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+                crossorigin="anonymous">
+                </script>
+                <script>
+                    $(document).ready(()=>{
+                    $('li').removeClass('active')
+                    $('#li3').addClass('active')
+                    })
+
+                    $(document).ready(function() {
+                    $('#operator_enable{{operator.id}}').change(function() {
+                        $.post("{% url 'operators' %}", {
+                            action_type:'enable_operator',
+                            id: this.name,
+                            is_active: this.checked,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        });
+                    });
+                });
+
+                </script>
             {% endfor %}
 
         </tbody>
@@ -189,29 +212,5 @@
 
 {% endblock %}
 {% block add_script %}
-<script
-src="https://code.jquery.com/jquery-2.2.4.js"
-integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-crossorigin="anonymous">
-</script>
-<script>
-    $(document).ready(()=>{
-    $('li').removeClass('active')
-    $('#li3').addClass('active')
-    })
 
-    $(document).ready(function() {
-    $('#enable_operator').change(function() {
-        $.post("{% url 'operators' %}", {
-            action_type:'enable_operator',
-            id: this.name,
-            is_active: this.checked,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        });
-    });
-});
-
-
-
-</script>
 {% endblock%}

@@ -26,13 +26,13 @@
                 <td><h6>{{contact.country}}</h6></td>
                 <td><h6><label class="switch">
                     {% if contact.is_active %}
-                    <input type="checkbox" id="contact_enable" name="{{contact.id}}" value="{{contact.is_active}}" checked>
+                    <input type="checkbox" id="contact_enable{{contact.id}}" name="{{contact.id}}" value="{{contact.is_active}}" checked>
                     {% else %}
-                    <input type="checkbox" id="contact_enable" name="{{contact.id}}" value="{{contact.is_active}}">
+                    <input type="checkbox" id="contact_enable{{contact.id}}" name="{{contact.id}}" value="{{contact.is_active}}">
                     {% endif %}
                     <span class="slider round"></span>
                 </label></h6></td>
-                <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash"></i></a></h6></td>
+                <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{contact.id}}"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
             <div class="modal fade" id="exampleeditModal{{contact.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -55,10 +55,16 @@
                             <label for="clients">Clients :</label>
                             <select name="clients" id="clients" class="form-control">
                                 <option value="{{contact.client.id}}" selected >{{contact.client}}</option>
+                                {% for client in clients %}
+                                    <option value="{{client.client.id}}" >{{client.operator}}</option>
+                                {% endfor %}
                             </select>
                             <label for="country">Country :</label>
                             <select name="country" id="country" class="form-control" >
                                 <option value="{{contact.country.id}}" selected >{{contact.country}}</option>
+                                {% for client in countries %}
+                                    <option value="{{client.client.id}}">{{client.operator}}</option>
+                                {% endfor %}
                             </select>
                             <div class="mt-1">
                                 <label for="country">Status :</label>
@@ -74,7 +80,7 @@
             </div>
             <!-- edit modal end  -->
             <!-- Modal HTML -->
-            <div id="myModal" class="modal fade">
+            <div id="myModal{{contact.id}}" class="modal fade">
                 <div class="modal-dialog modal-confirm">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -102,7 +108,27 @@
                 </div>
             </div>  
             <!-- delete modal end  -->
-            {% endfor %}
+            <script
+                src="https://code.jquery.com/jquery-2.2.4.js"
+                integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+                crossorigin="anonymous">
+                </script>
+                <script>
+                    $(document).ready(()=>{
+                    
+                    $('li').removeClass('active')
+                    $('#li4').addClass('active')
+                    $('#contact_enable{{contact.id}}').change(function() {
+                        $.post("{% url 'contacts' %}", {
+                            action_type:'enable_contact',
+                            id: this.name,
+                            is_active: this.checked,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        });
+                    });
+                    })
+                </script>
+                            {% endfor %}
 
         </tbody>
         </table>
@@ -161,26 +187,5 @@
 {% endblock %}
 
 {% block add_script %}
-<script
-src="https://code.jquery.com/jquery-2.2.4.js"
-integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-crossorigin="anonymous">
-</script>
-<script>
-    $(document).ready(()=>{
-    console.log("reshmi raj")
-    $('li').removeClass('active')
-    $('#li4').addClass('active')
-    })
 
-    $(document).ready(function() {
-    $('#contact_enable').change(function() {
-        $.post("{% url 'contacts' %}", {
-            action_type:'enable_contact',
-            id: this.name,
-            is_active: this.checked,
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-        });
-    });
-</script>
 {% endblock%}

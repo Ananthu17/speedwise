@@ -22,7 +22,7 @@
             <tr>
             <td><h6>{{message}}</h6></td>
             <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{message.id}}"><i class="fa fa-edit"></i></a></h6></td>
-            <td ><h6 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal{{message.id}}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
             <div class="modal fade" id="exampleeditModal{{message.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -63,7 +63,7 @@
             </div>
             <!-- edit modal end  -->
             <!-- Modal HTML -->
-          <div id="myModal" class="modal fade">
+          <div id="myModal{{message.id}}" class="modal fade">
             <div class="modal-dialog modal-confirm">
                 <div class="modal-content">
                     <div class="modal-header">

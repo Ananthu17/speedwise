@@ -25,7 +25,7 @@
           <td><h6>{{client}}</h6></td>
           <td><h6>{{client.credit_in}}</h6></td>
           <td><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{client.id}}"><i class="fa fa-edit"></i></a></h6></td>
-          <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash"></i></a></h6></td>
+          <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{client.id}}"><i class="fa fa-trash"></i></a></h6></td>
         </tr>
         <!-- Modal edit -->
           <div class="modal fade" id="exampleeditModal{{client.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -53,6 +53,9 @@
                         <label for="operator"> Operator :</label>
                         <select name="operator" id="operator" class="form-control mb-1">
                           <option value="{{client.operator.id}}" selected>{{client.operator}}</option>
+                          {% for operator in operators %}
+                            <option value="{{operator.operator.id}}" selected>{{operator.operator}}</option>
+                          {% endfor %}
                         </select>
                         <label for="credin">Credit In :</label>
                         <input type="number" name="credin" class="form-control mb-1" value={{client.credit_in}}>
@@ -72,6 +75,9 @@
                         <label for="country"> Country :</label>
                         <select name="country" id="country" class="form-control mb-1">
                           <option value="{{client.countries}}" selected>{{client.countries}}</option>
+                          {% for country in countries %}
+                            <option value="{{country.countries}}" >{{country.countries}}</option>
+                          {% endfor %}
                         </select>
                     </div>
                     <div class="modal-footer">
@@ -83,7 +89,7 @@
         </div>
         <!-- edit modal end  -->
         <!-- Modal HTML -->
-          <div id="myModal" class="modal fade">
+          <div id="myModal{{client.id}}" class="modal fade">
             <div class="modal-dialog modal-confirm">
                 <div class="modal-content">
                     <div class="modal-header">

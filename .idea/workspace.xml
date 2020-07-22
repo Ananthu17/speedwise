@@ -20,8 +20,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_sub_users.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/requirement.txt" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/requirement.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/countries.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/countries.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/operators.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/password_reset_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/password_reset_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/speedwise/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/speedwise/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +65,7 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="front_back_merge" />
+        <entry key="$PROJECT_DIR$" value="devmerge20200720" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -68,7 +81,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../master" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -183,7 +196,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595275832134</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Operator exception handling">
+      <created>1595275970887</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1595275970887</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -203,36 +223,53 @@
     <MESSAGE value="Login message change" />
     <MESSAGE value="Merge frondend and backend" />
     <MESSAGE value="Added toggle bar for clients, login updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added toggle bar for clients, login updated" />
+    <MESSAGE value="Operator exception handling" />
+    <option name="LAST_COMMIT_MESSAGE" value="Operator exception handling" />
   </component>
   <component name="WindowStateProjectService">
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594120959657">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser/52.27.1868.1053@52.27.1868.1053" timestamp="1594120959657" />
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1595275831611">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1595275970750">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1595275831610" />
-    <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1594819807066">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1595275970750" />
+    <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1595314217965">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1594819807066" />
+    <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1595314217965" />
+    <state x="234" y="117" width="1494" height="879" key="MergeDialog" timestamp="1595327959166">
+      <screen x="52" y="27" width="1868" height="1053" />
+    </state>
+    <state x="234" y="117" width="1494" height="879" key="MergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595327959166" />
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1595232520760">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595232520760" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1595275835874">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1595275973696">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1595275835874" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1595275973696" />
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1595233255295">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595233255295" />
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1595232512402">
+    <state x="52" y="27" width="1294" height="749" key="dock-window-1" timestamp="1595336227303">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595232512402" />
+    <state x="52" y="27" width="1294" height="749" key="dock-window-1/52.27.1868.1053@52.27.1868.1053" timestamp="1595336227303" />
+    <state x="676" y="292" width="620" height="522" key="find.popup" timestamp="1595339791577">
+      <screen x="52" y="27" width="1868" height="1053" />
+    </state>
+    <state x="676" y="292" width="620" height="522" key="find.popup/52.27.1868.1053@52.27.1868.1053" timestamp="1595339791577" />
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1595327937280">
+      <screen x="52" y="27" width="1868" height="1053" />
+    </state>
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595327937280" />
+    <state x="649" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1595305428007">
+      <screen x="52" y="27" width="1868" height="1053" />
+    </state>
+    <state x="649" y="259" width="672" height="678" key="search.everywhere.popup/52.27.1868.1053@52.27.1868.1053" timestamp="1595305428007" />
   </component>
 </project>

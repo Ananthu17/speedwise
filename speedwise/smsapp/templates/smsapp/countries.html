@@ -73,29 +73,29 @@
         <table class="table  mt-4 ml-4" style="width:100%;">
         <thead class="text-primary">
             <tr class="mt-0" >
-            <th><h5>Countries</h5></th>
+            <th><h6>Countries</h6></th>
             <th><h5>Country Code</h5></th>
             <th><h5>Activate</h5></th>
             <th><h5>Delete</h5></th>
             </tr>
         </thead>
         <tbody >
-            {% for operator in countries %}
+            {% for country in countries %}
             <tr>
-            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{operator.id}}"><h6 class="ml-2">{{operator}}</h6></a></td>
-            <td><h6>{{operator.country_tele_code}}</h6></td>
+            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{country.id}}"><h6 class="ml-2">{{country}}</h6></a></td>
+            <td><h6>{{country.country_tele_code}}</h6></td>
             <td ><h6 class="ml-2"><label class="switch">
-                {% if operator.is_active %}
-                <input type="checkbox" id="operator_enable" name="{{operator.id}}" value="{{operator.is_active}}" checked>
+                {% if country.is_active %}
+                <input type="checkbox" id="country_enable" name="{{country.id}}" value="{{country.is_active}}" checked>
                 {% else %}
-                <input type="checkbox" id="operator_enable" name="{{operator.id}}" value="{{operator.is_active}}">
+                <input type="checkbox" id="country_enable" name="{{country.id}}" value="{{country.is_active}}">
                 {% endif %}
                 <span class="slider round"></span>
               </label></h6></td>
             <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
-            <div class="modal fade" id="exampleeditModal{{operator.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="exampleeditModal{{country.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <form action="" method="POST" enctype="multipart/form-data">
@@ -109,11 +109,11 @@
                         <div class="modal-body">
                             
                             <label for="name"> Name :</label>
-                            <input type="text" name="name" class="form-control" value="{{operator.country_name}}">
+                            <input type="text" name="name" class="form-control" value="{{country.country_name}}">
                             <label for="mobile"> Code :</label>
-                            <input type="text" name="code" class="form-control" value={{operator.country_code}}>
+                            <input type="text" name="code" class="form-control" value={{country.country_code}}>
                             <label for="clients">Tele Code :</label>
-                            <input type="text" name="token" class="form-control" value={{operator.country_tele_code}}>
+                            <input type="text" name="token" class="form-control" value={{country.country_tele_code}}>
                     
                         </div>
                         <div class="modal-footer">
@@ -147,7 +147,7 @@
                         </div>
                         <div class="modal-footer row" style="padding: 12px 53px 25px;">
                             <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                            <a href="{% url 'deleteoperator' operator.id %}" class="btn btn-danger text-white pt-2">Delete</a>
+                            <a href="{% url 'deletecountry' country.id %}" class="btn btn-danger text-white pt-2">Delete</a>
                         </div>
                     </div>
                 </div>
@@ -188,7 +188,7 @@
 {% block add_script %}
 <script
 src="https://code.jquery.com/jquery-2.2.4.js"
-integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+integri ty="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
 crossorigin="anonymous">
 </script>
 <script>
@@ -198,9 +198,9 @@ crossorigin="anonymous">
     $('#li5').addClass('active')
     })
     $(document).ready(function() {
-    $('#operator_enable').change(function() {
+    $('#country_enable').change(function() {
         $.post("{% url 'countries' %}", {
-            action_type:'enable_operator',
+            action_type:'enable_country',
             id: this.name,
             is_active: this.checked,
             csrfmiddlewaretoken: '{{ csrf_token }}'

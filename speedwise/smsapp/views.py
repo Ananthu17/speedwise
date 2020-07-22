@@ -10,10 +10,13 @@ from django.contrib import messages
 from django.contrib.auth.models import User,auth
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate,login,logout
-from django.contrib.auth.decorators import login_required
+import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm,TemplateForm,CountryForm
+from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm,TemplateForm,CountryForm,ClientSubUserForm
 import telnyx
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.parsers import JSONParser
 
 
 class DashboardView(TemplateView):
@@ -38,12 +41,15 @@ class ClientView(LoginRequiredMixin,TemplateView):
         if self.request.user.is_superuser:
             client_objects = Client.objects.all()
             operators = Operator.objects.all()
+            countries = Country.objects.all()
             clientform = ClientForm
             userform = UsercreateForm
             context['clients'] = client_objects
             context['clientform'] = clientform
             context['userform'] = userform
             context['operators'] = operators
+            context['countries'] = countries
+
         else:
             messages.info(self.request, "You are not authourized to access this records")
         return context
@@ -64,22 +70,32 @@ class ClientView(LoginRequiredMixin,TemplateView):
                 return redirect('clients')
 
             else:
-                print(request.POST.get('active_status', ''))
                 user = User.objects.get(id=request.POST.get('user'))
                 client = Client.objects.get(user=user)
                 client.mobile = request.POST.get('mobile', '')
-                client.email = request.POST.get('email', '')
+                client.user.email = request.POST.get('email', '')
+                client.user.save()
                 client.logo = request.FILES.get('logo', '')
-                client.operator = Operator.objects.get(id=request.POST.get('operator', ''))
+                try:
+                    client.operator = Operator.objects.get(id=request.POST.get('operator',''))
+                except:
+                    None
                 client.credit_in = request.POST.get('credin', '')
                 client.credit_out = request.POST.get('credout', '')
                 client.credit_limit = request.POST.get('credlimit', '')
                 client.is_active = True if request.POST.get('active_status', '') == 'on' else False
+                try:
+                    permitted_countries = request.POST.get('countries', '')
+                    for country_id in permitted_countries:
+                        country=Country.objects.get(id=country_id)
+                        client.countries.add(country)
+                except:
+                    None
                 client.save()
                 return redirect('clients')
 
         except:
-            messages.error(request,"Somethin went wrong")
+            messages.error(request,"Something went wrong")
             return redirect('clients')
 
 def delete_user(request, user_pk):
@@ -90,6 +106,43 @@ def delete_user(request, user_pk):
     except:
         messages.error(request, "Something went wrong")
         return redirect('clients')
+
+class ClientSubUserView(LoginRequiredMixin,TemplateView):
+    template_name = 'smsapp/client_sub_users.html'
+    login_url = 'login'
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientSubUserView, self).get_context_data(**kwargs)
+
+        if self.request.user.is_superuser:
+            client_objects = Client.objects.all()
+            userform = UsercreateForm
+            clientsubuserform = ClientSubUserForm
+            context['clients'] = client_objects
+            context['clientsubuserform'] = clientsubuserform
+            context['userform'] = userform
+        else:
+            messages.info(self.request, "You are not authourized to access this records")
+        return context
+
+
+    def post(self,request):
+        try:
+            clientsubuserform = ClientSubUserForm(request.POST, request.FILES or None)
+            userform = UsercreateForm(request.POST or None)
+            if userform.is_valid() and clientsubuserform.is_valid():
+                user = userform.save()
+                user.is_staff = False
+                user.save()
+                clientsubuser = clientsubuserform.save()
+                clientsubuser.user = user
+                clientsubuserform.save()
+            return redirect('clients_sub_users')
+        except:
+            messages.error(request,"Something went wrong")
+            return redirect('clients')
+
+
 
 class LoginView(TemplateView):
     template_name = 'smsapp/login.html'
@@ -109,18 +162,24 @@ class LoginView(TemplateView):
         try:
             email = request.POST.get('email', '')
             password = request.POST.get('password', '')
-
-            username = Client.objects.get(email=email.lower()).user.username
+            username = User.objects.get(email=email.lower()).username
             if username and password:
                 user = authenticate(username=username, password=password)
                 if user is not None:
-                    if Client.objects.get(user = user).is_active == True:
+                    if user.is_superuser:
                         login(request, user)
                         return redirect('index')
                     else:
-                        messages.error(request,
-                                       "Contact administrator to activate the account")
-                        return redirect('login')
+                        if Client.objects.get(user = user).is_active == True:
+                            login(request, user)
+                            return redirect('index')
+                        elif ClientSubUser.objects.get(user = user).is_active == True:
+                            login(request, user)
+                            return redirect('index')
+                        else:
+                            messages.error(request,"Contact administrator to activate the account")
+                            return redirect('login')
+
                 else:
                     messages.error(request,
                                    "Invalid Credentials")
@@ -162,9 +221,9 @@ class RegisterView(TemplateView):
                         messages.info(request, 'Email already taken')
                         return render(request, 'smsapp/register.html')
                     else:
-                        user = User.objects.create_user(username=username,password=password1,first_name=first_name,last_name=last_name)
+                        user = User.objects.create_user(username=username,password=password1,first_name=first_name,last_name=last_name,email=email)
                         user.save()
-                        client = Client.objects.create(user=user,mobile=mobile,email=email,logo=logo)
+                        client = Client.objects.create(user=user,mobile=mobile,logo=logo)
                         client.save()
                         return redirect(reverse('login'))
                 else:
@@ -284,7 +343,8 @@ class Operators(LoginRequiredMixin,TemplateView):
                 operator.operator_number = request.POST.get('number')
                 operator.save()
                 return redirect('operators')
-            elif request.POST.get('action_type')=='enable_operator':
+            elif request.POST.get('action_type') == 'enable_operator':
+                print(request.POST.get('id'),request.POST.get('is_active'))
                 operator = Operator.objects.get(id=request.POST.get('id'))
                 operator.is_active = request.POST.get('is_active') == 'true'
                 operator.save()
@@ -344,6 +404,13 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                 contact.client = Client.objects.get(pk=request.POST.get('clients'))
                 contact.save()
                 return redirect('contacts')
+            elif request.POST.get('action_type') == 'enable_contact':
+                print(request.POST.get('id'),request.POST.get('is_active'))
+                contact = Contact.objects.get(id=request.POST.get('id'))
+                contact.is_active = request.POST.get('is_active') == 'true'
+                contact.save()
+                print(contact.is_active)
+                return redirect('contacts')
             else:
                 contactsform = ContactForm(request.POST, request.FILES or None)
                 if contactsform.is_valid():
@@ -367,6 +434,7 @@ def import_contacts(request):
             else:
                 messages.error(request, "Please use a CSV file to import")
                 return redirect('contacts')
+
             for i,j in data.iterrows():
                 client = Client.objects.get(user=request.user)
                 country = Country.objects.get(country_code=j[2])
@@ -375,6 +443,7 @@ def import_contacts(request):
                 if not Contact.objects.filter(name=j[0],mobile=mobile):
                     contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
                     contact.save()
+                    print(contact)
             return redirect('contacts')
 
     except:
@@ -414,7 +483,6 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         try:
             contacts = request.POST.get('contactsList')
             destination_contacts = contacts.split(",")
-            print(destination_contacts)
             client = Client.objects.get(pk=request.POST.get("client"))
             token = client.operator.token
             source_number = client.operator.operator_number
@@ -513,9 +581,12 @@ class Country_View(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Country_View, self).get_context_data(**kwargs)
-        countries = Country.objects.all()
-        context['countryform'] = CountryForm
-        context['countries'] = countries
+        if self.request.user.is_superuser:
+            countries = Country.objects.all()
+            context['countryform'] = CountryForm
+            context['countries'] = countries
+        else:
+            messages.info(self.request, "You are not authourized to access this records")
         return context
 
     def post(self, request):
@@ -539,3 +610,19 @@ def delete_country(request, country_pk):
     except:
         messages.error(request, "Something went wrong")
         return redirect('countries')
+
+
+class MessageResposeView(APIView):
+
+    def get(self, request,format=None):
+        return Response({})
+
+
+    def post(self, request,format=None):
+        values = request.data
+        print(values)
+        message_object = Messages.objects.all().first()
+        message_object.message_reply=values
+        message_object.save()
+        print(message_object)
+        return redirect('message-response')

@@ -3,7 +3,7 @@ from .models import *
 from . import views
 from django.views.generic.base import View
 from django.contrib.auth import views as auth_views
-from .views import ClientView,DashboardView,ClientProfile,Operators,Contacts_View,Messages_View,LoginView,Templates_View,Country_View,RegisterView
+from .views import ClientView,DashboardView,ClientProfile,Operators,Contacts_View,Messages_View,LoginView,Templates_View,Country_View,RegisterView,MessageResposeView,ClientSubUserView
 
 urlpatterns = [
     path('', DashboardView.as_view(), name='index'),
@@ -21,6 +21,7 @@ urlpatterns = [
     path('clients/<user_pk>/removecredit', views.remove_client_credit, name='removecredit'),
     path('clients/<user_pk>/setclientcredit', views.set_client_credit_limit, name='setclientcredit'),
     path('clients/<user_pk>/allowed_countries', views.allowed_countries_for_clients, name='allowedcountriesforclients'),
+    path('clients_sub_users', ClientSubUserView.as_view(), name='clients_sub_users'),
     path('operators', Operators.as_view(), name='operators'),
     path('operators/delete/<operator_pk>', views.delete_operator, name='deleteoperator'),
     path('contacts', Contacts_View.as_view(), name='contacts'),
@@ -30,5 +31,6 @@ urlpatterns = [
     path('messaging/delete/<message_pk>', views.delete_message, name='deletemessage'),
     path('templates', Templates_View.as_view(), name='templates'),
     path('countries', Country_View.as_view(), name='countries'),
-
+    path('countries/delete/<country_pk>', views.delete_country, name='deletecountry'),
+    path('message-response', MessageResposeView.as_view(), name='message-response')
 ]

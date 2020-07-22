@@ -47,8 +47,8 @@
                         <label for="mobile"> Mobile :</label>
                         <input type="text" name="mobile" class="form-control mb-1" value={{client.mobile}}>
                         <label for="email">Email :</label>
-                        <input type="text" name="email" class="form-control mb-1" value={{client.email}}>
-                        <label for="logo">Operator Number :</label>
+                        <input type="text" name="email" class="form-control mb-1" value={{client.user.email}}>
+                        <label for="logo">Logo :</label>
                         <input type="file" name="logo" class="form-control mb-1" value={{client.logo}}>
                         <label for="operator"> Operator :</label>
                         <select name="operator" id="operator" class="form-control mb-1">
@@ -71,7 +71,7 @@
                         </div>
                         <label for="country"> Country :</label>
                         <select name="country" id="country" class="form-control mb-1">
-                          <option value="{{client.countries}}" selected>{{client.countries}}</option>
+                          <option value="{{client.countries}}" selected>{{client.countries.all|join:", "}}</option>
                         </select>
                     </div>
                     <div class="modal-footer">
@@ -150,6 +150,10 @@
               <div class="row p-2">
                 <span class="mb-1">Last Name :</span> 
                 {{ userform.last_name }}
+              </div>
+              <div class="row p-2">
+                <span class="mb-1">Email :</span>
+                {{ userform.email }}
               </div>
               <div class="row p-2">
                 <span class="mb-1">Mobile :</span> 

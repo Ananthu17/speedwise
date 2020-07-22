@@ -21,14 +21,21 @@ class ClientForm(forms.ModelForm):
 class UsercreateForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'password1', 'password2','first_name','last_name']
+        fields = ['username', 'password1', 'password2','first_name','last_name','email']
         widgets={
+            'email':forms.TextInput(attrs={'class': 'form-control','placeholder':'Email'}),
             'username':forms.TextInput(attrs={'class': 'form-control','placeholder':'User Name'}),
             'password1':forms.TextInput(attrs={'class': 'form-control'}),
             'password2':forms.TextInput(attrs={'class': 'form-control'}),
             'first_name':forms.TextInput(attrs={'class': 'form-control','placeholder':'First Name'}),
             'last_name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Last Name'}),
         }
+
+
+class ClientSubUserForm(forms.ModelForm):
+    class Meta:
+        model=ClientSubUser
+        fields=['user','client','is_active','create_date']
 
 class OperatorForm(forms.ModelForm):
     class Meta:

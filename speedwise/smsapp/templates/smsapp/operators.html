@@ -87,9 +87,9 @@
             <td><h6>{{operator.code}}</h6></td>
             <td ><h6 class="ml-2"><label class="switch">
                 {% if operator.is_active %}
-                <input type="checkbox" id="operator_enable" name="{{operator.id}}" value="{{operator.is_active}}" checked>
+                <input type="checkbox" id="enable_operator" name="{{operator.id}}" checked>
                 {% else %}
-                <input type="checkbox" id="operator_enable" name="{{operator.id}}" value="{{operator.is_active}}">
+                <input type="checkbox" id="enable_operator" name="{{operator.id}}">
                 {% endif %}
                 <span class="slider round"></span>
               </label></h6></td>
@@ -118,7 +118,7 @@
                             <label for="clients">Operator Number :</label>
                             <input type="text" name="number" class="form-control" value={{operator.operator_number}}>
                             <div class="mt-1">
-                                <label for="country">Status :</label>
+                                <label for="country">Active :</label>
                                 <input type="checkbox" name="active_status" class="mt-1" value={{operator.is_active}}>
                             </div>
                         </div>
@@ -201,7 +201,7 @@ crossorigin="anonymous">
     })
 
     $(document).ready(function() {
-    $('#operator_enable').change(function() {
+    $('#enable_operator').change(function() {
         $.post("{% url 'operators' %}", {
             action_type:'enable_operator',
             id: this.name,
@@ -210,6 +210,8 @@ crossorigin="anonymous">
         });
     });
 });
+
+
 
 </script>
 {% endblock%}

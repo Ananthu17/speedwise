@@ -53,7 +53,7 @@
                             <label for="mobile"> Mobile :</label>
                             <input type="text" name="mobile" class="form-control" value="{{contact.mobile}}">
                             <label for="clients">Clients :</label>
-                            <select name="clients" id="clients" class="form-control">
+                            <select name="clients" id="clients" class="form-control" disabled>
                                 <option value="{{contact.client.id}}" selected >{{contact.client}}</option>
                                 {% for client in clients %}
                                     <option value="{{client.id}}" >{{client}}</option>
@@ -150,7 +150,27 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{ contactsform.as_p }}
+                    <div class="row p-2">
+                        <span class="mb-1">Name :</span>
+                        {{ contactsform.name }}
+                    </div>
+                    <div class="row p-2">
+                        <span class="mb-1">Mobile :</span>
+                        {{ contactsform.mobile }}
+                    </div>
+                    <div class="row p-2">
+                        <span class="mb-1">Country :</span>
+                        {{ contactsform.country }}
+                    </div>
+                    <div class="row p-2">
+                        <span class="mb-1">Active :</span>
+                        {{ contactsform.is_active }}
+                    </div>
+                    <div class="row p-2">
+                        <span class="mb-1">Create Date :</span>
+                        {{ contactsform.create_date }}
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btn-sm">Add</button>
@@ -173,7 +193,7 @@
                         </button>
                         </div>
                         <div class="modal-body bg-light">
-                            <input type="file" name=file_upload class="dropify" data-allowed-file-extensions="csv xlsx" required>
+                            <input type="file" name=file_upload class="dropify" accept=".csv" data-allowed-file-extensions="csv xlsx" required>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success btn-sm shadow">Import <i class="dripicons-cloud-download"></i></button>

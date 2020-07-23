@@ -55,11 +55,11 @@ class OperatorForm(forms.ModelForm):
 class ContactForm(forms.ModelForm):
     class Meta:
         model=Contact
-        fields=['name','mobile','client','country','is_active','create_date']
+        fields=['name','mobile','country','is_active','create_date']
         widgets = {
             'name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Name'}),
             'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile'}),
-            'client':forms.Select(attrs={'class': 'form-control',}),
+            # 'client':forms.Select(attrs={'class': 'form-control'}),
             'country':forms.Select(attrs={'class': 'form-control',}),
             'create_date':forms.TextInput(attrs={'class': 'form-control','placeholder':''}),
         }
@@ -67,10 +67,11 @@ class ContactForm(forms.ModelForm):
 class MessagesForm(forms.ModelForm):
     class Meta:
         model=Messages
-        fields=['client','contact','template','message_out','message_reply','create_date','reply_date']
+        fields=['client','user','contact','template','message_out','message_reply','create_date','reply_date']
         widgets={
             'template': forms.Select(attrs={'class': 'form-control mb-1'}),
             'client':forms.Select(attrs={'class': 'form-control mb-1'}),
+            'user':forms.Select(attrs={'class': 'form-control mb-1'}),
             'message_out':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'})
         }
 

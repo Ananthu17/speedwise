@@ -38,11 +38,15 @@
                         </div>
                         <div class="modal-body">
                             <label for="name"> Client :</label>
-                            <select name="name" id="name" class="form-control">
+                            <select name="name" id="name" class="form-control" disabled>
                                 <option value="{{message.client}}" selected>{{message.client}}</option>
                             </select>
+                            <label for="user"> User :</label>
+                            <select name="user" id="user" class="form-control" disabled>
+                                <option value="{{message.user}}" selected>{{message.user}}</option>
+                            </select>
                             <label for="contact"> Contact :</label>
-                            <select name="contact" id="contact" class="form-control">
+                            <select name="contact" id="contact" class="form-control" disabled>
                                 <option value="{{message.contact}}" selected>{{message.contact}}</option>
                             </select>
                             <label for="template"> Template :</label>
@@ -110,10 +114,14 @@
                 </div>
                 <div class="modal-body">
                     <div id="msg" class="">
-                        <div>
-                            <label for="client">Client :</label>
-                            {{ messagingform.client }}
-                        </div>
+<!--                        <div>-->
+<!--                            <label for="client">Client :</label>-->
+<!--                            {{ messagingform.client }}-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <label for="user">User :</label>-->
+<!--                            {{ messagingform.user }}-->
+<!--                        </div>-->
                         <div>
                             <label for="tmp">Template :</label>
                             {{ messagingform.template }}

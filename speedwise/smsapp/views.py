@@ -189,9 +189,9 @@ class LoginView(TemplateView):
                                 if Client.objects.get(user = user).is_active:
                                     login(request, user)
                                     return redirect('index')
-                            else:
-                                messages.error(request,"Contact administrator to activate the account")
-                                return redirect('login')
+                                else:
+                                    messages.error(request,"Contact administrator to activate the account")
+                                    return redirect('login')
 
                 else:
                     messages.error(request,
@@ -230,7 +230,7 @@ class RegisterView(TemplateView):
                     if User.objects.filter(username=username).exists():
                         messages.info(request,'User already exists')
                         return render(request, 'smsapp/register.html')
-                    elif Client.objects.filter(email=email).exists():
+                    elif User.objects.filter(email=email).exists():
                         messages.info(request, 'Email already taken')
                         return render(request, 'smsapp/register.html')
                     else:
@@ -402,7 +402,10 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                 context['clients'] = clients
                 context['countries'] = countries
             else:
-                client = Client.objects.get(user=self.request.user)
+                if Client.objects.filter(user=self.request.user):
+                    client = Client.objects.get(user=self.request.user)
+                else:
+                    client = ClientSubUser.objects.get(user=self.request.user).client
                 countries = Country.objects.all() #Need to filter based on clients
                 contacts = Contact.objects.filter(client=client)
                 context['contactsform'] = contactform
@@ -434,8 +437,10 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                 contactsform = ContactForm(request.POST, request.FILES or None)
                 if contactsform.is_valid():
                     contacts = contactsform.save()
+                    client = Client.objects.get(user=self.request.user)
                     mobile = [character for character in str(contacts.mobile) if character.isalnum()]
                     contacts.mobile = "".join(mobile)
+                    contacts.client=client
                     contacts.save()
                 return redirect('contacts')
         except:
@@ -498,10 +503,16 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         messagingform = MessagesForm
         if self.request.user.is_superuser:
             messages = Messages.objects.all()
+            contacts = Contact.objects.all()
         else:
-            client = Client.objects.get(user=self.request.user)
+            if Client.objects.filter(user=self.request.user):
+                client = Client.objects.get(user=self.request.user)
+                contacts = Contact.objects.filter(client=client)
+            else:
+                client = ClientSubUser.objects.get(user=self.request.user).client
+                contacts = Contact.objects.filter(client=client)
             messages = Messages.objects.filter(client=client)
-        contacts = Contact.objects.all()
+
         templates = Templates.objects.all()
         context['messagingform'] = messagingform
         context['messages'] = messages
@@ -517,7 +528,10 @@ class Messages_View(LoginRequiredMixin,TemplateView):
             for item in destination_contacts:
                 destination_contact = Contact.objects.get(id=item)
                 country_tele_code = destination_contact.country.country_tele_code
-                client = destination_contact.client
+                if Client.objects.filter(user=self.request.user):
+                    client = Client.objects.get(user=self.request.user)
+                else:
+                    client = ClientSubUser.objects.get(user=self.request.user).client
                 if client.credit_limit == (client.credit_in - client.credit_out):
                     messages.info(request, "You  have reached your credit limit. Kindly add credits.")
                     send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
@@ -534,7 +548,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                         to=country_tele_code+destination_contact_number,
                                         text=msg,
                                     )
-                                    message_entry = Messages.objects.create(client=client, contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                    message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
                                     client.credit_out+=1
                                     client.save()
                                 if client.operator.code == 'THQ':
@@ -569,7 +583,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                         to=country_tele_code+destination_contact_number,
                                         text=msg,
                                     )
-                                    message_entry = Messages.objects.create(client=client, contact=destination_contact,message_telnyx_id=send_msg.get('id'),message_out=msg)
+                                    message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_telnyx_id=send_msg.get('id'),message_out=msg)
                                     client.credit_out += 1
                                     client.save()
                                 if client.operator.code == 'THQ':
@@ -613,7 +627,10 @@ class Templates_View(LoginRequiredMixin,TemplateView):
         if self.request.user.is_superuser:
             sms_templates_object = Templates.objects.all()
         else:
-            client = Client.objects.get(user=self.request.user)
+            if Client.objects.filter(user=self.request.user):
+                client = Client.objects.get(user=self.request.user)
+            else:
+                client = ClientSubUser.objects.get(user=self.request.user).client
             sms_templates_object = Templates.objects.filter(created_by=client)
         context['templateform'] = TemplateForm
         context['templates'] = sms_templates_object
@@ -622,9 +639,13 @@ class Templates_View(LoginRequiredMixin,TemplateView):
     def post(self, request):
         try:
             templateform = TemplateForm(request.POST, request.FILES or None)
-            print(templateform)
+            if Client.objects.filter(user=self.request.user):
+                client = Client.objects.get(user=self.request.user)
+            else:
+                client = ClientSubUser.objects.get(user=self.request.user).client
             if templateform.is_valid():
                 templates = templateform.save()
+                templates.created_by=client
                 templates.save()
             return redirect('templates')
         except:

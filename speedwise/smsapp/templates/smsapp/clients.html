@@ -49,7 +49,7 @@
                         <label for="email">Email :</label>
                         <input type="text" name="email" class="form-control mb-1" value={{client.user.email}}>
                         <label for="logo">Logo :</label>
-                        <input type="file" name="logo" class="form-control mb-1" value={{client.logo}}>
+                        <input type="file" name="logo" class="form-control mb-1" value={{client.logo}} accept="image/*">
                         <label for="operator"> Operator :</label>
                         <select name="operator" id="operator" class="form-control mb-1">
                           <option value="{{client.operator.id}}" selected>{{client.operator}}</option>

@@ -70,8 +70,10 @@ class Templates(models.Model):
     def __str__(self):
         return self.message_title
 
+
 class Messages(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True)
     template = models.ForeignKey(Templates, on_delete=models.CASCADE, null=True, blank=True)
     message_telnyx_id = models.CharField(max_length=150, blank=True, null=True)

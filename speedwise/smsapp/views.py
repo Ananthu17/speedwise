@@ -109,27 +109,13 @@ def delete_user(request, user_pk):
         return redirect('clients')
 
 class ClientSubUserView(LoginRequiredMixin,TemplateView):
-    template_name = 'smsapp/client_sub_users.html'
+    template_name = 'smsapp/client_profile.html'
     login_url = 'login'
 
     def get_context_data(self, **kwargs):
         context = super(ClientSubUserView, self).get_context_data(**kwargs)
 
-        if self.request.user.is_superuser:
-            client_sub_user_objects = ClientSubUser.objects.all()
-            userform = UsercreateForm
-            clientsubuserform = ClientSubUserForm
-            context['clientsubusers'] = client_sub_user_objects
-            context['clientsubuserform'] = clientsubuserform
-            context['userform'] = userform
-        else:
-            client_sub_user_objects = ClientSubUser.objects.filter(client=Client.objects.get(user=self.request.user))
-            print(client_sub_user_objects)
-            userform = UsercreateForm
-            clientsubuserform = ClientSubUserForm
-            context['clientsubusers'] = client_sub_user_objects
-            context['clientsubuserform'] = clientsubuserform
-            context['userform'] = userform
+        
         return context
 
 
@@ -262,10 +248,25 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ClientProfile, self).get_context_data(**kwargs)
         client_object = Client.objects.get(pk=kwargs['user_pk'])
-        # print(client_object.countries.all(),"ffffffff")
-        # for item in client_object.countries.all():
-        #     print(item)
+        countries = Country.objects.all()
+        if self.request.user.is_superuser:
+            client_sub_user_objects = ClientSubUser.objects.all()
+            userform = UsercreateForm
+            clientsubuserform = ClientSubUserForm
+            context['clientsubusers'] = client_sub_user_objects
+            context['clientsubuserform'] = clientsubuserform
+            context['userform'] = userform
+        else:
+            client_sub_user_objects = ClientSubUser.objects.filter(client=Client.objects.get(user=self.request.user))
+            print(client_sub_user_objects)
+            userform = UsercreateForm
+            clientsubuserform = ClientSubUserForm
+            context['clientsubusers'] = client_sub_user_objects
+            context['clientsubuserform'] = clientsubuserform
+            context['userform'] = userform
+            
         context['client'] = client_object
+        context['countries']=countries
         return context
 
     def post(self,request,user_pk):

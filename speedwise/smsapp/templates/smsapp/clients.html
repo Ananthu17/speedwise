@@ -24,7 +24,7 @@
         <tr>
           <td><h6>{{client}}</h6></td>
           <td><h6>{{client.credit_in}}</h6></td>
-          <td><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{client.id}}"><i class="fa fa-edit"></i></a></h6></td>
+          <td><h6 class="ml-2"><a href="{% url 'clientprofile' client.id %}" class="text-secondary" ><i class="fa fa-edit"></i></a></h6></td>
           <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{client.id}}"><i class="fa fa-trash"></i></a></h6></td>
         </tr>
         <!-- Modal edit -->
@@ -167,7 +167,10 @@
               </div>
               <div class="row p-2">
                 <span class="mb-1">Logo :</span> 
-                {{ clientform.logo }}
+                <div class="custom-file">
+                  {{ clientform.logo }}
+                  <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
               </div>
               <div class="row p-2">
                 <span class="mb-1">Operator :</span> 
@@ -184,6 +187,10 @@
               <div class="row p-2">
                 <span class="mb-1">Credits Limit :</span>
                 {{ clientform.credit_limit }}
+              </div>
+              <div class="row p-2">
+                <span class="mb-1">Countries :</span>
+                {{ clientform.countries }}
               </div>
               <div class="row p-2">
                 <span class="mr-1">Active Status :</span> 
@@ -207,6 +214,10 @@
     integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
     crossorigin="anonymous">
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+  <script>$(document).ready(function() {
+          $('.js-example-basic-multiple').select2();
+      });</script>
   <script>
     $(document).ready(()=>{
       console.log("reshmi raj")
@@ -216,6 +227,15 @@
       $('#li2').addClass('active')
     })
   </script>
+  <script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+    </script>
+    
+    
 {% endblock %}
 
 

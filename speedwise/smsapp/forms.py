@@ -7,15 +7,16 @@ from .models import *
 class ClientForm(forms.ModelForm):
     class Meta:
         model=Client
-        fields=['mobile','logo','operator','credit_in','credit_out','credit_limit','is_active','create_date']
+        fields=['mobile','logo','operator','credit_in','credit_out','credit_limit','is_active','create_date','countries']
         widgets={
             'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile Number'}),
-            'logo':forms.FileInput(attrs={'class': 'form-control'}),
+            'logo':forms.FileInput(attrs={'class':"custom-file-input","id":"customFile"}),
             'operator':forms.Select(attrs={'class': 'form-control'}),
             'credit_in':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
             'credit_out':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
             'credit_limit':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
             'is_active':forms.CheckboxInput(attrs={'class':'mt-1'}),
+            'countries':forms.Select(attrs={'class':"js-example-basic-multiple", 'name':"states[]",'multiple':"multiple"})
         }
 
 class UsercreateForm(UserCreationForm):
@@ -36,6 +37,12 @@ class ClientSubUserForm(forms.ModelForm):
     class Meta:
         model=ClientSubUser
         fields=['user','client','is_active','create_date']
+        widgets={
+            'user':forms.Select(attrs={'class': 'form-control'}),
+            'client':forms.Select(attrs={'class': 'form-control'}),
+            'is_active':forms.CheckboxInput(attrs={'class':'mt-1 pt-2'}),
+            'create_date':forms.DateInput(attrs={'class': 'form-control'}),
+        }
 
 class OperatorForm(forms.ModelForm):
     class Meta:

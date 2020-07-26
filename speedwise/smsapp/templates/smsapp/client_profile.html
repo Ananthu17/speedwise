@@ -28,112 +28,101 @@
         </p>
       </div>
       <p class="description text-center">
-        <form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-3">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-4 ml-auto">
+        
+            <div class="row mt-3 p-5">
+                <div class="col-6">
+                  <form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data"></form>
+                  {% csrf_token %}
                     <input type="number" id="credit" name="credit" class="form-control" placeholder="Add Credits">
-                </div>
-                <div class="col-lg-3 col-md-3 col-3 ml-auto mb-3">
-                    
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-3">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-4 ml-5" style="margin-left: 14rem!important;">
-                    <button type="submit" class="float-left btn btn-danger btn-sm "><i class="nc-icon nc-simple-add"></i> Add Credit</button>
-                </div>
-                <div class="col-lg-3 col-md-3 col-3 ml-auto mb-3">
-                    
-                </div>
-            </div>
-        </form>
-
-        <form action="{% url 'setclientcredit' client.id %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-3">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-4 ml-auto">
-                    <input type="number" id="credit_limit" name="credit_limit" class="form-control" placeholder="Set Credit Limit">
-                </div>
-                <div class="col-lg-3 col-md-3 col-3 ml-auto mb-3">
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-3">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-4 ml-5" style="margin-left: 14rem!important;">
-                    <button type="submit" class="float-left btn btn-danger btn-sm "><i class="nc-icon nc-simple-add"></i> Set Credit Limit</button>
-                </div>
-                <div class="col-lg-3 col-md-3 col-3 ml-auto mb-3">
-
-                </div>
-            </div>
-        </form>
-        <form action="{% url 'allowedcountriesforclients' client.id %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-3">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-4 ml-auto">
-                    <input type="number" id="allowed_countries" name="allowed_countries" class="form-control" placeholder="Countries">
-                </div>
-                <div class="col-lg-3 col-md-3 col-3 ml-auto mb-3">
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-3">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-4 ml-5" style="margin-left: 14rem!important;">
-                    <button type="submit" class="float-left btn btn-danger btn-sm "><i class="nc-icon nc-simple-add"></i> Modify Allowed Country List</button>
-                </div>
-                <div class="col-lg-3 col-md-3 col-3 ml-auto mb-3">
-
-                </div>
-            </div>
-        </form>
-        <form action="" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-lg-2 col-md-3 col-3">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-4 " style="margin-left: 12.6rem!important;">
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="logo" name="logo">
-                        <label class="custom-file-label" for="logo">Choose file</label>
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-danger btn-sm btn-block "><i class="nc-icon nc-simple-add"></i> Add Credit</button>
                     </div>
+                  </form>
                 </div>
-                <div class="col-lg-3 col-md-3 col-3 ml-auto mb-3">
-                    
+                <div class="col-6">
+                  <form action="{% url 'setclientcredit' client.id %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="number" id="credit_limit" name="credit_limit" class="form-control" placeholder="Set Credit Limit">
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-danger btn-block btn-sm "><i class="nc-icon nc-simple-add"></i> Set Credit Limit</button>
+                    </div>
+                  </form>
+                </div>
+                
+            </div>
+            <div class="row mt-1 p-5">
+              <div class="col-6">
+                <form action="" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="logo" name="logo">
+                    <label class="custom-file-label" for="logo">Choose file</label>
+                  </div>
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-danger btn-block btn-sm "><i class="nc-icon nc-simple-add"></i> Change Logo</button>
+                  </div>
+                </form>
+              </div>
+              <div class="col-6">
+                <form action="{% url 'allowedcountriesforclients' client.id %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <select class="js-example-basic-multiple" name="states[]" multiple>
+                    <option value="{{ client.countries }}" selected>{{ client.countries }}</option>
+                    {% for country in countries %}
+                      <option value="{{country.id}}">{{country}}</option>
+                    {% endfor %}
+                  </select>
+                  <div>
+                    <button type="submit" class="btn btn-block btn-danger btn-sm "><i class="nc-icon nc-simple-add"></i> Modify Allowed Country List</button>
+                  </div>
+              </div>
+            </div>
+            <div class="row  pl-5 pr-5">
+              <div class="col-12">
+                <div class="card p-3 border-danger-2 shadow">
+                
+                  <div class="col-2 float-right" data-toggle="modal" data-target="#myModal">
+                    <a href="javascript:void(0)" class="btn btn-round btn-sm btn-danger shadow"><i class="nc-icon nc-simple-add"></i> User</a>
+                  </div>
+                  <table class="table mt-4 table-hover">
+                    <tr class="text-center">
+                      <th>Sub Users</th>
+                    </tr>
+                    {% for subuser in clientsubusers %}
+                    <tr class="text-center">
+                      <td>{{subuser}}</td>
+                    </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+              </div>
+              
+              <!-- Modal -->
+              <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="{% url 'clients_sub_users' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add SubUsers</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {{ clientsubuserform.as_p }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                        </div>
+                    </form>
+                </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-3">
-
-                </div>
-                <div class="col-lg-4 col-md-4 col-4 ml-5" style="margin-left: 13.4rem!important;">
-                    <button type="submit" class="float-left btn btn-danger btn-sm "><i class="nc-icon nc-simple-add"></i> Change Logo</button>
-                </div>
-                <div class="col-lg-3 col-md-3 col-3 ml-auto mb-3">
-                    
-                </div>
-            </div>
-        </form>
-      </p>
+            <!-- Add modal end  -->
+            
     </div>
+  
     <div class="card-footer">
       <hr>
       <div class="button-container">
@@ -144,9 +133,7 @@
             <div class="col-lg-3 col-md-6 col-6 ml-auto">
             <h5>{{ client.credit_limit }}<br><small>Credit Limit</small></h5>
           </div>
-            <div class="col-lg-3 col-md-6 col-6 ml-auto mr-auto">
-            <h5>{{ client.countries.all|join:", " }}<br><small>Allowed Countries</small></h5>
-          </div>
+            
           <div class="col-lg-3 col-md-6 col-6 ml-auto mr-auto">
             <h5>{{ client.operator }}<br><small>Operator</small></h5>
           </div>
@@ -162,6 +149,12 @@
     integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
     crossorigin="anonymous">
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+  <script>$(document).ready(function() {
+          $('.js-example-basic-multiple').select2();
+      });
+  </script>
+  
   <script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {

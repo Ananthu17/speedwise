@@ -5,28 +5,7 @@
 {% block navbar_title %}Sub Users{% endblock %}
 
 {% block content %}
-{{clientsubusers}}
-<br>
-<br>
-<br>
-<form action="{% url 'clients_sub_users' %}" method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-            {{ userform.username }}
-             <div class="row p-2">
-                <span class="mb-1">Password :</span>
-                {{ userform.password1 }}
-              </div>
-              <div class="row p-2">
-                <span class="mb-1">Password :</span>
-                {{ userform.password2 }}
-              </div>
-            {{ userform.first_name }}
-            {{ userform.last_name }}
-            {{ userform.email }}
-            {{ clientsubuserform.client }}
-    <br>
-    <button type="submit" class="btn btn-primary btn-sm">Create</button>
-</form>
+
 
 
 

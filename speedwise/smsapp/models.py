@@ -37,6 +37,7 @@ class Client(models.Model):
     is_active = models.BooleanField(default=False)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
     countries = models.ManyToManyField(Country)
+    color = models.CharField(max_length=10,blank=True, null=True)
 
     def __str__(self):
         return self.user.username

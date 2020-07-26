@@ -114,14 +114,12 @@
                 </div>
                 <div class="modal-body">
                     <div id="msg" class="">
-<!--                        <div>-->
-<!--                            <label for="client">Client :</label>-->
-<!--                            {{ messagingform.client }}-->
-<!--                        </div>-->
-<!--                        <div>-->
-<!--                            <label for="user">User :</label>-->
-<!--                            {{ messagingform.user }}-->
-<!--                        </div>-->
+                        {% if user.is_superuser %}
+                        <div>
+                            <label for="client">Client :</label>
+                            {{ messagingform.client }}
+                        </div>
+                        {% endif %}
                         <div>
                             <label for="tmp">Template :</label>
                             {{ messagingform.template }}

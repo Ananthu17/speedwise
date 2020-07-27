@@ -8,6 +8,8 @@ from django.core.validators import MinLengthValidator
 class Operator(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=3,validators=[MinLengthValidator(3)],default="NIL")
+    account_id = models.CharField(max_length=100,blank=True, null=True)
+    username = models.CharField(max_length=100,blank=True, null=True)
     token = models.CharField(max_length=500)
     operator_number = models.CharField(max_length=500,blank=True, null=True)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
@@ -55,6 +57,7 @@ class Contact(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     mobile = models.CharField(max_length=20, blank=True, null=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     create_date = models.DateTimeField(default=datetime.now, blank=True)

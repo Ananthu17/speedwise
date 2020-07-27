@@ -108,23 +108,20 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" name="operator_id" class="form-control" value="{{operator.id}}">
+                            <input type="hidden" name="operator_id" class="form-control" value="{{operator.id}}">
                             <label for="name"> Name :</label>
                             <input type="text" name="name" class="form-control" value="{{operator.name}}">
+                            <label for="mobile"> Username :</label>
+                            <input type="text" name="username" class="form-control" value={{operator.username}}>
+                            <label for="mobile"> Account ID :</label>
+                            <input type="text" name="account_id" class="form-control" value={{operator.account_id}}>
                             <label for="mobile"> Code :</label>
                             <input type="text" name="code" class="form-control" value={{operator.code}}>
                             <label for="clients">Token :</label>
                             <input type="text" name="token" class="form-control" value={{operator.token}}>
                             <label for="clients">Operator Number :</label>
                             <input type="text" name="number" class="form-control" value={{operator.operator_number}}>
-                            <div class="mt-1">
-                                <label for="country">Status :</label>
-                                {% if operator.is_active == True %}
-                                <input type="checkbox" name="active_status" class="mt-1" checked>
-                                {% else %}
-                                <input type="checkbox" name="active_status" class="mt-1">
-                                {% endif %}
-                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary btn-sm">change</button>

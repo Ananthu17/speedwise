@@ -47,7 +47,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" name="contact_id" class="form-control" value="{{contact.id}}">
+                            <input type="hidden" name="contact_id" class="form-control" value="{{contact.id}}">
                             <label for="name"> Name :</label>
                             <input type="text" name="name" class="form-control" value="{{contact.name}}">
                             <label for="mobile"> Mobile :</label>
@@ -66,14 +66,6 @@
                                     <option value="{{country.id}}">{{country.country_name}}</option>
                                 {% endfor %}
                             </select>
-                            <div class="mt-1">
-                                <label for="country">Status :</label>
-                                {% if contact.is_active == True %}
-                                <input type="checkbox" name="active_status" class="mt-1" checked>
-                                {% else %}
-                                <input type="checkbox" name="active_status" class="mt-1">
-                                {% endif %}
-                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary btn-sm">change</button>

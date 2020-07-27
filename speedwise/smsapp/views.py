@@ -14,6 +14,7 @@ import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm,TemplateForm,CountryForm,ClientSubUserForm
 import telnyx
+import base64
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
@@ -359,8 +360,11 @@ class Operators(LoginRequiredMixin,TemplateView):
     def post(self,request):
         try:
             if Operator.objects.filter(id=request.POST.get('operator_id')):
+                print(request.POST)
                 operator = Operator.objects.get(id=request.POST.get('operator_id'))
                 operator.name = request.POST.get('name')
+                operator.username = request.POST.get('username')
+                operator.account_id = request.POST.get('account_id')
                 operator.code = request.POST.get('code')
                 operator.token = request.POST.get('token')
                 operator.operator_number = request.POST.get('number')
@@ -429,11 +433,17 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
     def post(self, request):
         try:
             if Contact.objects.filter(id=request.POST.get('contact_id')):
+                print(request.POST)
                 contact = Contact.objects.get(id=request.POST.get('contact_id'))
                 contact.name = request.POST.get('name')
                 contact.mobile = request.POST.get('mobile')
                 contact.country = Country.objects.get(pk=request.POST.get('country'))
-                contact.client = Client.objects.get(pk=request.POST.get('clients'))
+                if Client.objects.filter(user=self.request.user):
+                    contact.client = Client.objects.get(user=self.request.user)
+                elif ClientSubUser.objects.filter(user=self.request.user):
+                    contact.client = ClientSubUser.objects.get(user=self.request.user).client
+                else:
+                    None
                 contact.save()
                 return redirect('contacts')
             elif request.POST.get('action_type') == 'enable_contact':
@@ -441,7 +451,6 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                 contact = Contact.objects.get(id=request.POST.get('id'))
                 contact.is_active = request.POST.get('is_active') == 'true'
                 contact.save()
-                print(contact.is_active)
                 return redirect('contacts')
             else:
                 contactsform = ContactForm(request.POST, request.FILES or None)
@@ -449,11 +458,14 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                     contacts = contactsform.save()
                     if Client.objects.filter(user=self.request.user):
                         client = Client.objects.get(user=self.request.user)
-                    else:
+                    elif ClientSubUser.objects.filter(user=self.request.user).client:
                         client = ClientSubUser.objects.get(user=self.request.user).client
+                    else:
+                        None
                     mobile = [character for character in str(contacts.mobile) if character.isalnum()]
                     contacts.mobile = "".join(mobile)
                     contacts.client=client
+                    contacts.user=self.request.user
                     contacts.save()
                 return redirect('contacts')
         except:
@@ -463,9 +475,7 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
 
 def import_contacts(request):
     try:
-
         if request.method == 'POST' and request.FILES['file_upload']:
-
             file = request.FILES['file_upload']
             file_format = str(file).split('.')[-1]
             if file_format == 'csv':
@@ -475,25 +485,35 @@ def import_contacts(request):
                 return redirect('contacts')
 
             for i,j in data.iterrows():
-                if not request.user.is_superuser:
-                    if Client.objects.filter(user=request.user):
-                        client = Client.objects.get(user=request.user)
-                    else:
-                        client = ClientSubUser.objects.get(user=request.user).client
+
+                if Client.objects.filter(user=request.user):
+                    client = Client.objects.get(user=request.user)
+                    user = request.user
                     country = Country.objects.get(country_code=j[2])
                     mobile = [character for character in str(j[1]) if character.isalnum()]
                     mobile = "".join(mobile)
-                    if not Contact.objects.filter(name=j[0],mobile=mobile):
-                        contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
+                    if not Contact.objects.filter(name=j[0], mobile=mobile):
+                        contact = Contact.objects.create(name=j[0], mobile=mobile, client=client, user=user,
+                                                         country=country)
+                        contact.save()
+                elif ClientSubUser.objects.filter(user=request.user):
+                    client = ClientSubUser.objects.get(user=request.user).client
+                    user = request.user
+                    country = Country.objects.get(country_code=j[2])
+                    mobile = [character for character in str(j[1]) if character.isalnum()]
+                    mobile = "".join(mobile)
+                    if not Contact.objects.filter(name=j[0], mobile=mobile):
+                        contact = Contact.objects.create(name=j[0], mobile=mobile, client=client, user=user,
+                                                         country=country)
                         contact.save()
                 else:
+                    user = request.user
                     country = Country.objects.get(country_code=j[2])
                     mobile = [character for character in str(j[1]) if character.isalnum()]
                     mobile = "".join(mobile)
-                    if not Contact.objects.filter(name=j[0],mobile=mobile):
-                        contact = Contact.objects.create(name=j[0],mobile=mobile,country=country)
+                    if not Contact.objects.filter(name=j[0], mobile=mobile):
+                        contact = Contact.objects.create(name=j[0], mobile=mobile, user=user,country=country)
                         contact.save()
-
             return redirect('contacts')
 
     except:
@@ -530,7 +550,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
 
         templates = Templates.objects.all()
         context['messagingform'] = messagingform
-        context['messages'] = messages
+        context['messageslist'] = messages
         context['contacts'] = contacts
         context['templates'] = templates
         return context
@@ -551,6 +571,12 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                     else:
                         client = ClientSubUser.objects.get(user=self.request.user).client
                 token = client.operator.token
+                account_id = client.operator.account_id
+                username = client.operator.username
+                authentication = str(username)+":"+str(token)
+                authentication_bytes = authentication.encode('ascii')
+                authentication_bytes_base64 = base64.b64encode(authentication_bytes)
+                authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
                 source_number = client.operator.operator_number
                 destination_contact_number = destination_contact.mobile
                 if not destination_contact.is_active == False:
@@ -570,14 +596,18 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                     client.credit_out+=1
                                     client.save()
                                 if client.operator.code == 'THQ':
-                                    url = "https://api.thinq.com/account/"+token+"/product/origination/sms/send"
-                                    payload = "{\n  \"from_did\": \""+source_number+"\",\n  \"to_did\": \""+str(country_tele_code+destination_contact_number)+"\",\n  \"message\": \""+str(msg)+"\"\n}"
+                                    url = "https://api.thinq.com/account/" + str(
+                                        account_id) + "/product/origination/sms/send"
+                                    payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" + source_number + "\",\n  \"message\": \"" + str(
+                                        msg) + "\"\n}"
                                     headers = {
-                                        'Authorization': 'Basic ',
+                                        'Authorization': 'Basic ' + str(authentication_bytes_base64_decode),
                                         'Content-Type': 'application/json'
                                     }
                                     response = requests.request("POST", url, headers=headers, data=payload)
-                                    message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                    messages.info(request, response.text.encode('utf8'))
+                                    message_entry = Messages.objects.create(client=client, user=self.request.user,
+                                                                            contact=destination_contact, message_out=msg)
                                     client.credit_out += 1
                                     client.save()
                             else:
@@ -592,13 +622,14 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                     client.credit_out += 1
                                     client.save()
                                 if client.operator.code == 'THQ':
-                                    url = "https://api.thinq.com/account/" + token + "/product/origination/sms/send"
-                                    payload = "{\n  \"from_did\": \""+source_number+"\",\n  \"to_did\": \""+str(country_tele_code+destination_contact_number)+"\",\n  \"message\": \"" +str(msg)+ "\"\n}"
+                                    url = "https://api.thinq.com/account/" + str(account_id) + "/product/origination/sms/send"
+                                    payload = "{\n  \"from_did\": \""+source_number+"\",\n  \"to_did\": \""+source_number+"\",\n  \"message\": \"" +str(msg)+ "\"\n}"
                                     headers = {
-                                        'Authorization': 'Basic ',
+                                        'Authorization': 'Basic '+str(authentication_bytes_base64_decode),
                                         'Content-Type': 'application/json'
                                     }
                                     response = requests.request("POST", url, headers=headers, data=payload)
+                                    messages.info(request, response.text.encode('utf8'))
                                     message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_out=msg)
                                     client.credit_out += 1
                                     client.save()

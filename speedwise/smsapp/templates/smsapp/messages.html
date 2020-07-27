@@ -9,6 +9,11 @@
         <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
     </div>
     <div class="table mt-4" style="width: 96% !important;">
+
+
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
         <table class="table  mt-4 ml-4" style="width:100%;">
         <thead class="text-primary">
             <tr class="mt-0" >
@@ -18,7 +23,7 @@
             </tr>
         </thead>
         <tbody >
-            {% for message in messages %}
+            {% for message in messageslist %}
             <tr>
             <td><h6>{{message}}</h6></td>
             <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{message.id}}"><i class="fa fa-edit"></i></a></h6></td>
@@ -54,9 +59,9 @@
                                 <option value="{{message.template}}" selected>{{message.template}}</option>
                             </select>
                             <label for="msgout">Message Out :</label>
-                            <textarea name="msgout" id="msgout"  value="{{message.message_out}}" class="form-control"></textarea>
+                            <textarea name="msgout" id="msgout"  value="{{message.message_out}}" class="form-control">{{message.message_out}}</textarea>
                             <label for="msgrply">Message Reply :</label>
-                            <textarea name="msgrply" id="msgrply"  value="{{message.message_replay}}" class="form-control"></textarea>
+                            <textarea name="msgrply" id="msgrply"  value="{{message.message_reply}}" class="form-control">{{message.message_reply}}</textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary btn-sm">change</button>

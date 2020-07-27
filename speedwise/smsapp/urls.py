@@ -20,6 +20,7 @@ urlpatterns = [
     path('clients/<user_pk>/addcredit', views.add_client_credit, name='addcredit'),
     path('clients/<user_pk>/removecredit', views.remove_client_credit, name='removecredit'),
     path('clients/<user_pk>/setclientcredit', views.set_client_credit_limit, name='setclientcredit'),
+    path('clients/<user_pk>/changeclientlogo', views.change_client_logo, name='changeclientlogo'),
     path('clients/<user_pk>/allowed_countries', views.allowed_countries_for_clients, name='allowedcountriesforclients'),
     path('clients_sub_users', ClientSubUserView.as_view(), name='clients_sub_users'),
     path('operators', Operators.as_view(), name='operators'),

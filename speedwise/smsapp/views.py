@@ -114,8 +114,6 @@ class ClientSubUserView(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ClientSubUserView, self).get_context_data(**kwargs)
-
-        
         return context
 
 
@@ -130,7 +128,7 @@ class ClientSubUserView(LoginRequiredMixin,TemplateView):
                 clientsubuser = clientsubuserform.save()
                 clientsubuser.user = user
                 clientsubuserform.save()
-            return redirect('clients_sub_users')
+            return redirect('clientprofile',request.POST.get('client'))
         except:
             messages.error(request,"Something went wrong")
             return redirect('clients')
@@ -271,7 +269,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
 
     def post(self,request,user_pk):
         if request.method == "POST":
-            client = Operator.objects.get(pk=user_pk)
+            client = Client.objects.get(pk=user_pk)
             client.user = User.objects.get(pk=request.POST.get('client_user'))
             client.email = request.POST.get('client_email')
             client.operator = request.POST.get('client_operator')
@@ -311,11 +309,22 @@ def set_client_credit_limit(request,user_pk):
         messages.error(request, "Something went wrong")
         return redirect('clientprofile', user_pk)
 
+def change_client_logo(request,user_pk):
+    try:
+        client_object = Client.objects.get(pk=user_pk)
+        logo = request.FILES['logo']
+        client_object.logo = logo
+        client_object.save()
+        return redirect('clientprofile',user_pk)
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('clientprofile', user_pk)
 
 def allowed_countries_for_clients(request,user_pk):
     client = Client.objects.get(pk=user_pk)
     if request.method == "POST":
-        allowed_countries = request.POST.get('allowed_countries')
+        allowed_countries = request.POST.getlist('states[]')
+        print(allowed_countries)
         if allowed_countries:
             client.countries.clear()
             try:
@@ -478,15 +487,11 @@ def import_contacts(request):
                         contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
                         contact.save()
                 else:
-                    if Client.objects.filter(user=request.user):
-                        client = Client.objects.get(user=request.user)
-                    else:
-                        client = ClientSubUser.objects.get(user=request.user).client
                     country = Country.objects.get(country_code=j[2])
                     mobile = [character for character in str(j[1]) if character.isalnum()]
                     mobile = "".join(mobile)
                     if not Contact.objects.filter(name=j[0],mobile=mobile):
-                        contact = Contact.objects.create(name=j[0],mobile=mobile,client=client,country=country)
+                        contact = Contact.objects.create(name=j[0],mobile=mobile,country=country)
                         contact.save()
 
             return redirect('contacts')

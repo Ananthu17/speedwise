@@ -90,3 +90,18 @@ class Messages(models.Model):
         return self.message_out
 
 
+class Notifications(models.Model):
+    message_out = models.TextField(blank=True, null=True)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    notification =  models.TextField(blank=True, null=True)
+    create_date = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.message_out
+
+
+class WebhookResponse(models.Model):
+    message_response = models.TextField(blank=True, null=True)
+    create_date = models.DateTimeField(default=datetime.now, blank=True)

@@ -539,13 +539,19 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         if self.request.user.is_superuser:
             messages = Messages.objects.all()
             contacts = Contact.objects.all()
+            notifications = Notifications.objects.all()
+            context['notifications'] = notifications
         else:
             if Client.objects.filter(user=self.request.user):
                 client = Client.objects.get(user=self.request.user)
                 contacts = Contact.objects.filter(client=client)
+                notifications = Notifications.objects.filter(client=client)
+                context['notifications'] = notifications
             else:
                 client = ClientSubUser.objects.get(user=self.request.user).client
                 contacts = Contact.objects.filter(client=client)
+                notifications = Notifications.objects.filter(client=client)
+                context['notifications'] = notifications
             messages = Messages.objects.filter(client=client)
 
         templates = Templates.objects.all()
@@ -554,6 +560,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         context['contacts'] = contacts
         context['templates'] = templates
         return context
+
 
     def post(self, request):
         try:
@@ -618,6 +625,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                         to=country_tele_code+destination_contact_number,
                                         text=msg,
                                     )
+                                    print(send_msg,"ssssssssssssss")
                                     message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_telnyx_id=send_msg.get('id'),message_out=msg)
                                     client.credit_out += 1
                                     client.save()
@@ -634,11 +642,16 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                     client.credit_out += 1
                                     client.save()
                         else:
-                            messages.info(request, "The country is not permitted for the client")
+                            notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
+                                                                    contact=destination_contact, client=client,notification="The country is not permitted for the client")
                     else:
-                        messages.info(request, "The country is not activated for this contact")
+                        notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
+                                                                          contact=destination_contact, client=client,
+                                                                          notification="The country is not activated for this contact")
                 else:
-                    messages.info(request, "The contact is not activated")
+                    notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
+                                                                      contact=destination_contact, client=client,
+                                                                      notification="The contact is not activated")
             return redirect('messaging')
         except:
             messages.error(request, "Something went wrong")
@@ -712,29 +725,29 @@ class Country_View(LoginRequiredMixin,TemplateView):
         return context
 
     def post(self, request):
-        # try:
-        if Country.objects.filter(id=request.POST.get('country_id')):
-            country = Country.objects.get(id=request.POST.get('country_id'))
-            country.country_name=request.POST.get('name')
-            country.country_code=request.POST.get('code')
-            country.country_tele_code=request.POST.get('token')
-            country.save()
-            return redirect('countries')
-
-        elif request.POST.get('action_type') == 'enable_country':
-            country = Country.objects.get(id=request.POST.get('id'))
-            country.is_active = request.POST.get('is_active') == 'true'
-            country.save()
-            return redirect('countries')
-        else:
-            countryform = CountryForm(request.POST, request.FILES or None)
-            if countryform.is_valid():
-                country = countryform.save()
+        try:
+            if Country.objects.filter(id=request.POST.get('country_id')):
+                country = Country.objects.get(id=request.POST.get('country_id'))
+                country.country_name=request.POST.get('name')
+                country.country_code=request.POST.get('code')
+                country.country_tele_code=request.POST.get('token')
                 country.save()
+                return redirect('countries')
+
+            elif request.POST.get('action_type') == 'enable_country':
+                country = Country.objects.get(id=request.POST.get('id'))
+                country.is_active = request.POST.get('is_active') == 'true'
+                country.save()
+                return redirect('countries')
+            else:
+                countryform = CountryForm(request.POST, request.FILES or None)
+                if countryform.is_valid():
+                    country = countryform.save()
+                    country.save()
+                return redirect('countries')
+        except:
+            messages.error(request, "Something went wrong")
             return redirect('countries')
-        # except:
-        #     messages.error(request, "Something went wrong")
-        #     return redirect('countries')
 
 
 def delete_country(request, country_pk):
@@ -755,11 +768,8 @@ class MessageResposeView(APIView):
 
     def post(self, request,format=None):
         values = request.data
-        print(values)
-        message_object = Messages.objects.all().first()
-        message_object.message_reply=values
-        message_object.save()
-        print(message_object)
+        webhook_response = WebhookResponse.objects.create(message_response=values)
+        webhook_response.save()
         return redirect('message-response')
 
 class ReportsView(TemplateView):

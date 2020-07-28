@@ -3,7 +3,7 @@ from .models import *
 from . import views
 from django.views.generic.base import View
 from django.contrib.auth import views as auth_views
-from .views import ClientView,DashboardView,ClientProfile,Operators,Contacts_View,Messages_View,LoginView,Templates_View,Country_View,RegisterView,MessageResposeView,ClientSubUserView
+from .views import *
 
 urlpatterns = [
     path('', DashboardView.as_view(), name='index'),
@@ -32,5 +32,6 @@ urlpatterns = [
     path('templates', Templates_View.as_view(), name='templates'),
     path('countries', Country_View.as_view(), name='countries'),
     path('countries/delete/<country_pk>', views.delete_country, name='deletecountry'),
-    path('message-response', MessageResposeView.as_view(), name='message-response')
+    path('message-response', MessageResposeView.as_view(), name='message-response'),
+    path('reports',ReportsView.as_view(),name="reports")
 ]

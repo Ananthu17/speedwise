@@ -20,7 +20,7 @@
     <div class="card-body">
       <div class="author">
         <a href="#">
-          <img class="avatar border-gray" src="/media/{{client.logo }}" alt="...">
+          <img class="avatar border border-primary-gray" src="/media/{{client.logo }}" alt="...">
           <h5 class="title">{{ client.user }}</h5>
         </a>
         <p class="description">
@@ -28,7 +28,6 @@
         </p>
       </div>
       <p class="description text-center">
-        
             <div class="row mt-3 p-5">
                 <div class="col-6">
                   <form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data"></form>
@@ -79,20 +78,23 @@
             </div>
             <div class="row  pl-5 pr-5">
               <div class="col-12">
-                <div class="card p-3 border-danger-2 shadow">
-                
-                  <div class="col-2 float-right" data-toggle="modal" data-target="#myModal">
-                    <a href="javascript:void(0)" class="btn btn-round btn-sm btn-danger shadow"><i class="nc-icon nc-simple-add"></i> User</a>
+                <div class="card p-3 border border-primary-danger-2 shadow">
+                  <div class="row">
+                    <div class="col-12">
+                      <a href="javascript:void(0)" class="btn btn-round btn-sm btn-danger shadow float-right mr-2" data-toggle="modal" data-target="#myModal"><i class="nc-icon nc-simple-add"></i> User</a>
+                    </div>
                   </div>
                   <table class="table mt-4 table-hover">
                     <tr class="text-center">
-                      <th>Sub Users</th>
+                      <th id="th">Sub Users <i class="nc-icon nc-minimal-down float-right mr-2"></i></th>
                     </tr>
-                    {% for subuser in clientsubusers %}
-                    <tr class="text-center">
-                      <td>{{subuser}}</td>
+                    <tr id="demo">
+                      {% for subuser in clientsubusers %}
+                      <tr class="text-center"  >
+                        <td class="d-none">{{subuser}}</td>
+                      </tr>
+                      {% endfor %}
                     </tr>
-                    {% endfor %}
                   </table>
                 </div>
               </div>
@@ -127,14 +129,14 @@
       <hr>
       <div class="button-container">
         <div class="row">
-          <div class="col-lg-3 col-md-6 col-6 ml-auto">
+          <div class="card p-2 bg-primary border border-primary shadow text-white col-lg-3 col-md-6 col-6 ml-auto">
             <h5>{{ client.credit_in }}<br><small>Credits</small></h5>
           </div>
-            <div class="col-lg-3 col-md-6 col-6 ml-auto">
+            <div class=" card p-2 bg-warning border border-danger shadow text-white  col-lg-3 col-md-6 col-6 ml-auto">
             <h5>{{ client.credit_limit }}<br><small>Credit Limit</small></h5>
           </div>
             
-          <div class="col-lg-3 col-md-6 col-6 ml-auto mr-auto">
+          <div class="card p-2 bg-success border border-success shadow text-white card col-lg-3 col-md-6 col-6 ml-auto mr-auto">
             <h5>{{ client.operator }}<br><small>Operator</small></h5>
           </div>
         </div>
@@ -161,5 +163,13 @@
     var fileName = $(this).val().split("\\").pop();
     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
+  </script>
+
+  <script>
+    $(document).ready(()=>{
+      $('#th').on('click',()=>{
+        $('td').toggleClass('d-none')
+      })
+    })
   </script>
 {% endblock %}

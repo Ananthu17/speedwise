@@ -1,0 +1,105 @@
+{% extends "smsapp/index.html" %}
+
+{% block title %}Speedwise : Reports {% endblock %}
+
+{% block navbar_title %}Reports{% endblock %}
+
+{% block content %}
+<div class="border p-3">
+    <div class="chartContainer shadow mb-5" style="height: 300px; width: 100%;"></div>
+</div>
+<div class="border p-3">
+    <div id="chartContainer" style="width: 100%; height: 300px" class="shadow"></div>
+</div>
+
+{% endblock %}
+
+{% block add_script %}
+<script
+    src="https://code.jquery.com/jquery-2.2.4.js"
+    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous">
+</script>
+<script>
+    $(document).ready(()=>{
+      console.log("reshmi raj")
+      $('li').removeClass('active')
+      $('#li7').addClass('active')
+    })
+</script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+<script type="text/javascript">
+$(function() {
+	$(".chartContainer").CanvasJSChart({
+		title: {
+			text: "Monthly Rainfall in Columbus - 1996"
+		},
+		axisY: {
+			title: "Rainfall in mm",
+			includeZero: false
+		},
+		axisX: {
+			interval: 1
+		},
+		data: [
+		{
+			type: "line", //try changing to column, area
+			toolTipContent: "{label}: {y} mm",
+			dataPoints: [
+				{ label: "Jan",  y: 5.28 },
+				{ label: "Feb",  y: 3.83 },
+				{ label: "March",y: 6.55 },
+				{ label: "April",y: 4.81 },
+				{ label: "May",  y: 2.37 },
+				{ label: "June", y: 2.33 },
+				{ label: "July", y: 3.06 },
+				{ label: "Aug",  y: 2.94 },
+				{ label: "Sep",  y: 5.41 },
+				{ label: "Oct",  y: 2.17 },
+				{ label: "Nov",  y: 2.17 },
+				{ label: "Dec",  y: 2.80 }
+			]
+		}
+		]
+	});
+});
+</script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> 
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script> 
+<script type="text/javascript"> 
+window.onload = function() { 
+	$("#chartContainer").CanvasJSChart({ 
+		title: { 
+			text: "Worldwide Smartphone sales by brand - 2012",
+			fontSize: 24
+		}, 
+		axisY: { 
+			title: "Products in %" 
+		}, 
+		legend :{ 
+			verticalAlign: "center", 
+			horizontalAlign: "right" 
+		}, 
+		data: [ 
+		{ 
+			type: "pie", 
+			showInLegend: true, 
+			toolTipContent: "{label} <br/> {y} %", 
+			indexLabel: "{y} %", 
+			dataPoints: [ 
+				{ label: "Samsung",  y: 30.3, legendText: "Samsung"}, 
+				{ label: "Apple",    y: 19.1, legendText: "Apple"  }, 
+				{ label: "Huawei",   y: 4.0,  legendText: "Huawei" }, 
+				{ label: "LG",       y: 3.8,  legendText: "LG Electronics"}, 
+				{ label: "Lenovo",   y: 3.2,  legendText: "Lenovo" }, 
+				{ label: "Others",   y: 39.6, legendText: "Others" } 
+			] 
+		} 
+		] 
+	}); 
+} 
+</script> 
+{% endblock%}
+
+        

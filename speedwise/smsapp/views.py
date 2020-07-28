@@ -761,3 +761,11 @@ class MessageResposeView(APIView):
         message_object.save()
         print(message_object)
         return redirect('message-response')
+
+class ReportsView(TemplateView):
+    template_name = 'smsapp/reports.html'
+    login_url = 'login'
+    
+    def get_context_data(self,*args,**kwargs):
+        context = super(ReportsView, self).get_context_data(**kwargs)
+        return context

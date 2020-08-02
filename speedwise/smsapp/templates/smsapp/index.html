@@ -17,7 +17,9 @@
   <!-- CSS Files -->
   <link href="{% static '/assets/css/bootstrap.min.css' %}" rel="stylesheet" />
   <link href="{% static '/assets/css/paper-dashboard.css' %}" rel="stylesheet" />
+  <link href="{% static '/assets/css/mycollec.scss' %}" rel="stylesheet" />
   <link href="{% static 'css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+  <link href="{% static 'css/mycollec.scss' %}" rel="stylesheet" type="text/css" />
   <link href="{% static 'css/app.min.css' %}" rel="stylesheet" type="text/css" />
   <link href="{% static 'css/myStyle.css' %}" rel="stylesheet" type="text/css" />
   <!-- App favicon -->
@@ -195,11 +197,14 @@
     margin-bottom: 15px;
 }
     </style>
+    {% block css %}
+    
+    {% endblock %}
   <div class="wrapper ">
     <!-- sidebar -->
     {% include 'smsapp/sidebar.html' %}
     <!-- end sidebar  -->
-    <div class="main-panel" style="height: 1000px;">
+    <div class="main-panel" style="height: 1200px;">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
         <div class="container-fluid">

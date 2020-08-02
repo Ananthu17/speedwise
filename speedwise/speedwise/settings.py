@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'rest_framework',
-    'smsapp'
+    'smsapp',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +125,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_URL = '/static/'
@@ -139,3 +140,6 @@ EMAIL_PORT = 587
 
 EMAIL_HOST_USER = 'techspeedwise@gmail.com'
 EMAIL_HOST_PASSWORD = 'Speed@123'
+
+AUTHY_API_CLIENT = 'tQQNL90UGOvVDSnMJ6Mh9HJ4asE8FY8k'
+SUPER_ADMIN_AUTHY_ID = '278150690'

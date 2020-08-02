@@ -9,6 +9,7 @@
   <div class="">
     <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
   </div>
+
   <div class="table mt-4" style="width: 96% !important;">
     <table class="table  mt-4 ml-4" style="width:100%;">
       <thead class="text-primary">
@@ -46,6 +47,13 @@
                         </select>
                         <label for="mobile"> Mobile :</label>
                         <input type="text" name="mobile" class="form-control mb-1" value={{client.mobile}}>
+                        <label for="own_country"> Country :</label>
+                        <select name="own_country" id="own_country" class="form-control mb-1">
+                          <option value="{{client.country.id}}" selected>{{client.country}}</option>
+                          {% for country in countries %}
+                            <option value="{{country.id}}">{{country.name}}</option>
+                          {% endfor %}
+                        </select>
                         <label for="email">Email :</label>
                         <input type="text" name="email" class="form-control mb-1" value={{client.user.email}}>
                         <label for="logo">Logo :</label>
@@ -166,6 +174,10 @@
                 {{ clientform.mobile }}
               </div>
               <div class="row p-2">
+                <span class="mb-1">Country :</span>
+                {{ clientform.country }}
+              </div>
+              <div class="row p-2">
                 <span class="mb-1">Logo :</span> 
                 <div class="custom-file">
                   {{ clientform.logo }}
@@ -188,10 +200,12 @@
                 <span class="mb-1">Credits Limit :</span>
                 {{ clientform.credit_limit }}
               </div>
-              <div class="row p-2">
-                <span class="mb-1">Countries :</span>
-                {{ clientform.countries }}
-              </div>
+              <select class="form-control mb-1" multiple="multiple" name="countries" id="countries">
+                  <option value="">Enter the option</option>
+                  {% for country in countries %}
+                     <option value="{{ country.id }}">{{ country }}</option>
+                  {% endfor %}
+              </select>
               <div class="row p-2">
                 <span class="mr-1">Active Status :</span> 
                 {{ clientform.is_active }}

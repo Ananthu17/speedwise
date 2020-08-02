@@ -31,6 +31,7 @@ class Country(models.Model):
 class Client(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,blank=True, null=True)
     mobile = models.CharField(max_length=20,blank=True, null=True)
+    country = models.ForeignKey(Country,related_name='related_country',on_delete=models.CASCADE, null=True, blank=True)
     logo = models.FileField(upload_to='media/logos',blank=True, null=True)
     operator = models.ForeignKey(Operator, on_delete=models.CASCADE, null=True, blank=True)
     credit_in = models.FloatField(null=True, blank=True, default=0.0)
@@ -38,8 +39,9 @@ class Client(models.Model):
     credit_limit = models.FloatField(null=True, blank=True, default=0.0)
     is_active = models.BooleanField(default=False)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
-    countries = models.ManyToManyField(Country)
+    countries = models.ManyToManyField(Country,related_name='related_countries')
     color = models.CharField(max_length=10,blank=True, null=True)
+    authy_id = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -47,8 +49,11 @@ class Client(models.Model):
 class ClientSubUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    mobile = models.CharField(max_length=20, blank=True, null=True)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True,blank=True)
     is_active = models.BooleanField(default=False)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
+    authy_id = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -81,6 +86,22 @@ class Messages(models.Model):
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True)
     template = models.ForeignKey(Templates, on_delete=models.CASCADE, null=True, blank=True)
     message_telnyx_id = models.CharField(max_length=150, blank=True, null=True)
+    message_out = models.TextField(blank=True, null=True)
+    message_reply = models.TextField(blank=True, null=True)
+    create_date = models.DateTimeField(default=datetime.now, blank=True)
+    reply_date = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return self.message_out
+
+class MMSMessages(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True)
+    template = models.ForeignKey(Templates, on_delete=models.CASCADE, null=True, blank=True)
+    attachment = models.FileField(upload_to='media/mmsattachments', blank=True, null=True)
+    message_telnyx_id = models.CharField(max_length=150, blank=True, null=True)
+    message_subject = models.TextField(blank=True, null=True)
     message_out = models.TextField(blank=True, null=True)
     message_reply = models.TextField(blank=True, null=True)
     create_date = models.DateTimeField(default=datetime.now, blank=True)

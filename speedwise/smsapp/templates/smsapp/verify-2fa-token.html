@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form class="form" action="{% url '2fa-verify' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+<input type="hidden" name="authy_id" value="{{authy_id}}">
+<input type="hidden" name="user" value="{{user}}">
+<input type="text" name='token' PLACEHOLDER="Enter the OTP">
+<button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Login</button>
+</form>
+
+
+</body>
+</html>

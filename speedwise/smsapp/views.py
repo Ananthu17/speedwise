@@ -12,12 +12,14 @@ from django.core.mail import send_mail
 from django.contrib.auth import authenticate,login,logout
 import requests
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import ClientForm,UsercreateForm,OperatorForm,ContactForm,MessagesForm,TemplateForm,CountryForm,ClientSubUserForm
+from .forms import *
 import telnyx
 import base64
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
+from authy.api import AuthyApiClient
 
 
 class DashboardView(TemplateView):
@@ -61,13 +63,26 @@ class ClientView(LoginRequiredMixin,TemplateView):
                 clientform = ClientForm(request.POST, request.FILES or None)
                 userform = UsercreateForm(request.POST or None)
                 if userform.is_valid() and clientform.is_valid():
-                    user = userform.save()
-                    user.is_staff = False
-                    user.save()
-                    client = clientform.save()
-                    client.user = user
-                    print(client)
-                    client.save()
+                        user = userform.save()
+                        user.is_staff = False
+                        user.save()
+                        client = clientform.save()
+                        client.user = user
+                        try:
+                            permitted_countries = request.POST.getlist('countries', '')
+                            for country_id in permitted_countries:
+                                country = Country.objects.get(id=country_id)
+                                client.countries.add(country)
+                        except:
+                            None
+                        client.save()
+                        authy_api = AuthyApiClient(settings.AUTHY_API_CLIENT)
+                        user = authy_api.users.create(email=user.email,phone=client.mobile,country_code=client.country.country_tele_code)
+                        if user.ok():
+                            client.authy_id=user.id
+                            client.save()
+                        else:
+                            print(user.errors())
                 return redirect('clients')
 
             else:
@@ -78,8 +93,11 @@ class ClientView(LoginRequiredMixin,TemplateView):
                 client.user.save()
                 client.logo = request.FILES.get('logo', '')
                 try:
-                    print(request.POST.get('operator',''),"gggg")
                     client.operator = Operator.objects.get(id=request.POST.get('operator',''))
+                except:
+                    None
+                try:
+                    client.country = Country.objects.get(id=request.POST.get('own_country',''))
                 except:
                     None
                 client.credit_in = request.POST.get('credin', '')
@@ -94,6 +112,14 @@ class ClientView(LoginRequiredMixin,TemplateView):
                 except:
                     None
                 client.save()
+                authy_api = AuthyApiClient(settings.AUTHY_API_CLIENT)
+                user = authy_api.users.create(email=user.email, phone=client.mobile,
+                                              country_code=client.country.country_tele_code)
+                if user.ok():
+                    client.authy_id = user.id
+                    client.save()
+                else:
+                    print(user.errors())
                 return redirect('clients')
 
         except:
@@ -128,7 +154,15 @@ class ClientSubUserView(LoginRequiredMixin,TemplateView):
                 user.save()
                 clientsubuser = clientsubuserform.save()
                 clientsubuser.user = user
-                clientsubuserform.save()
+                clientsubuser.save()
+                authy_api = AuthyApiClient(settings.AUTHY_API_CLIENT)
+                user = authy_api.users.create(email=user.email, phone=clientsubuser.mobile,
+                                              country_code=clientsubuser.country.country_tele_code)
+                if user.ok():
+                    clientsubuser.authy_id = user.id
+                    clientsubuser.save()
+                else:
+                    print(user.errors())
             return redirect('clientprofile',request.POST.get('client'))
         except:
             messages.error(request,"Something went wrong")
@@ -158,26 +192,39 @@ class LoginView(TemplateView):
             if username and password:
                 user = authenticate(username=username, password=password)
                 if user is not None:
+                    print(user)
                     if user.is_superuser:
-                        login(request, user)
-                        return redirect('index')
+                        try:
+                            authy_id = int(settings.SUPER_ADMIN_AUTHY_ID)
+                            return render(request, 'smsapp/verify-2fa-token.html',{'authy_id': authy_id, 'user': user.id})
+                        except:
+                            messages.error(request, "Something went wrong")
+                            return redirect('login')
+
                     else:
                         if ClientSubUser.objects.filter(user = user):
                             if ClientSubUser.objects.get(user = user).is_active:
-                                login(request, user)
-                                return redirect('index')
+                                try:
+                                    authy_id = int(ClientSubUser.objects.get(user=user).authy_id)
+                                    return render(request, 'smsapp/verify-2fa-token.html',{'authy_id': authy_id, 'user': user.id})
+                                except:
+                                    messages.error(request, "Something went wrong")
+                                    return redirect('login')
                             else:
                                 messages.error(request,"Contact administrator to activate the account")
                                 return redirect('login')
                         else:
                             if Client.objects.filter(user = user):
                                 if Client.objects.get(user = user).is_active:
-                                    login(request, user)
-                                    return redirect('index')
+                                    try:
+                                        authy_id = int(Client.objects.get(user=user).authy_id)
+                                        return render(request, 'smsapp/verify-2fa-token.html',{'authy_id': authy_id, 'user': user.id})
+                                    except:
+                                        messages.error(request, "Something went wrong")
+                                        return redirect('login')
                                 else:
                                     messages.error(request,"Contact administrator to activate the account")
                                     return redirect('login')
-
                 else:
                     messages.error(request,
                                    "Invalid Credentials")
@@ -190,6 +237,19 @@ class LoginView(TemplateView):
             messages.error(request,
                            "Invalid Credentials")
             return redirect('login')
+
+
+def verify_2fa_token(request):
+    authy_api = AuthyApiClient(settings.AUTHY_API_CLIENT)
+    user = User.objects.get(id=request.POST.get('user'))
+    authy_id=int(request.POST.get('authy_id'))
+    token = str(request.POST.get('token'))
+    verification = authy_api.tokens.verify(authy_id,token=token)
+    if verification.ok():
+        login(request,user)
+        return redirect('index')
+    else:
+        return redirect('login')
 
 
 class RegisterView(TemplateView):
@@ -625,7 +685,6 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                         to=country_tele_code+destination_contact_number,
                                         text=msg,
                                     )
-                                    print(send_msg,"ssssssssssssss")
                                     message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_telnyx_id=send_msg.get('id'),message_out=msg)
                                     client.credit_out += 1
                                     client.save()
@@ -657,6 +716,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
             messages.error(request, "Something went wrong")
             return redirect('messaging')
 
+
 def delete_message(request, message_pk):
     try:
         message = Messages.objects.get(pk=message_pk)
@@ -665,6 +725,112 @@ def delete_message(request, message_pk):
     except:
         messages.error(request, "Something went wrong")
         return redirect('messaging')
+
+
+class MMSMessages_View(LoginRequiredMixin,TemplateView):
+    template_name = 'smsapp/mmsmessages.html'
+    login_url = 'login'
+
+    def get_context_data(self, **kwargs):
+        context = super(MMSMessages_View, self).get_context_data(**kwargs)
+        mmsmessagingform = MMSMessagesForm
+        if self.request.user.is_superuser:
+            mmsmessages = MMSMessages.objects.all()
+            contacts = Contact.objects.all()
+            notifications = Notifications.objects.all()
+            context['notifications'] = notifications
+        else:
+            if Client.objects.filter(user=self.request.user):
+                client = Client.objects.get(user=self.request.user)
+                contacts = Contact.objects.filter(client=client)
+                notifications = Notifications.objects.filter(client=client)
+                context['notifications'] = notifications
+            else:
+                client = ClientSubUser.objects.get(user=self.request.user).client
+                contacts = Contact.objects.filter(client=client)
+                notifications = Notifications.objects.filter(client=client)
+                context['notifications'] = notifications
+            mmsmessages = Messages.objects.filter(client=client)
+        templates = Templates.objects.all()
+        context['mmsmessagingform'] = mmsmessagingform
+        context['mmsmessageslist'] = mmsmessages
+        context['contacts'] = contacts
+        context['templates'] = templates
+        return context
+
+    def post(self, request):
+        try:
+            contacts = request.POST.get('contactsList')
+            destination_contacts = contacts.split(",")
+            message_subject = request.POST.get("message_subject")
+            msg = request.POST.get("message_out")
+            for item in destination_contacts:
+                destination_contact = Contact.objects.get(id=item)
+                country_tele_code = destination_contact.country.country_tele_code
+                if self.request.user.is_superuser:
+                    client = Client.objects.get(id=request.POST.get('client'))
+                else:
+                    if Client.objects.filter(user=self.request.user):
+                        client = Client.objects.get(user=self.request.user)
+                    else:
+                        client = ClientSubUser.objects.get(user=self.request.user).client
+                token = client.operator.token
+                account_id = client.operator.account_id
+                username = client.operator.username
+                authentication = str(username)+":"+str(token)
+                authentication_bytes = authentication.encode('ascii')
+                authentication_bytes_base64 = base64.b64encode(authentication_bytes)
+                authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
+                source_number = client.operator.operator_number
+                destination_contact_number = destination_contact.mobile
+                if not destination_contact.is_active == False:
+                    if not destination_contact.country.is_active == False:
+                        if destination_contact.country in client.countries.all():
+                            if client.credit_limit == (client.credit_in - client.credit_out):
+                                messages.info(request, "You  have reached your credit limit. Kindly add credits.")
+                                send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
+                                if client.operator.code == 'TLX':
+                                    telnyx.api_key = token
+                                    send_msg = telnyx.Message.create(
+                                        from_=source_number,
+                                        to=country_tele_code+destination_contact_number,
+                                        subject=message_subject,
+                                        text=msg,
+                                        media_urls=['http://localhost:8000/media/media/mmsattachments/amazon.jpg'],
+                                    )
+                                    mms_message_entry = MMSMessages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_subject=message_subject,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                    client.credit_out+=1
+                                    client.save()
+                            else:
+                                if client.operator.code == 'TLX':
+                                    telnyx.api_key = token
+                                    send_msg = telnyx.Message.create(
+                                        from_=source_number,
+                                        to=country_tele_code+destination_contact_number,
+                                        subject=message_subject,
+                                        text=msg,
+                                        media_urls=['http://localhost:8000/media/media/mmsattachments/amazon.jpg'],
+                                    )
+                                    mms_message_entry = MMSMessages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_subject=message_subject,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                    client.credit_out += 1
+                                    client.save()
+
+                        else:
+                            notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
+                                                                    contact=destination_contact, client=client,notification="The country is not permitted for the client")
+                    else:
+                        notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
+                                                                          contact=destination_contact, client=client,
+                                                                          notification="The country is not activated for this contact")
+                else:
+                    notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
+                                                                      contact=destination_contact, client=client,
+                                                                      notification="The contact is not activated")
+            return redirect('mmsmessaging')
+        except:
+            messages.error(request, "Something went wrong")
+            return redirect('mmsmessaging')
+
 
 class Templates_View(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/sms_templates.html'
@@ -771,6 +937,7 @@ class MessageResposeView(APIView):
         webhook_response = WebhookResponse.objects.create(message_response=values)
         webhook_response.save()
         return redirect('message-response')
+
 
 class ReportsView(TemplateView):
     template_name = 'smsapp/reports.html'

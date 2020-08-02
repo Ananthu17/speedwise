@@ -20,19 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/speedwise/media/media/mmsattachments/amazon.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/mmsmessages.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/verify-2fa-token.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/requirement.txt" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/requirement.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp.zip" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/clients.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/speedwise/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/speedwise/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +52,7 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Sprint_One_Jul_24" />
+        <entry key="$PROJECT_DIR$" value="Jul_28_Merge_FrontEnd" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -259,7 +248,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595929592756</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="MMS and 2FA added">
+      <created>1596388685062</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1596388685062</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -287,7 +283,8 @@
     <MESSAGE value="Merged frontend" />
     <MESSAGE value="Fixed ThinQ" />
     <MESSAGE value="Merged FrontEnd Reports" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merged FrontEnd Reports" />
+    <MESSAGE value="MMS and 2FA added" />
+    <option name="LAST_COMMIT_MESSAGE" value="MMS and 2FA added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594120959657">
@@ -298,10 +295,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="719" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595407951392" />
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1595929587935">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1596388683963">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1595929587935" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1596388683963" />
     <state x="152" y="127" width="1668" height="853" key="DiffContextDialog" timestamp="1595928759275">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -310,22 +307,22 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1596019552197" />
-    <state width="509" height="833" key="Git.Branch.Popup" timestamp="1595929517739">
+    <state width="523" height="847" key="Git.Branch.Popup" timestamp="1596388896472">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state width="509" height="833" key="Git.Branch.Popup/52.27.1868.1053@52.27.1868.1053" timestamp="1595929517739" />
+    <state width="523" height="847" key="Git.Branch.Popup/52.27.1868.1053@52.27.1868.1053" timestamp="1596388896472" />
     <state x="234" y="117" width="1494" height="879" key="MergeDialog" timestamp="1595327959166">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="234" y="117" width="1494" height="879" key="MergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595327959166" />
-    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1595782936167">
+    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1596388915781">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595782936167" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1595929597676">
+    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1596388915781" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1596388688642">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1595929597676" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1596388688642" />
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1595233255295">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -338,10 +335,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="676" y="292" width="744" height="522" key="find.popup/52.27.1868.1053@52.27.1868.1053" timestamp="1596044776560" />
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1595928794053">
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1596388900149">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595928794053" />
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1596388900149" />
     <state x="649" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1595922297403">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>

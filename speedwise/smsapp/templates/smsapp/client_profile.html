@@ -35,7 +35,7 @@
             <div class="col-12">
               <div class="card p-3 border border-primary-danger-2 shadow">
                 <div class="mb-1 mt-5">
-                  <form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data"></form>
+                  <form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data">
                       {% csrf_token %}
                         <input type="number" id="credit" name="credit" class="form-control" placeholder="Add Credits">
                         <div class="text-center mt-2">
@@ -53,7 +53,7 @@
                   </form>
                 </div>
                 <div class="mb-1">
-                  <form action="" method="POST" enctype="multipart/form-data">
+                  <form action="{% url 'changeclientlogo' client.id %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="custom-file">
                       <input type="file" class="custom-file-input" id="logo" name="logo">
@@ -68,11 +68,13 @@
                   <form action="{% url 'allowedcountriesforclients' client.id %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <select class="js-example-basic-multiple" name="states[]" multiple>
-                      <option value="{{ client.countries }}" selected>{{ client.countries }}</option>
-                      {% for country in countries %}
-                        <option value="{{country.id}}">{{country}}</option>
-                      {% endfor %}
-                    </select>
+                    {% for country in client.countries.all %}<option value="{{ country.id }}" selected>{{ country }}</option>{% endfor %}
+                    {% for country in countries %}
+                      {% if country not in client.countries.all %}
+                      <option value="{{country.id}}">{{country}}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
                     <div class="text-center mt-2">
                       <button type="submit" class="btn  btn-round btn-primary btn-sm "><i class="nc-icon nc-simple-add"></i> Add</button>
                     </div>
@@ -118,6 +120,7 @@
                               </button>
                           </div>
                           <div class="modal-body">
+                              {{ userform.as_p }}
                               {{ clientsubuserform.as_p }}
                           </div>
                           <div class="modal-footer">

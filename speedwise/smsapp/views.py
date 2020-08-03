@@ -189,6 +189,7 @@ class LoginView(TemplateView):
             email = request.POST.get('email', '')
             password = request.POST.get('password', '')
             username = User.objects.get(email=email.lower()).username
+            authy_api = AuthyApiClient(settings.AUTHY_API_CLIENT)
             if username and password:
                 user = authenticate(username=username, password=password)
                 if user is not None:
@@ -196,6 +197,7 @@ class LoginView(TemplateView):
                     if user.is_superuser:
                         try:
                             authy_id = int(settings.SUPER_ADMIN_AUTHY_ID)
+                            sms = authy_api.users.request_sms(authy_id,{'force': True})
                             return render(request, 'smsapp/verify-2fa-token.html',{'authy_id': authy_id, 'user': user.id})
                         except:
                             messages.error(request, "Something went wrong")
@@ -206,6 +208,7 @@ class LoginView(TemplateView):
                             if ClientSubUser.objects.get(user = user).is_active:
                                 try:
                                     authy_id = int(ClientSubUser.objects.get(user=user).authy_id)
+                                    sms = authy_api.users.request_sms(authy_id,{'force': True})
                                     return render(request, 'smsapp/verify-2fa-token.html',{'authy_id': authy_id, 'user': user.id})
                                 except:
                                     messages.error(request, "Something went wrong")
@@ -218,6 +221,7 @@ class LoginView(TemplateView):
                                 if Client.objects.get(user = user).is_active:
                                     try:
                                         authy_id = int(Client.objects.get(user=user).authy_id)
+                                        sms = authy_api.users.request_sms(authy_id,{'force': True})
                                         return render(request, 'smsapp/verify-2fa-token.html',{'authy_id': authy_id, 'user': user.id})
                                     except:
                                         messages.error(request, "Something went wrong")
@@ -240,15 +244,16 @@ class LoginView(TemplateView):
 
 
 def verify_2fa_token(request):
-    authy_api = AuthyApiClient(settings.AUTHY_API_CLIENT)
-    user = User.objects.get(id=request.POST.get('user'))
-    authy_id=int(request.POST.get('authy_id'))
-    token = str(request.POST.get('token'))
-    verification = authy_api.tokens.verify(authy_id,token=token)
-    if verification.ok():
-        login(request,user)
-        return redirect('index')
-    else:
+    try:
+        authy_api = AuthyApiClient(settings.AUTHY_API_CLIENT)
+        user = User.objects.get(id=request.POST.get('user'))
+        authy_id=int(request.POST.get('authy_id'))
+        token = str(request.POST.get('token'))
+        verification = authy_api.tokens.verify(authy_id,token=token)
+        if verification.ok():
+            login(request,user)
+            return redirect('index')
+    except:
         return redirect('login')
 
 

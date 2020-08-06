@@ -53,6 +53,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SESSION_COOKIE_AGE = 600
+SESSION_SAVE_EVERY_REQUEST=True
+
 ROOT_URLCONF = 'speedwise.urls'
 
 TEMPLATES = [

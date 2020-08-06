@@ -1,0 +1,38 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% if secret_key %}
+<form class="form" action="{% url 'enable-2fa' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+<input type="hidden" name="disable_2fa" value="disable_2fa">
+<button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Disable Two Factor Authentication</button>
+<br><br><br>
+<canvas id="qr-code"></canvas>
+</form>
+{% else %}
+<form class="form" action="{% url 'enable-2fa' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+<button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Generate Two Factor Authentication</button>
+</form>
+{% endif %}
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+		<script>
+			/* JS comes here */
+			var qr;
+			(function() {
+                    qr = new QRious({
+                    element: document.getElementById('qr-code'),
+                    size: 200,
+                    value: '{{secret_url}}'
+                });
+            })();
+
+		</script>
+
+
+</html>

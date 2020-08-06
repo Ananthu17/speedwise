@@ -41,7 +41,6 @@ class Client(models.Model):
     create_date = models.DateTimeField(default=datetime.now, blank=True)
     countries = models.ManyToManyField(Country,related_name='related_countries')
     color = models.CharField(max_length=10,blank=True, null=True)
-    authy_id = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -53,7 +52,14 @@ class ClientSubUser(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True,blank=True)
     is_active = models.BooleanField(default=False)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
-    authy_id = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
+
+class AuthInformation(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
+    is_active = models.BooleanField(default=False)
+    secret_key = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
         return self.user.username

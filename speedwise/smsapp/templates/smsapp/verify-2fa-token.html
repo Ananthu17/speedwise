@@ -5,14 +5,28 @@
     <title>Title</title>
 </head>
 <body>
-
+{% if secret_key %}
 <form class="form" action="{% url '2fa-verify' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-<input type="hidden" name="authy_id" value="{{authy_id}}">
+<input type="hidden" name="secret_key" value="{{secret_key}}">
 <input type="hidden" name="user" value="{{user}}">
 <input type="text" name='token' PLACEHOLDER="Enter the OTP">
 <button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Login</button>
 </form>
+
+{% endif %}
+
+{% if disable_secret_key %}
+<form class="form" action="{% url '2fa-verify' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+<input type="hidden" name="disable_secret_key" value="{{disable_secret_key}}">
+<input type="hidden" name="user" value="{{user}}">
+<input type="text" name='token' PLACEHOLDER="Enter the OTP">
+<button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Login</button>
+</form>
+
+{% endif %}
+
 
 
 </body>

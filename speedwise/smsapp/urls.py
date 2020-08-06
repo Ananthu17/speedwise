@@ -9,6 +9,7 @@ urlpatterns = [
     path('', DashboardView.as_view(), name='index'),
     path('register', RegisterView.as_view(), name='register'),
     path('login', LoginView.as_view(), name='login'),
+    path('enable-2fa', views.enable_2fa, name='enable-2fa'),
     path('2fa-verify', views.verify_2fa_token, name='2fa-verify'),
     path('logout', views.logout_view, name='logout'),
     path('password_reset', auth_views.PasswordResetView.as_view(template_name='smsapp/password_reset_form.html'), name='password_reset'),

@@ -343,6 +343,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
         context = super(ClientProfile, self).get_context_data(**kwargs)
         client_object = Client.objects.get(pk=kwargs['user_pk'])
         countries= Country.objects.all()
+        operators = Operator.objects.all()
         if self.request.user.is_superuser:
             client_sub_user_objects = ClientSubUser.objects.all()
             userform = UsercreateForm
@@ -350,6 +351,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['clientsubusers'] = client_sub_user_objects
             context['clientsubuserform'] = clientsubuserform
             context['userform'] = userform
+            context['operators'] = operators
 
         else:
             client_sub_user_objects = ClientSubUser.objects.filter(client=Client.objects.get(user=self.request.user))
@@ -358,6 +360,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['clientsubusers'] = client_sub_user_objects
             context['clientsubuserform'] = clientsubuserform
             context['userform'] = userform
+            context['operators'] = operators
 
         context['client'] = client_object
         context['countries']= countries

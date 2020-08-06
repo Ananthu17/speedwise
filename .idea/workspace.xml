@@ -20,21 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/speedwise/assets/js/jquery.qrcode.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/assets/js/qrcode.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/enable_2fa.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp.zip" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/verify-2fa-token.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/verify-2fa-token.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/speedwise/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/speedwise/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/speedwise/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/speedwise/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -289,14 +277,20 @@
       <option name="project" value="LOCAL" />
       <updated>1596459961701</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Merged frond end and minor changes">
+      <created>1596695383940</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1596695383940</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Initial Commit" />
     <MESSAGE value="Clients and Operators table with clients.html template" />
     <MESSAGE value="Client profile and its operations" />
     <MESSAGE value="Messaging and Contacts model added. Alteration in operator model" />
@@ -321,7 +315,8 @@
     <MESSAGE value="Merged chat pop-up frond end in messages" />
     <MESSAGE value="Fixed client profile issues" />
     <MESSAGE value="Fixed 2FA" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed 2FA" />
+    <MESSAGE value="Merged frond end and minor changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merged frond end and minor changes" />
   </component>
   <component name="WindowStateProjectService">
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594120959657">
@@ -332,10 +327,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="719" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595407951392" />
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1596459961014">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1596695382220">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1596459961014" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1596695382220" />
     <state x="152" y="127" width="1668" height="853" key="DiffContextDialog" timestamp="1595928759275">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -356,10 +351,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1596388915781" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1596459964259">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1596695389107">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1596459964259" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1596695389107" />
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1595233255295">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>

@@ -5,7 +5,147 @@
 {% block title %}Speedwise : Client Profile {% endblock %}
 
 {% block navbar_title %}Client Profile{% endblock %}
+{% block css %}
+<style>
+  body {
+  padding: 20px;
+}
 
+.custom-file-input {
+  /* padding: 5px; */
+  /* color: #999; */
+  /* border: 1px solid #000;s */
+  /* vertical-align: middle; */
+  position: relative;
+  z-index: 18;
+  width: 100%;
+  height: calc(1.8em + .75rem + 2px);
+  margin: 1px;
+  opacity: 2;
+}
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+.custom-file-input::before {
+  content: 'Browse';
+  color: #666;
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #999;
+  border-radius: 3px;
+  margin: -1px 0 -3px -3px;
+  padding: 5px 20px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  text-align: center;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+.custom-file-input:hover::before {
+  border-color: black;
+}
+.custom-file-input:active {
+  outline: 0;
+}
+.custom-file-input:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
+}
+</style>
+<style> 
+h1 {
+  font-size: 40px;
+  line-height: 0.8em;
+  color: rgba(255,255,255,0.2);} */
+a {
+    background: #fd264d9c;
+    color: #fff;
+    display: block;
+    font-size: 12px;
+    line-height: 1em;
+    margin: 0;
+    padding: 5px 110px;
+    position: fixed;
+    top: 20px;
+    right: -100px;
+    text-align: center;
+    text-decoration: none;
+    transform: rotate(45deg);
+}
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none; } 
+
+.tabs {
+  display: block;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -moz-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: 0;
+  overflow: hidden; }
+  .tabs [class^="tab"] label,
+  .tabs [class*=" tab"] label {
+    color: #efedef;
+    cursor: pointer;
+    display: block;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1em;
+    padding: 2rem 0;
+    text-align: center; }
+  .tabs [class^="tab"] [type="radio"],
+  .tabs [class*=" tab"] [type="radio"] {
+    border-bottom: 1px solid rgba(239, 237, 239, 0.5);
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out; }
+    .tabs [class^="tab"] [type="radio"]:hover, .tabs [class^="tab"] [type="radio"]:focus,
+    .tabs [class*=" tab"] [type="radio"]:hover,
+    .tabs [class*=" tab"] [type="radio"]:focus {
+      border-bottom: 1px solid #51CBCE; }
+    .tabs [class^="tab"] [type="radio"]:checked,
+    .tabs [class*=" tab"] [type="radio"]:checked {
+      border-bottom: 2px solid #51CBCE; }
+    .tabs [class^="tab"] [type="radio"]:checked + div,
+    .tabs [class*=" tab"] [type="radio"]:checked + div {
+      opacity: 1; }
+    .tabs [class^="tab"] [type="radio"] + div,
+    .tabs [class*=" tab"] [type="radio"] + div {
+      display: block;
+      opacity: 0;
+      padding: 2rem 0;
+      width: 90%;
+      -webkit-transition: all 0.3s ease-in-out;
+      -moz-transition: all 0.3s ease-in-out;
+      -o-transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out; }
+  .tabs .tab-2 {
+    width: 50%; }
+    .tabs .tab-2 [type="radio"] + div {
+      width: 200%;
+      margin-left: 200%; }
+    .tabs .tab-2 [type="radio"]:checked + div {
+      margin-left: 0; }
+    .tabs .tab-2:last-child [type="radio"] + div {
+      margin-left: 100%; }
+    .tabs .tab-2:last-child [type="radio"]:checked + div {
+      margin-left: -100%; }
+  </style>
+{% endblock %}
 
 {% block link %}
   <ul class="navbar-nav">
@@ -15,134 +155,140 @@
 
 {% block content %}
   <div class="card-user">
-    <div class="image">
-      <img src="{% static 'assets/img/damir-bosnjak.jpg' %}" alt="...">
-    </div>
-    <div class="card-body mb-0">
-      <div class="author">
-        <a href="#">
-          <img class="avatar border border-primary-gray" src="/media/{{client.logo }}" alt="...">
-          <h5 class="title">{{ client.user }}</h5>
-        </a>
-        <h4 class="description mt-4  font-weight-bold ">
-            {{ client.mobile }}
-        </h4>
+    <div class="row">
+      <div class="col-4">
+        <div class="text-center mt-5 pt-5">
+          <img class="" src="/media/{{client.logo}}" alt="..." style=" border-radius: 50%;width: 60%;">
+        </div>
+        <div class="text-center mt-2">
+          <h3>{{ client.user }}</h3>
+        </div>
+        <div class="text-center text-secondary">
+          <h6><i class="nc-icon nc-mobile mr-2"></i>{{ client.mobile }}</h6>
+        </div>
+        <div class="text-center">
+          <button class="btn btn-sm btn-info"><i class="nc-icon nc-simple-add"></i> Msg</button>
+          <a href="javascript:void(0)" class="btn btn-sm btn-success shadow" data-toggle="modal" data-target="#myModal"><i class="nc-icon nc-simple-add"></i> User</a>
+        </div>
+        <div class="p-4">
+          <table class="table table-hover" style="border-style:solid;border-width:2px;border-width:2px;">
+            <tr class=" mt-2 text-center text-white bg-secondary" style="border-bottom-style: solid;border-width:thin;">
+              <th id="th">Sub Users <i class="nc-icon nc-minimal-down float-right mr-2" id="arrow"></i></th>
+            </tr>
+            <tr id="demo">
+              {% for subuser in clientsubusers %}
+              <tr class="text-center mt-2"  >
+                <td class="d-none">{{subuser}}</td>
+              </tr>
+              {% endfor %}
+            </tr>
+          </table>
+        </div>
       </div>
-      <p class="description text-center">
-        <div class="row mt-1 p-5">
-          <div class="col-6 p-3 ">
-            <div class="row  pl-5 pr-5">
-            <div class="col-12">
-              <div class="card p-3 border border-primary-danger-2 shadow">
-                <div class="mb-1 mt-5">
-                  <form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data"></form>
-                      {% csrf_token %}
-                        <input type="number" id="credit" name="credit" class="form-control" placeholder="Add Credits">
-                        <div class="text-center mt-2">
-                          <button type="submit" class="btn btn-round btn-primary btn-sm  "><i class="nc-icon nc-simple-add"></i> Add</button>
-                        </div>
-                      </form>
-                </div>
-                <div class="mb-1">
-                  <form action="{% url 'setclientcredit' client.id %}" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <input type="number" id="credit_limit" name="credit_limit" class="form-control" placeholder="Set Credit Limit">
-                    <div class="text-center mt-2">
-                      <button type="submit" class="btn btn-round btn-primary  btn-sm "><i class="nc-icon nc-simple-add"></i> Set</button>
-                    </div>
-                  </form>
-                </div>
-                <div class="mb-1">
-                  <form action="" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="logo" name="logo">
-                      <label class="custom-file-label" for="logo">Choose file</label>
-                    </div>
-                    <div class="text-center mt-2 ">
-                      <button type="submit" class="btn btn-round btn-primary  btn-sm "><i class="nc-icon nc-simple-add"></i> Add</button>
-                    </div>
-                  </form>
-                </div>
-                <div class="mb-1">
-                  <form action="{% url 'allowedcountriesforclients' client.id %}" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <select class="js-example-basic-multiple" name="states[]" multiple>
-                      <option value="{{ client.countries }}" selected>{{ client.countries }}</option>
+      <div class="col-8">
+        <div class="tabs mt-5 ">
+          <div class="tab-2">
+            <label for="tab2-1" class="text-primary font-weight-bold">Profile</label>
+            <input id="tab2-1" name="tabs-two" type="radio" checked="checked">
+            <div>
+              <h4 class="mb-4">Client Details <button class="btn-link btn-sm" id="btn" style="color: #101110;"><i class="fas fa-pen-square mb-2"></i></button></h4>
+              <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div id="eVisible">
+                  <div class="row">
+                    <div class="col-3 font-weight-bold text-secondary">Operator <span class="float-right">:</span></div>
+                    <div class="col-9"><h5>{{client.operator}}</h5></div>
+                  </div>
+                  <div class="row"><div class="col-3 font-weight-bold text-secondary">Credits In<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit_in}}</h5></div></div>
+                  <div class="row"><div class="col-3 font-weight-bold text-secondary">Credits Out<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit_out }}</h5></div></div>
+                  <div class="row"><div class="col-3 font-weight-bold text-secondary">Credit Limit<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit_limit}}</h5></div></div>
+                  <div class="row">
+                    <div class="col-3 font-weight-bold text-secondary">Countries <span class="float-right">:</span></div>
+                    <div class="col-9">
                       {% for country in countries %}
-                        <option value="{{country.id}}">{{country}}</option>
+                        <button class="btn btn-primary btn-sm" style="margin: auto;">{{country}} <i class="nc-icon nc-simple-remove"></i></button>
                       {% endfor %}
-                    </select>
-                    <div class="text-center mt-2">
-                      <button type="submit" class="btn  btn-round btn-primary btn-sm "><i class="nc-icon nc-simple-add"></i> Add</button>
                     </div>
-              </div>
-            </div>
-            </div>
+                  </div>
+                </div>
+                <!-- edit class -->
+                <div id="inVisible" class="d-none" >
+                  <div class="row">
+                    <div class="col-4 font-weight-bold text-secondary">Operator <span class="float-right">:</span></div>
+                    <div class="col-4"><h5><input type="text" class="form-control" value="{{client.operator}}"></h5></div>
+                  </div>
+                  <div class="row"><div class="col-4 font-weight-bold text-secondary">Credits In<span class="float-right">:</span></div><div class="col-4"><h5><input type="number"  class="form-control" value="{{client.credit_in}}"></h5></div></div>
+                  <div class="row"><div class="col-4 font-weight-bold text-secondary">Credits Out<span class="float-right">:</span></div><div class="col-4"><h5><input type="number"  class="form-control" value="{{client.credit_out}}"></h5></div></div>
+                  <div class="row"><div class="col-4 font-weight-bold text-secondary">Credit Limit<span class="float-right">:</span></div><div class="col-4"><h5><input type="number"  class="form-control" value="{{client.credit_limit}}"></h5></div></div>
+                  <div class="row"><div class="col-4 font-weight-bold text-secondary">Logo<span class="float-right">:</span></div><div class="col-4"><h5><input type="file" id="upload" class="custom-file-input form-control"></h5></div></div>
+                  <div class="row">
+                      <div class="col-4 font-weight-bold text-secondary">Countries <span class="float-right">:</span></div>
+                      <div class="col-4">
+                        <select class="js-example-basic-multiple" name="states[]" multiple>
+                          {% for country in countries %}
+                          <option value="{{ country.id }}" selected>{{ country }}</option>
+                          {% endfor %}
+                          {% for country in cntry %}
+                          <option value="{{ country.id }}">{{ country }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                  </div>
+                  <div class="row mt-3">
+                    <div class="col-4">
+      
+                    </div>
+                    <div class="col-4">
+                      <button type="submit" class="btn btn-success btn-sm btn-round width-lg float-right">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
-          <div class="col-6 p-3">
-            <div class="row  pl-5 pr-5">
-              <div class="col-12">
-                <div class="card p-3 border border-primary-danger-2 shadow">
-                  <div class="row">
-                    <div class="col-12">
-                      <a href="javascript:void(0)" class="btn btn-round btn-sm btn-round btn-primary shadow float-right mr-2" data-toggle="modal" data-target="#myModal"><i class="nc-icon nc-simple-add"></i> User</a>
-                    </div>
-                  </div>
-                  <table class="table mt-4 table-hover">
-                    <tr class="text-center mt-2">
-                      <th id="th">Sub Users <i class="nc-icon nc-minimal-down float-right mr-2"></i></th>
-                    </tr>
-                    <tr id="demo">
-                      {% for subuser in clientsubusers %}
-                      <tr class="text-center mt-2"  >
-                        <td class="d-none">{{subuser}}</td>
-                      </tr>
-                      {% endfor %}
-                    </tr>
-                  </table>
-                </div>
-              </div>
-              
-                <!-- Modal -->
-                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                      <form action="{% url 'clients_sub_users' %}" method="POST" enctype="multipart/form-data">
-                          {% csrf_token %}
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Add SubUsers</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                              </button>
-                          </div>
-                          <div class="modal-body">
-                              {{ clientsubuserform.as_p }}
-                          </div>
-                          <div class="modal-footer">
-                              <button type="submit" class="btn btn-round btn-primary btn-sm">Add</button>
-                          </div>
-                      </form>
-                  </div>
-                  </div>
-              </div>
-              <!-- Add modal end  -->
-            
+          <div class="tab-2">
+            <label for="tab2-2" class="text-primary font-weight-bold">Logs</label>
+            <input id="tab2-2" name="tabs-two" type="radio">
+            <div>
+              <h4>Tab Two</h4>
+              <p>Quisque sit amet turpis leo. Maecenas sed dolor mi. Pellentesque varius elit in neque ornare commodo ac non tellus. Mauris id iaculis quam. Donec eu felis quam. Morbi tristique lorem eget iaculis consectetur. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean at tellus eget risus tempus ultrices. Nam condimentum nisi enim, scelerisque faucibus lectus sodales at.</p>
             </div>
           </div>
         </div>
-            
-            
-  
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="{% url 'clients_sub_users' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add SubUsers</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ clientsubuserform.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-round btn-primary btn-sm">Add</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+    <!-- Add modal end  -->
+
     <div class="card-footer">
       <hr>
       <div class="button-container">
-        <div class="row m-0">
+        <div class="row m-0 p-3">
           <div class="col-lg-3 col-md-6 col-6 ml-auto">
             <div class="row shadow">
               <div class="col-3 bg-success text-white">
-                <h3 class="pt-3"><i class="fas fa-check mt-2"></i></h3>
+                <h3 class="pt-3"><i class="fas fa-check mt-2 ml-1"></i></h3>
               </div>
               <div class="col-8">
                 <h5 class="pt-3 font-weight-bold text-secondary">{{ client.credit_in }}<br><small>Credits</small></h5>
@@ -152,7 +298,7 @@
             <div class="col-lg-3 col-md-6 col-6 ml-auto">
               <div class="row shadow">
                 <div class="col-3 bg-warning text-white">
-                  <h3 class="pt-3"><i class="fas fa-exclamation mt-2"></i></h3>
+                  <h3 class="pt-3"><i class="fas fa-exclamation mt-2 ml-1"></i></h3>
                 </div>
                 <div class="col-8">
                   <h5 class="pt-3 font-weight-bold text-secondary">{{ client.credit_limit }}<br><small>Credit Limit</small></h5>
@@ -183,12 +329,6 @@
     integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
     crossorigin="anonymous">
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-  <script>$(document).ready(function() {
-          $('.js-example-basic-multiple').select2();
-      });
-  </script>
-  
   <script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
@@ -196,12 +336,31 @@
     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+  <script>$(document).ready(function() {
+          $('.js-example-basic-multiple').select2();
+      });
+  </script>
+  
+  
 
   <script>
     $(document).ready(()=>{
       $('#th').on('click',()=>{
         $('td').toggleClass('d-none')
+        $('#arrow').toggleClass('nc-minimal-down')
+        $('#arrow').toggleClass('nc-minimal-up')
+      })
+      $('#btn').on('click',()=>{
+        $('#eVisible').toggleClass('d-none')
+        $('#inVisible').toggleClass('d-none')
       })
     })
+  </script>
+  <script>
+    $('#upload').on('change', function() {
+ var value = $(this).val().replace(/^.*[\\\/]/, '');
+ $(this).next().text(value);
+});
   </script>
 {% endblock %}

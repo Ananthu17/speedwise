@@ -312,7 +312,8 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ClientProfile, self).get_context_data(**kwargs)
         client_object = Client.objects.get(pk=kwargs['user_pk'])
-        countries = Country.objects.all()
+        countries = client_object.countries.all()
+        all_countries= Country.objects.all()
         if self.request.user.is_superuser:
             client_sub_user_objects = ClientSubUser.objects.all()
             userform = UsercreateForm
@@ -330,7 +331,8 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['userform'] = userform
             
         context['client'] = client_object
-        context['countries']=countries
+        context['countries']= countries
+        context['cntry']=all_countries
         return context
 
     def post(self,request,user_pk):

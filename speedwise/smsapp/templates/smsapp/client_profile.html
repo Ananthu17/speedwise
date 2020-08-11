@@ -369,6 +369,7 @@ select:focus {
     $(document).ready(()=>{
       $('#id_password1').attr('class','form-control mb-1')
       $('#id_password2').attr('class','form-control mb-1')
+      $('span').addClass('d-none')
       $('#th').on('click',()=>{
         $('td').toggleClass('d-none')
         $('#arrow').toggleClass('nc-minimal-down')

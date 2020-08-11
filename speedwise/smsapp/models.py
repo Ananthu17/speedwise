@@ -136,6 +136,14 @@ class Notifications(models.Model):
     def __str__(self):
         return self.message_out
 
+class ActionLogs(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    create_date = models.DateTimeField(default=datetime.now, blank=True)
+    action = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.action
 
 class WebhookResponse(models.Model):
     message_response = models.TextField(blank=True, null=True)

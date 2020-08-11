@@ -247,8 +247,9 @@ select:focus {
             <label for="tab2-2" class="text-primary font-weight-bold">Logs</label>
             <input id="tab2-2" name="tabs-two" type="radio">
             <div>
-              <h4>Tab Two</h4>
-              <p>Quisque sit amet turpis leo. Maecenas sed dolor mi. Pellentesque varius elit in neque ornare commodo ac non tellus. Mauris id iaculis quam. Donec eu felis quam. Morbi tristique lorem eget iaculis consectetur. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean at tellus eget risus tempus ultrices. Nam condimentum nisi enim, scelerisque faucibus lectus sodales at.</p>
+              {% for action_log in action_logs %}
+              {{action_log}}<br>
+              {% endfor %}
             </div>
           </div>
         </div>

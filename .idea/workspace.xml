@@ -21,8 +21,16 @@
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/requirement.txt" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/requirement.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp.zip" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/speedwise/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/speedwise/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +77,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/speedwise/assets/js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../master" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -284,14 +292,20 @@
       <option name="project" value="LOCAL" />
       <updated>1596695383940</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Added operators into clientprofile">
+      <created>1596697498923</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1596697498923</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Clients and Operators table with clients.html template" />
     <MESSAGE value="Client profile and its operations" />
     <MESSAGE value="Messaging and Contacts model added. Alteration in operator model" />
     <MESSAGE value="Message send functionality added" />
@@ -316,45 +330,46 @@
     <MESSAGE value="Fixed client profile issues" />
     <MESSAGE value="Fixed 2FA" />
     <MESSAGE value="Merged frond end and minor changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merged frond end and minor changes" />
+    <MESSAGE value="Added operators into clientprofile" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added operators into clientprofile" />
   </component>
   <component name="WindowStateProjectService">
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594120959657">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser/52.27.1868.1053@52.27.1868.1053" timestamp="1594120959657" />
-    <state x="719" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1595407951392">
+    <state x="719" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1596908809207">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="719" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595407951392" />
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1596695382220">
+    <state x="719" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1596908809207" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1596697498726">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1596695382220" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1596697498726" />
     <state x="152" y="127" width="1668" height="853" key="DiffContextDialog" timestamp="1595928759275">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="152" y="127" width="1668" height="853" key="DiffContextDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595928759275" />
-    <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1596538761304">
+    <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1597061236642">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1596538761304" />
-    <state width="545" height="869" key="Git.Branch.Popup" timestamp="1596689826513">
+    <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1597061236642" />
+    <state width="559" height="883" key="Git.Branch.Popup" timestamp="1597150042995">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state width="545" height="869" key="Git.Branch.Popup/52.27.1868.1053@52.27.1868.1053" timestamp="1596689826513" />
-    <state x="234" y="117" width="1494" height="879" key="MergeDialog" timestamp="1595327959166">
+    <state width="559" height="883" key="Git.Branch.Popup/52.27.1868.1053@52.27.1868.1053" timestamp="1597150042995" />
+    <state x="234" y="117" width="1494" height="879" key="MergeDialog" timestamp="1597145865381">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="234" y="117" width="1494" height="879" key="MergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1595327959166" />
+    <state x="234" y="117" width="1494" height="879" key="MergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597145865381" />
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1596388915781">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1596388915781" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1596695389107">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1596697501180">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1596695389107" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1596697501180" />
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1595233255295">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -367,10 +382,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="676" y="292" width="744" height="522" key="find.popup/52.27.1868.1053@52.27.1868.1053" timestamp="1596651472677" />
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1596388900149">
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1597150053256">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1596388900149" />
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597150053256" />
     <state x="649" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1595922297403">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>

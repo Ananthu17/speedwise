@@ -40,7 +40,6 @@ class DashboardView(TemplateView):
             context = super(DashboardView, self).dispatch(request, *args, **kwargs)
         return context
 
-
 class ClientView(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/clients.html'
     login_url = 'login'
@@ -49,6 +48,12 @@ class ClientView(LoginRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ClientView, self).get_context_data(**kwargs)
         if self.request.user.is_superuser:
+            if Client.objects.filter(user=self.request.user):
+                logged_client = Client.objects.get(user=self.request.user)
+                context['logged_client'] = logged_client
+            if ClientSubUser.objects.filter(user=self.request.user):
+                logged_client = ClientSubUser.objects.get(user=self.request.user).client
+                context['logged_client'] = logged_client
             client_objects = Client.objects.all()
             operators = Operator.objects.all()
             countries = Country.objects.all()
@@ -122,6 +127,8 @@ def delete_user(request, user_pk):
     try:
         user = Client.objects.get(pk=user_pk).user
         user.delete()
+        action = str(request.user) + ' deleted ' + str(user) + ' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        ActionLogs.objects.create(user=request.user, action=action)
         return redirect('clients')
     except:
         messages.error(request, "Something went wrong")
@@ -147,6 +154,8 @@ class ClientSubUserView(LoginRequiredMixin,TemplateView):
                 clientsubuser = clientsubuserform.save()
                 clientsubuser.user = user
                 clientsubuser.save()
+                action = str(request.user) + ' created ' +str(clientsubuser)+' at '+ datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
             return redirect('clientprofile',request.POST.get('client'))
         except:
             messages.error(request,"Something went wrong")
@@ -176,15 +185,21 @@ class LoginView(TemplateView):
             if username and password:
                 user = authenticate(username=username, password=password)
                 if user is not None:
-                    print(user)
                     if user.is_superuser:
                         try:
-                            user_2fa = AuthInformation.objects.get(user=user)
-                            if user_2fa.is_active:
-                                secret_key = user_2fa.secret_key
-                                return render(request, 'smsapp/verify-2fa-token.html',{'secret_key': secret_key, 'user': user.id})
+                            user_2fa = AuthInformation.objects.filter(user=user)
+                            if user_2fa:
+                                user_2fa = AuthInformation.objects.get(user=user)
+                                if user_2fa.is_active:
+                                    secret_key = user_2fa.secret_key
+                                    return render(request, 'smsapp/verify-2fa-token.html',{'secret_key': secret_key, 'user': user.id})
+                                else:
+                                    messages.error(request, "TFA not active")
+                                    return redirect('login')
                             else:
                                 login(request, user)
+                                action = str(user) +' logged in at '+datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                                ActionLogs.objects.create(user=user,action=action)
                                 return redirect('index')
                         except:
                             messages.error(request, "Something went wrong with the connection")
@@ -194,13 +209,20 @@ class LoginView(TemplateView):
                         if ClientSubUser.objects.filter(user = user):
                             if ClientSubUser.objects.get(user = user).is_active:
                                 try:
-                                    user_2fa = AuthInformation.objects.get(user=user)
-                                    if user_2fa.is_active:
-                                        secret_key = user_2fa.secret_key
-                                        return render(request, 'smsapp/verify-2fa-token.html',
-                                                      {'secret_key': secret_key, 'user': user.id})
+                                    user_2fa = AuthInformation.objects.filter(user=user)
+                                    if user_2fa:
+                                        user_2fa = AuthInformation.objects.get(user=user)
+                                        if user_2fa.is_active:
+                                            secret_key = user_2fa.secret_key
+                                            return render(request, 'smsapp/verify-2fa-token.html',{'secret_key': secret_key, 'user': user.id})
+                                        else:
+                                            messages.error(request, "TFA not active")
+                                            return redirect('login')
                                     else:
                                         login(request, user)
+                                        action = str(user) + ' logged in at ' + datetime.now().strftime(
+                                            "%d/%m/%Y %H:%M:%S")
+                                        ActionLogs.objects.create(user=user, action=action)
                                         return redirect('index')
                                 except:
                                     messages.error(request, "Something went wrong with the connection")
@@ -212,13 +234,20 @@ class LoginView(TemplateView):
                             if Client.objects.filter(user = user):
                                 if Client.objects.get(user = user).is_active:
                                     try:
-                                        user_2fa = AuthInformation.objects.get(user=user)
-                                        if user_2fa.is_active:
-                                            secret_key = user_2fa.secret_key
-                                            return render(request, 'smsapp/verify-2fa-token.html',
-                                                          {'secret_key': secret_key, 'user': user.id})
+                                        user_2fa = AuthInformation.objects.filter(user=user)
+                                        if user_2fa:
+                                            user_2fa = AuthInformation.objects.get(user=user)
+                                            if user_2fa.is_active:
+                                                secret_key = user_2fa.secret_key
+                                                return render(request, 'smsapp/verify-2fa-token.html',{'secret_key': secret_key, 'user': user.id})
+                                            else:
+                                                messages.error(request, "TFA not active")
+                                                return redirect('login')
                                         else:
                                             login(request, user)
+                                            action = str(user) + ' logged in at ' + datetime.now().strftime(
+                                                "%d/%m/%Y %H:%M:%S")
+                                            ActionLogs.objects.create(user=user, action=action)
                                             return redirect('index')
                                     except:
                                         messages.error(request, "Something went wrong with the connection")
@@ -262,11 +291,13 @@ def enable_2fa(request):
             user_2fa = AuthInformation.objects.filter(user=request.user)
             if not user_2fa:
                 AuthInformation.objects.create(user=request.user,is_active=True,secret_key=pyotp.random_base32())
+                action = str(request.user) + ' enabled two factor authentication at ' + datetime.now().strftime(
+                    "%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
             return redirect('enable-2fa')
 
 def verify_2fa_token(request):
     try:
-        print(request.POST)
         if request.POST.get('secret_key'):
             user = User.objects.get(id=request.POST.get('user'))
             secret_key=request.POST.get('secret_key')
@@ -274,6 +305,7 @@ def verify_2fa_token(request):
             verify = totp.verify(request.POST.get('token'))
             if verify == True:
                 login(request, user)
+                ActionLogs.objects.create(user=user, action="enabled two factor authentication")
                 return redirect('index')
             else:
                 messages.error(request, "Token Invalid")
@@ -283,10 +315,12 @@ def verify_2fa_token(request):
             secret_key = request.POST.get('disable_secret_key')
             totp = pyotp.TOTP(secret_key)
             verify = totp.verify(request.POST.get('token'))
-            print(verify)
             if verify == True:
                 user_2fa = AuthInformation.objects.get(user=request.user)
                 user_2fa.delete()
+                action = str(user) + ' disabled two factor authentication at ' + datetime.now().strftime(
+                    "%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=user, action=action)
                 return redirect('index')
             else:
                 return redirect('login')
@@ -337,8 +371,10 @@ class RegisterView(TemplateView):
 
 
 def logout_view(request):
-    print(request)
     if request.user.is_authenticated:
+        action = str(request.user) + ' logged out at ' + datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S")
+        ActionLogs.objects.create(user=request.user, action=action)
         logout(request)
     return redirect(reverse('login'))
 
@@ -351,6 +387,13 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
         client_object = Client.objects.get(pk=kwargs['user_pk'])
         countries= Country.objects.all()
         operators = Operator.objects.all()
+        action_logs = ActionLogs.objects.all()
+        if Client.objects.filter(user=self.request.user):
+            logged_client = Client.objects.get(user=self.request.user)
+            context['logged_client'] = logged_client
+        if ClientSubUser.objects.filter(user=self.request.user):
+            logged_client = ClientSubUser.objects.get(user=self.request.user).client
+            context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             client_sub_user_objects = ClientSubUser.objects.all()
             userform = UsercreateForm
@@ -359,6 +402,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['clientsubuserform'] = clientsubuserform
             context['userform'] = userform
             context['operators'] = operators
+            context['action_logs'] = action_logs
 
         else:
             client_sub_user_objects = ClientSubUser.objects.filter(client=Client.objects.get(user=self.request.user))
@@ -368,6 +412,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['clientsubuserform'] = clientsubuserform
             context['userform'] = userform
             context['operators'] = operators
+            context['action_logs'] = action_logs
 
         context['client'] = client_object
         context['countries']= countries
@@ -466,6 +511,12 @@ class Operators(LoginRequiredMixin,TemplateView):
         context = super(Operators, self).get_context_data(**kwargs)
         operatorform = OperatorForm
         context['operatorform'] = operatorform
+        if Client.objects.filter(user=self.request.user):
+            logged_client = Client.objects.get(user=self.request.user)
+            context['logged_client'] = logged_client
+        if ClientSubUser.objects.filter(user=self.request.user):
+            logged_client = ClientSubUser.objects.get(user=self.request.user).client
+            context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             operators = Operator.objects.all()
             context['operators'] = operators
@@ -521,20 +572,26 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
         contactform = ContactForm
         user=self.request.user
         if user.is_authenticated:
+            if Client.objects.filter(user=self.request.user):
+                logged_client = Client.objects.get(user=self.request.user)
+                context['logged_client'] = logged_client
+            if ClientSubUser.objects.filter(user=self.request.user):
+                logged_client = ClientSubUser.objects.get(user=self.request.user).client
+                context['logged_client'] = logged_client
             if self.request.user.is_superuser:
-                clients = Client.objects.all()
                 countries = Country.objects.all()
                 contacts = Contact.objects.all()
+                clients = Client.objects.all()
                 context['contactsform'] = contactform
                 context['contacts'] = contacts
-                context['clients'] = clients
                 context['countries'] = countries
+                context['clients'] = clients
             else:
                 if Client.objects.filter(user=self.request.user):
                     client = Client.objects.get(user=self.request.user)
-                else:
+                if ClientSubUser.objects.filter(user=self.request.user):
                     client = ClientSubUser.objects.get(user=self.request.user).client
-                countries = Country.objects.all() #Need to filter based on clients
+                countries = client.countries.all()
                 contacts = Contact.objects.filter(client=client)
                 context['contactsform'] = contactform
                 context['contacts'] = contacts
@@ -547,40 +604,43 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
     def post(self, request):
         try:
             if Contact.objects.filter(id=request.POST.get('contact_id')):
-                print(request.POST)
                 contact = Contact.objects.get(id=request.POST.get('contact_id'))
                 contact.name = request.POST.get('name')
                 contact.mobile = request.POST.get('mobile')
                 contact.country = Country.objects.get(pk=request.POST.get('country'))
-                if Client.objects.filter(user=self.request.user):
-                    contact.client = Client.objects.get(user=self.request.user)
-                elif ClientSubUser.objects.filter(user=self.request.user):
-                    contact.client = ClientSubUser.objects.get(user=self.request.user).client
-                else:
-                    None
+                contact.user = self.request.user
                 contact.save()
+                action = str(self.request.user) + ' updated '+str(contact)+' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
                 return redirect('contacts')
             elif request.POST.get('action_type') == 'enable_contact':
                 print(request.POST.get('id'),request.POST.get('is_active'))
                 contact = Contact.objects.get(id=request.POST.get('id'))
                 contact.is_active = request.POST.get('is_active') == 'true'
                 contact.save()
+                action = str(self.request.user) + ' enabled/disabled '+str(contact)+' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
                 return redirect('contacts')
             else:
                 contactsform = ContactForm(request.POST, request.FILES or None)
                 if contactsform.is_valid():
                     contacts = contactsform.save()
+                    if self.request.user.is_superuser:
+                        client = Client.objects.get(pk=request.POST.get('client'))
+                        contacts.client = client
                     if Client.objects.filter(user=self.request.user):
                         client = Client.objects.get(user=self.request.user)
-                    elif ClientSubUser.objects.filter(user=self.request.user).client:
+                        contacts.client=client
+                    if ClientSubUser.objects.filter(user=self.request.user):
                         client = ClientSubUser.objects.get(user=self.request.user).client
-                    else:
-                        None
+                        contacts.client = client
                     mobile = [character for character in str(contacts.mobile) if character.isalnum()]
                     contacts.mobile = "".join(mobile)
-                    contacts.client=client
+                    contacts.country = Country.objects.get(pk=request.POST.get('country_filtered'))
                     contacts.user=self.request.user
                     contacts.save()
+                    action = str(self.request.user) + ' created contact ' + str(contacts) + ' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                    ActionLogs.objects.create(user=request.user, action=action)
                 return redirect('contacts')
         except:
             messages.error(request, "Something went wrong")
@@ -628,6 +688,9 @@ def import_contacts(request):
                     if not Contact.objects.filter(name=j[0], mobile=mobile):
                         contact = Contact.objects.create(name=j[0], mobile=mobile, user=user,country=country)
                         contact.save()
+            action = str(request.user) + ' imported contacts at ' + datetime.now().strftime(
+                "%d/%m/%Y %H:%M:%S")
+            ActionLogs.objects.create(user=request.user, action=action)
             return redirect('contacts')
 
     except:
@@ -638,6 +701,9 @@ def delete_contact(request, contact_pk):
     try:
         contact = Contact.objects.get(pk=contact_pk)
         contact.delete()
+        action = str(request.user) + ' deleted a contact '+str(contact)+' at ' + datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S")
+        ActionLogs.objects.create(user=request.user, action=action)
         return redirect('contacts')
     except:
         messages.error(request, "Something went wrong")
@@ -650,6 +716,12 @@ class Messages_View(LoginRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Messages_View, self).get_context_data(**kwargs)
         messagingform = MessagesForm
+        if Client.objects.filter(user=self.request.user):
+            logged_client = Client.objects.get(user=self.request.user)
+            context['logged_client'] = logged_client
+        if ClientSubUser.objects.filter(user=self.request.user):
+            logged_client = ClientSubUser.objects.get(user=self.request.user).client
+            context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             messages = Messages.objects.all()
             contacts = Contact.objects.all()
@@ -673,6 +745,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         context['messageslist'] = messages
         context['contacts'] = contacts
         context['templates'] = templates
+
         return context
 
 
@@ -707,10 +780,11 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                 messages.info(request, "You  have reached your credit limit. Kindly add credits.")
                                 send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
                             if client.operator.code == 'TLX':
+                                print(source_number,country_tele_code+destination_contact_number)
                                 telnyx.api_key = token
                                 send_msg = telnyx.Message.create(
                                     from_=source_number,
-                                    to=country_tele_code+destination_contact_number,
+                                        to=country_tele_code+destination_contact_number,
                                     text=msg,
                                 )
                                 message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
@@ -742,6 +816,8 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                     notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
                                                                       contact=destination_contact, client=client,
                                                                       notification="The contact is not activated")
+            action = str(request.user) + ' sent some messages at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            ActionLogs.objects.create(user=request.user, action=action)
             return redirect('messaging')
         except:
             messages.error(request, "Something went wrong")
@@ -752,6 +828,9 @@ def delete_message(request, message_pk):
     try:
         message = Messages.objects.get(pk=message_pk)
         message.delete()
+        action = str(request.user) + ' deleted a message at ' + datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S")
+        ActionLogs.objects.create(user=request.user, action=action)
         return redirect('messaging')
     except:
         messages.error(request, "Something went wrong")
@@ -765,6 +844,12 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(MMSMessages_View, self).get_context_data(**kwargs)
         mmsmessagingform = MMSMessagesForm
+        if Client.objects.filter(user=self.request.user):
+            logged_client = Client.objects.get(user=self.request.user)
+            context['logged_client'] = logged_client
+        if ClientSubUser.objects.filter(user=self.request.user):
+            logged_client = ClientSubUser.objects.get(user=self.request.user).client
+            context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             mmsmessages = MMSMessages.objects.all()
             contacts = Contact.objects.all()
@@ -790,64 +875,69 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
         return context
 
     def post(self, request):
-        try:
-            contacts = request.POST.get('contactsList')
-            destination_contacts = contacts.split(",")
-            message_subject = request.POST.get("message_subject")
-            msg = request.POST.get("message_out")
-            for item in destination_contacts:
-                destination_contact = Contact.objects.get(id=item)
-                country_tele_code = destination_contact.country.country_tele_code
-                if self.request.user.is_superuser:
-                    client = Client.objects.get(id=request.POST.get('client'))
+        # try:
+        contacts = request.POST.get('contactsList')
+        destination_contacts = contacts.split(",")
+        message_subject = request.POST.get("message_subject")
+        msg = request.POST.get("message_out")
+        for item in destination_contacts:
+            destination_contact = Contact.objects.get(id=item)
+            country_tele_code = destination_contact.country.country_tele_code
+            if self.request.user.is_superuser:
+                client = Client.objects.get(id=request.POST.get('client'))
+            else:
+                if Client.objects.filter(user=self.request.user):
+                    client = Client.objects.get(user=self.request.user)
                 else:
-                    if Client.objects.filter(user=self.request.user):
-                        client = Client.objects.get(user=self.request.user)
-                    else:
-                        client = ClientSubUser.objects.get(user=self.request.user).client
-                token = client.operator.token
-                account_id = client.operator.account_id
-                username = client.operator.username
-                authentication = str(username)+":"+str(token)
-                authentication_bytes = authentication.encode('ascii')
-                authentication_bytes_base64 = base64.b64encode(authentication_bytes)
-                authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
-                source_number = client.operator.operator_number
-                destination_contact_number = destination_contact.mobile
-                if not destination_contact.is_active == False:
-                    if not destination_contact.country.is_active == False:
-                        if destination_contact.country in client.countries.all():
-                            if client.credit_limit == (client.credit_in - client.credit_out):
-                                messages.info(request, "You  have reached your credit limit. Kindly add credits.")
-                                send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
-                            if client.operator.code == 'TLX':
-                                telnyx.api_key = token
-                                send_msg = telnyx.Message.create(
-                                    from_=source_number,
-                                    to=country_tele_code+destination_contact_number,
-                                    subject=message_subject,
-                                    text=msg,
-                                    media_urls=['http://localhost:8000/media/media/mmsattachments/amazon.jpg'],
-                                )
-                                print(send_msg)
-                                mms_message_entry = MMSMessages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_subject=message_subject,message_out=msg,message_telnyx_id=send_msg.get('id'))
-                                client.credit_out+=1
-                                client.save()
-                        else:
-                            notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                    contact=destination_contact, client=client,notification="The country is not permitted for the client")
+                    client = ClientSubUser.objects.get(user=self.request.user).client
+            token = client.operator.token
+            account_id = client.operator.account_id
+            username = client.operator.username
+            authentication = str(username)+":"+str(token)
+            authentication_bytes = authentication.encode('ascii')
+            authentication_bytes_base64 = base64.b64encode(authentication_bytes)
+            authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
+            source_number = client.operator.operator_number
+            destination_contact_number = destination_contact.mobile
+            if not destination_contact.is_active == False:
+                if not destination_contact.country.is_active == False:
+                    if destination_contact.country in client.countries.all():
+                        if client.credit_limit == (client.credit_in - client.credit_out):
+                            messages.info(request, "You  have reached your credit limit. Kindly add credits.")
+                            send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
+                        if client.operator.code == 'TLX':
+                            telnyx.api_key = token
+                            mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message_out=msg,attachment=request.FILES.get('attachment'))
+                            print('http://localhost:8000'+str(mms_message_entry.attachment.url))
+                            print(country_tele_code+destination_contact_number)
+                            send_msg = telnyx.Message.create(
+                                from_=source_number,
+                                to=country_tele_code+destination_contact_number,
+                                subject=message_subject,
+                                text=msg,
+                                media_urls=['http://localhost:8000'+str(mms_message_entry.attachment.url)],
+                            )
+                            mms_message_entry.message_telnyx_id=send_msg.get('id')
+                            client.credit_out+=1
+                            client.save()
                     else:
                         notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                          contact=destination_contact, client=client,
-                                                                          notification="The country is not activated for this contact")
+                                                                contact=destination_contact, client=client,notification="The country is not permitted for the client")
                 else:
                     notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
                                                                       contact=destination_contact, client=client,
-                                                                      notification="The contact is not activated")
-            return redirect('mmsmessaging')
-        except:
-            messages.error(request, "Something went wrong")
-            return redirect('mmsmessaging')
+                                                                      notification="The country is not activated for this contact")
+            else:
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
+                                                                  contact=destination_contact, client=client,
+                                                                  notification="The contact is not activated")
+        action = str(request.user) + ' sent some MMS messages at ' + datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S")
+        ActionLogs.objects.create(user=request.user, action=action)
+        return redirect('mmsmessaging')
+        # except:
+        #     messages.error(request, "Something went wrong")
+        #     return redirect('mmsmessaging')
 
 
 class Templates_View(LoginRequiredMixin,TemplateView):
@@ -856,6 +946,12 @@ class Templates_View(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Templates_View, self).get_context_data(**kwargs)
+        if Client.objects.filter(user=self.request.user):
+            logged_client = Client.objects.get(user=self.request.user)
+            context['logged_client'] = logged_client
+        if ClientSubUser.objects.filter(user=self.request.user):
+            logged_client = ClientSubUser.objects.get(user=self.request.user).client
+            context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             sms_templates_object = Templates.objects.all()
         else:
@@ -879,6 +975,9 @@ class Templates_View(LoginRequiredMixin,TemplateView):
                 templates = templateform.save()
                 templates.created_by=client
                 templates.save()
+                action = str(request.user) + ' created message template at ' + datetime.now().strftime(
+                    "%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
             return redirect('templates')
         except:
             messages.error(request, "Something went wrong")
@@ -888,6 +987,9 @@ def delete_template(request, template_pk):
     try:
         template = Templates.objects.get(pk=template_pk)
         template.delete()
+        action = str(request.user) + ' deleted a template at ' + datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S")
+        ActionLogs.objects.create(user=request.user, action=action)
         return redirect('templates')
     except:
         messages.error(request, "Something went wrong")
@@ -900,6 +1002,12 @@ class Country_View(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Country_View, self).get_context_data(**kwargs)
+        if Client.objects.filter(user=self.request.user):
+            logged_client = Client.objects.get(user=self.request.user)
+            context['logged_client'] = logged_client
+        if ClientSubUser.objects.filter(user=self.request.user):
+            logged_client = ClientSubUser.objects.get(user=self.request.user).client
+            context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             countries = Country.objects.all()
             context['countryform'] = CountryForm
@@ -916,18 +1024,27 @@ class Country_View(LoginRequiredMixin,TemplateView):
                 country.country_code=request.POST.get('code')
                 country.country_tele_code=request.POST.get('token')
                 country.save()
+                action = str(request.user) + ' updated a country '+str(country)+' at '+ datetime.now().strftime(
+                    "%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
                 return redirect('countries')
 
             elif request.POST.get('action_type') == 'enable_country':
                 country = Country.objects.get(id=request.POST.get('id'))
+                print(request.POST.get('is_active'))
                 country.is_active = request.POST.get('is_active') == 'true'
                 country.save()
+                action = str(request.user) + ' enabled/disabled country ' + str(country) + ' at ' + datetime.now().strftime(
+                    "%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
                 return redirect('countries')
             else:
                 countryform = CountryForm(request.POST, request.FILES or None)
                 if countryform.is_valid():
                     country = countryform.save()
                     country.save()
+                    action = str(request.user) + ' added a country ' + str(country) + ' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                    ActionLogs.objects.create(user=request.user, action=action)
                 return redirect('countries')
         except:
             messages.error(request, "Something went wrong")
@@ -938,6 +1055,9 @@ def delete_country(request, country_pk):
     try:
         country = Country.objects.get(pk=country_pk)
         country.delete()
+        action = str(request.user) + ' deleted a country ' + str(country) + ' at ' + datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S")
+        ActionLogs.objects.create(user=request.user, action=action)
         return redirect('countries')
     except:
         messages.error(request, "Something went wrong")
@@ -952,8 +1072,9 @@ class MessageResposeView(APIView):
 
     def post(self, request,format=None):
         values = request.data
-        webhook_response = WebhookResponse.objects.create(message_response=values)
-        webhook_response.save()
+        print(values)
+        # webhook_response = WebhookResponse.objects.create(message_response=values)
+        # webhook_response.save()
         return redirect('message-response')
 
 
@@ -963,4 +1084,10 @@ class ReportsView(TemplateView):
     
     def get_context_data(self,*args,**kwargs):
         context = super(ReportsView, self).get_context_data(**kwargs)
+        if Client.objects.filter(user=self.request.user):
+            logged_client = Client.objects.get(user=self.request.user)
+            context['logged_client'] = logged_client
+        if ClientSubUser.objects.filter(user=self.request.user):
+            logged_client = ClientSubUser.objects.get(user=self.request.user).client
+            context['logged_client'] = logged_client
         return context

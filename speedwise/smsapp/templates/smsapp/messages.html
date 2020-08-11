@@ -1,7 +1,6 @@
 {% extends "smsapp/index.html" %}
 
 {% block title %}Speedwise : messaging {% endblock %}
-
 {% block navbar_title %}Messaging{% endblock %}
 {% block css %}
 <style>
@@ -144,8 +143,6 @@
         <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
     </div>
     <div class="table mt-4" style="width: 96% !important;">
-
-
         {% for message in messages %}
             {{message}}
         {% endfor %}

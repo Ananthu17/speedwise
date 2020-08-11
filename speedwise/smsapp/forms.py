@@ -7,7 +7,7 @@ from .models import *
 class ClientForm(forms.ModelForm):
     class Meta:
         model=Client
-        fields=['mobile','logo','operator','credit_in','credit_out','credit_limit','is_active','create_date','country']
+        fields=['mobile','logo','operator','credit_in','credit_out','credit_limit','is_active','create_date','country','color']
         widgets={
             'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile Number'}),
             'logo':forms.FileInput(attrs={'class':"custom-file-input","id":"customFile"}),
@@ -17,6 +17,7 @@ class ClientForm(forms.ModelForm):
             'credit_limit':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
             'is_active':forms.CheckboxInput(attrs={'class':'mt-1'}),
             'country': forms.Select(attrs={'class': 'form-control'}),
+            'color': forms.Select(attrs={'class': 'form-control'}),
         }
 
 class UsercreateForm(UserCreationForm):

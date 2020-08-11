@@ -5,6 +5,7 @@ from .models import *
 
 admin.site.register(Operator)
 admin.site.register(Client)
+admin.site.register(Color)
 admin.site.register(ClientSubUser)
 admin.site.register(Contact)
 admin.site.register(Messages)

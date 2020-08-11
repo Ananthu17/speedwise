@@ -165,18 +165,9 @@ select:focus {
           <h6><i class="nc-icon nc-mobile mr-2"></i>{{ client.mobile }}</h6>
         </div>
         <div class="text-center">
-          <button class="btn btn-sm btn-info"><i class="nc-icon nc-simple-add"></i>Add</button>
+          <button class="btn btn-sm btn-info"  data-toggle="modal" data-target="#exampleModalcredit"><i class="nc-icon nc-simple-add"></i>Add</button>
           <a href="javascript:void(0)" class="btn btn-sm btn-success shadow" data-toggle="modal" data-target="#myModal"><i class="nc-icon nc-simple-add"></i> User</a>
         </div>
-        <div class="mb-1 mt-5">
-                  <form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data">
-                      {% csrf_token %}
-                        <input type="number" id="credit" name="credit" class="form-control" placeholder="Add Credits">
-                        <div class="text-center mt-2">
-                          <button type="submit" class="btn btn-round btn-primary btn-sm  "><i class="nc-icon nc-simple-add"></i> Add</button>
-                        </div>
-                      </form>
-                </div>
         <div class="p-4">
           <table class="table table-hover" style="border-style:solid;border-width:2px;border-width:2px;">
             <tr class=" mt-2 text-center text-white bg-secondary" style="border-bottom-style: solid;border-width:thin;">
@@ -324,6 +315,29 @@ select:focus {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalcredit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form action="{% url 'addcredit' client.id %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Credits</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="number" id="credit" name="credit" class="form-control" placeholder="Add Credits">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-round btn-primary btn-sm  "><i class="nc-icon nc-simple-add"></i> Add</button>
+          
+          </div>
+        </form>
       </div>
     </div>
   </div>

@@ -34,6 +34,19 @@
 
 <body class="">
   <style>
+    .dropdown-menu-custom {
+        background-color: #FFFFFF;
+        border: 0 none;
+        border-radius: 12px;
+        margin-top: -35px;
+        padding: 0px;
+        white-space: pre-line;
+        width: 20rem;
+        height: 19rem;
+        z-index: 2000;
+    }
+  </style>
+  <style>
     .font{
         font-family: Dosis,sans-serif;
     }
@@ -243,7 +256,7 @@
                   </p>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="#">My Account</a>
+                  <a class="dropdown-item " href="#" id="myaccount">My Account</a>
                   <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
                 </div>
               </li>
@@ -259,9 +272,21 @@
       
       <!-- end navbar  -->
       <div class="content ml-4">
+        
+        <div class="dropdown-menu-custom shadow d-none" id="details" style="position: absolute;margin-left: 54rem!important;" > 
+          <div class="col-12">
+            <button id="closebar" class="close mr-4 mt-0" style="font-size: 2rem;"> &times;</button>
+          </div>
+          <div class="text-center text-info">
+            <h3>{{user.username}}</h3>
+            <p>{{user.email}}</p>
+            <a href="{% url 'enable-2fa' %}" class="btn btn-primary btn-sm"> Two Factor Authentication </a>
+          </div>
+        </div>
+        
         <div class="row">
           <div class="col-md-12">
-            <div class="card mt-4">
+            <div class="card mt-4" id="card" style="position: relative;">
             {% block content %} {% endblock %}
             </div>
           </div>
@@ -291,10 +316,33 @@
       </div>
     </div>
   </div>
-  
+
+  <script
+    src="https://code.jquery.com/jquery-2.2.4.js"
+    integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+    crossorigin="anonymous">
+  </script>
+
   {% block add_script %}
-   Some script
+    
+   
   {% endblock %}
+  
+  <script>
+      $(document).ready(()=>{
+        console.log('reshmi')
+      $('#myaccount').on('click',()=>{
+        console.log('reshmi raj')
+        $('#details').toggleClass('d-none')
+        $('#navbarDropdownMenuLink').attr('data-toggle','')
+      })
+      $('#closebar').on('click',()=>{
+        $('#details').toggleClass('d-none')
+        $('#navbarDropdownMenuLink').attr('data-toggle','dropdown')
+      })
+    })
+  </script>
+  
   
   <!--   Core JS Files   -->
   <!-- <script src="{% static '/assets/js/core/jquery.min.js' %}"></script> -->

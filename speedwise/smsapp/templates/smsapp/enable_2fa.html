@@ -1,38 +1,64 @@
+{% extends "smsapp/index.html" %}
+
 {% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% if secret_key %}
-<form class="form" action="{% url 'enable-2fa' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-<input type="hidden" name="disable_2fa" value="disable_2fa">
-<button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Disable Two Factor Authentication</button>
-<br><br><br>
-<canvas id="qr-code"></canvas>
-</form>
-{% else %}
-<form class="form" action="{% url 'enable-2fa' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-<button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Generate Two Factor Authentication</button>
-</form>
-{% endif %}
-</body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
-		<script>
-			/* JS comes here */
-			var qr;
-			(function() {
-                    qr = new QRious({
-                    element: document.getElementById('qr-code'),
-                    size: 200,
-                    value: '{{secret_url}}'
-                });
-            })();
 
-		</script>
+{% block title %}Speedwise : Authentication {% endblock %}
 
+{% block navbar_title %} Authentication{% endblock %}
+{% block css %}
 
-</html>
+{% endblock %}
+
+{% block link %}
+  <ul class="navbar-nav">
+    <a href="{% url 'messaging' %}" class="ml-2">Back</a>
+  </ul>
+{% endblock %}
+
+{% block content %}
+    {% if secret_key %}
+    <form class="form" action="{% url 'enable-2fa' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+    <input type="hidden" name="disable_2fa" value="disable_2fa">
+    
+    <br><br><br>
+    <div class="row">
+        <div class="col-12 text-center text-danger p-2">
+           <h5>Scan This QR Code</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center p-2">
+            <canvas id="qr-code" class="shadow"></canvas>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center mb-3">
+            <button type="submit" class="btn btn-danger btn-round btn-wd btn-sm shadow">Disable Two Factor Authentication</button>
+        </div>
+    </div>
+    </form>
+    {% else %}
+    <form class="form" action="{% url 'enable-2fa' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+    <button type="submit" class="btn btn-success btn-block btn-wd btn-round  btn-sm shadow">Generate Two Factor Authentication</button>
+    </form>
+    {% endif %}
+  
+{% endblock %}
+
+{% block add_script %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script>
+        /* JS comes here */
+        var qr;
+        (function() {
+                qr = new QRious({
+                element: document.getElementById('qr-code'),
+                size: 300,
+                value: '{{secret_url}}'
+            });
+        })();
+
+    </script>
+{% endblock %}%}

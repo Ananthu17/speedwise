@@ -23,8 +23,15 @@ from authy.api import AuthyApiClient
 import pyotp
 
 
+
+
 class DashboardView(TemplateView):
     template_name = 'smsapp/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context['client'] = Client.objects.all()
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:

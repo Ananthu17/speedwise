@@ -1,33 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-{% if secret_key %}
-<form class="form" action="{% url '2fa-verify' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-<input type="hidden" name="secret_key" value="{{secret_key}}">
-<input type="hidden" name="user" value="{{user}}">
-<input type="text" name='token' PLACEHOLDER="Enter the OTP">
-<button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Login</button>
-</form>
+{% extends "smsapp/index.html" %}
 
-{% endif %}
+{% load static %}
 
-{% if disable_secret_key %}
-<form class="form" action="{% url '2fa-verify' %}" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-<input type="hidden" name="disable_secret_key" value="{{disable_secret_key}}">
-<input type="hidden" name="user" value="{{user}}">
-<input type="text" name='token' PLACEHOLDER="Enter the OTP">
-<button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Login</button>
-</form>
+{% block title %}Speedwise : Authentication {% endblock %}
 
-{% endif %}
+{% block navbar_title %}Authentication{% endblock %}
+{% block css %}
+
+{% endblock %}
+
+{% block link %}
+  <ul class="navbar-nav">
+    <a href="{% url 'enable-2fa' %}" class="ml-2">Back</a>
+  </ul>
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-6 mt-5">
+        <div class="card p-5">
+            {% if secret_key %}
+            <form class="form" action="{% url '2fa-verify' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="secret_key" value="{{secret_key}}">
+                <input type="hidden" name="user" value="{{user}}">
+                <input type="text" class="form-control mb-2" name='token' PLACEHOLDER="Enter the OTP">
+                <button type="submit" class="btn btn-primary btn-block btn-wd btn-sm shadow mt-2">Login</button>
+            </form>
+            {% endif %}
+            
+            {% if disable_secret_key %}
+            <form class="form" action="{% url '2fa-verify' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="disable_secret_key" value="{{disable_secret_key}}">
+                <input type="hidden" name="user" value="{{user}}">
+                <input type="text" class="form-control mb-2" name='token' PLACEHOLDER="Enter the OTP">
+                <button type="submit" class="btn btn-danger btn-block btn-wd btn-sm shadow mt-2">Login</button>
+            </form>
+
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block add_script %}
+    <script>
+        $(document).ready(()=>{
+            $('#card').removeClass('card')
+        })
+    </script>
+{% endblock %}
 
 
-
-</body>
-</html>

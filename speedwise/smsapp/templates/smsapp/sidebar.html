@@ -18,6 +18,12 @@
               <p>messaging</p>
             </a>
         </li>
+        <li  id="li8">
+          <a href="{% url 'mmsmessaging' %}">
+            <i class="nc-icon nc-chat-33"></i>
+            <p>MMS</p>
+          </a>
+      </li>
         {% if user.is_superuser %}
         <li  id="li2">
           <a href="{% url 'clients' %}">

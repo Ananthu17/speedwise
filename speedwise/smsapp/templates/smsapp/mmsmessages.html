@@ -18,6 +18,7 @@
         <thead class="text-primary">
             <tr class="mt-0" >
             <th><h5>MMS Messagess</h5></th>
+            <th><h5>Date</h5></th>
             <th><h5>Edit</h5></th>
             <th><h5>Delete</h5></th>
             </tr>
@@ -26,6 +27,7 @@
             {% for message in mmsmessageslist %}
             <tr>
             <td><h6>{{message}}</h6></td>
+            <td><h6>{{message.create_date}}</h6></td>
             <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{message.id}}"><i class="fa fa-edit"></i></a></h6></td>
             <td ><h6 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal{{message.id}}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
@@ -141,7 +143,10 @@
                         </div>
                         <div>
                             <label for="attachment">Attachment :</label>
-                            {{ mmsmessagingform.attachment }}
+                            <div class="custom-file">
+                                {{ mmsmessagingform.attachment }}
+                                <label class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
                         </div>
                     </div>
                     <div class="d-none" id="contactsTable">
@@ -171,17 +176,11 @@
     {% endblock %}
 
     {% block add_script %}
-
-        <script
-            src="https://code.jquery.com/jquery-2.2.4.js"
-            integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
-            crossorigin="anonymous">
-        </script>
         <script>
             $(document).ready(()=>{
               console.log("reshmi raj")
               $('li').removeClass('active')
-              $('#li1').addClass('active')
+              $('#li8').addClass('active')
             })
           </script>
         <script>
@@ -206,6 +205,14 @@
                 $('#con').attr('value',`${array}`)
             }
         </script>
+        <script>
+            // Add the following code if you want the name of the file appear on select
+            $(".custom-file-input").on("change", function() {
+              var fileName = $(this).val().split("\\").pop();
+              $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        </script>
+            
     {% endblock %}
 
 

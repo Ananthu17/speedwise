@@ -76,12 +76,12 @@ class ContactForm(forms.ModelForm):
 class MessagesForm(forms.ModelForm):
     class Meta:
         model=Messages
-        fields=['client','user','contact','template','message_out','message_reply','create_date','reply_date']
+        fields=['client','user','contact','template','message','create_date']
         widgets={
             'template': forms.Select(attrs={'class': 'form-control mb-1'}),
             'client':forms.Select(attrs={'class': 'form-control mb-1'}),
             'user':forms.Select(attrs={'class': 'form-control mb-1'}),
-            'message_out':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'})
+            'message':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'})
         }
 
 class MMSMessagesForm(forms.ModelForm):

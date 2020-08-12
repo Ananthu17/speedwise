@@ -99,14 +99,12 @@ class Messages(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, null=True, blank=True)
     template = models.ForeignKey(Templates, on_delete=models.CASCADE, null=True, blank=True)
-    message_telnyx_id = models.CharField(max_length=150, blank=True, null=True)
-    message_out = models.TextField(blank=True, null=True)
-    message_reply = models.TextField(blank=True, null=True)
+    is_inbound = models.BooleanField(default=False)
+    message = models.TextField(blank=True, null=True)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
-    reply_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.message_out
+        return self.message
 
 class MMSMessages(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
@@ -148,3 +146,6 @@ class ActionLogs(models.Model):
 class WebhookResponse(models.Model):
     message_response = models.TextField(blank=True, null=True)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.message_response

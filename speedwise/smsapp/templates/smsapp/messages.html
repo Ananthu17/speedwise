@@ -143,6 +143,17 @@
         <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
     </div>
     <div class="table mt-4" style="width: 96% !important;">
+        {% for thread in messages_threads %}
+        <b>{{thread.contact}}</b>
+        {% for message in thread.message%}
+        {% if message.is_inbound %}
+        <i>{{message}}</i>
+        {% elif message.is_inbound == False %}
+        {{message}}
+        {% endif %}
+        {% endfor %}<br>
+        {% endfor %}
+
         {% for message in messages %}
             {{message}}
         {% endfor %}
@@ -193,9 +204,8 @@
                                 <option value="{{message.template}}" selected>{{message.template}}</option>
                             </select>
                             <label for="msgout">Message Out :</label>
-                            <textarea name="msgout" id="msgout"  value="{{message.message_out}}" class="form-control">{{message.message_out}}</textarea>
-                            <label for="msgrply">Message Reply :</label>
-                            <textarea name="msgrply" id="msgrply"  value="{{message.message_reply}}" class="form-control">{{message.message_reply}}</textarea>
+                            <textarea name="msgout" id="msgout"  value="{{message.message_out}}" class="form-control">{{message.message}}</textarea>
+
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary btn-sm">change</button>
@@ -324,7 +334,7 @@
                         </div>
                         <div>
                             <label for="msg_out">Message :</label>
-                            {{ messagingform.message_out }}
+                            {{ messagingform.message }}
                         </div>
                     </div>
                     <div class="d-none" id="contactsTable">

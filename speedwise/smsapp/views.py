@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.forms import UserCreationForm
 from .models import *
 import pandas as pd
+import json
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
@@ -182,8 +183,7 @@ class LoginView(TemplateView):
             email = request.POST.get('email', '')
             print(email)
             password = request.POST.get('password', '')
-            username = User.objects.get(pk=3)
-            print(username)
+            username = User.objects.get(email=email.lower()).username
             if username and password:
                 user = authenticate(username=username, password=password)
                 if user is not None:
@@ -746,6 +746,14 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         context['messagingform'] = messagingform
         context['messageslist'] = messages
         context['contacts'] = contacts
+        threads = []
+        for contact in contacts:
+            thread = {
+                'contact': Contact.objects.get(id=contact.id),
+                'message': Messages.objects.filter(contact=contact)
+            }
+            threads.append(thread)
+        context['messages_threads'] = threads
         context['templates'] = templates
 
         return context
@@ -755,7 +763,8 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         try:
             contacts = request.POST.get('contactsList')
             destination_contacts = contacts.split(",")
-            msg = request.POST.get("message_out")
+            msg = request.POST.get("message")
+            print(msg)
             for item in destination_contacts:
                 destination_contact = Contact.objects.get(id=item)
                 country_tele_code = destination_contact.country.country_tele_code
@@ -782,20 +791,19 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                 messages.info(request, "You  have reached your credit limit. Kindly add credits.")
                                 send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
                             if client.operator.code == 'TLX':
-                                print(source_number,country_tele_code+destination_contact_number)
                                 telnyx.api_key = token
                                 send_msg = telnyx.Message.create(
                                     from_=source_number,
-                                        to=country_tele_code+destination_contact_number,
+                                    to=country_tele_code+destination_contact_number,
                                     text=msg,
                                 )
-                                message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message_out=msg,message_telnyx_id=send_msg.get('id'))
+                                message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message=msg)
                                 client.credit_out+=1
                                 client.save()
                             if client.operator.code == 'THQ':
                                 url = "https://api.thinq.com/account/" + str(
                                     account_id) + "/product/origination/sms/send"
-                                payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" + source_number + "\",\n  \"message\": \"" + str(
+                                payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" +destination_contact_number+ "\",\n  \"message\": \"" + str(
                                     msg) + "\"\n}"
                                 headers = {
                                     'Authorization': 'Basic ' + str(authentication_bytes_base64_decode),
@@ -804,7 +812,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                 response = requests.request("POST", url, headers=headers, data=payload)
                                 messages.info(request, response.text.encode('utf8'))
                                 message_entry = Messages.objects.create(client=client, user=self.request.user,
-                                                                        contact=destination_contact, message_out=msg)
+                                                                        contact=destination_contact, message=msg)
                                 client.credit_out += 1
                                 client.save()
                         else:
@@ -877,69 +885,68 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
         return context
 
     def post(self, request):
-        # try:
-        contacts = request.POST.get('contactsList')
-        destination_contacts = contacts.split(",")
-        message_subject = request.POST.get("message_subject")
-        msg = request.POST.get("message_out")
-        for item in destination_contacts:
-            destination_contact = Contact.objects.get(id=item)
-            country_tele_code = destination_contact.country.country_tele_code
-            if self.request.user.is_superuser:
-                client = Client.objects.get(id=request.POST.get('client'))
-            else:
-                if Client.objects.filter(user=self.request.user):
-                    client = Client.objects.get(user=self.request.user)
+        try:
+            contacts = request.POST.get('contactsList')
+            destination_contacts = contacts.split(",")
+            message_subject = request.POST.get("message_subject")
+            msg = request.POST.get("message_out")
+            for item in destination_contacts:
+                destination_contact = Contact.objects.get(id=item)
+                country_tele_code = destination_contact.country.country_tele_code
+                if self.request.user.is_superuser:
+                    client = Client.objects.get(id=request.POST.get('client'))
                 else:
-                    client = ClientSubUser.objects.get(user=self.request.user).client
-            token = client.operator.token
-            account_id = client.operator.account_id
-            username = client.operator.username
-            authentication = str(username)+":"+str(token)
-            authentication_bytes = authentication.encode('ascii')
-            authentication_bytes_base64 = base64.b64encode(authentication_bytes)
-            authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
-            source_number = client.operator.operator_number
-            destination_contact_number = destination_contact.mobile
-            if not destination_contact.is_active == False:
-                if not destination_contact.country.is_active == False:
-                    if destination_contact.country in client.countries.all():
-                        if client.credit_limit == (client.credit_in - client.credit_out):
-                            messages.info(request, "You  have reached your credit limit. Kindly add credits.")
-                            send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
-                        if client.operator.code == 'TLX':
-                            telnyx.api_key = token
-                            mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message_out=msg,attachment=request.FILES.get('attachment'))
-                            print('http://localhost:8000'+str(mms_message_entry.attachment.url))
-                            print(country_tele_code+destination_contact_number)
-                            send_msg = telnyx.Message.create(
-                                from_=source_number,
-                                to=country_tele_code+destination_contact_number,
-                                subject=message_subject,
-                                text=msg,
-                                media_urls=['http://localhost:8000'+str(mms_message_entry.attachment.url)],
-                            )
-                            mms_message_entry.message_telnyx_id=send_msg.get('id')
-                            client.credit_out+=1
-                            client.save()
+                    if Client.objects.filter(user=self.request.user):
+                        client = Client.objects.get(user=self.request.user)
+                    else:
+                        client = ClientSubUser.objects.get(user=self.request.user).client
+                token = client.operator.token
+                account_id = client.operator.account_id
+                username = client.operator.username
+                authentication = str(username)+":"+str(token)
+                authentication_bytes = authentication.encode('ascii')
+                authentication_bytes_base64 = base64.b64encode(authentication_bytes)
+                authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
+                source_number = client.operator.operator_number
+                destination_contact_number = destination_contact.mobile
+                if not destination_contact.is_active == False:
+                    if not destination_contact.country.is_active == False:
+                        if destination_contact.country in client.countries.all():
+                            if client.credit_limit == (client.credit_in - client.credit_out):
+                                messages.info(request, "You  have reached your credit limit. Kindly add credits.")
+                                send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
+                            if client.operator.code == 'TLX':
+                                telnyx.api_key = token
+                                mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message_out=msg,attachment=request.FILES.get('attachment'))
+                                print('http://localhost:8000'+str(mms_message_entry.attachment.url))
+                                print(country_tele_code+destination_contact_number)
+                                send_msg = telnyx.Message.create(
+                                    from_=source_number,
+                                    to=country_tele_code+destination_contact_number,
+                                    subject=message_subject,
+                                    text=msg,
+                                    media_urls=['http://localhost:8000'+str(mms_message_entry.attachment.url)],
+                                )
+                                client.credit_out+=1
+                                client.save()
+                        else:
+                            notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
+                                                                    contact=destination_contact, client=client,notification="The country is not permitted for the client")
                     else:
                         notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                contact=destination_contact, client=client,notification="The country is not permitted for the client")
+                                                                          contact=destination_contact, client=client,
+                                                                          notification="The country is not activated for this contact")
                 else:
                     notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
                                                                       contact=destination_contact, client=client,
-                                                                      notification="The country is not activated for this contact")
-            else:
-                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                  contact=destination_contact, client=client,
-                                                                  notification="The contact is not activated")
-        action = str(request.user) + ' sent some MMS messages at ' + datetime.now().strftime(
-            "%d/%m/%Y %H:%M:%S")
-        ActionLogs.objects.create(user=request.user, action=action)
-        return redirect('mmsmessaging')
-        # except:
-        #     messages.error(request, "Something went wrong")
-        #     return redirect('mmsmessaging')
+                                                                      notification="The contact is not activated")
+            action = str(request.user) + ' sent some MMS messages at ' + datetime.now().strftime(
+                "%d/%m/%Y %H:%M:%S")
+            ActionLogs.objects.create(user=request.user, action=action)
+            return redirect('mmsmessaging')
+        except:
+            messages.error(request, "Something went wrong")
+            return redirect('mmsmessaging')
 
 
 class Templates_View(LoginRequiredMixin,TemplateView):
@@ -1072,11 +1079,25 @@ class MessageResposeView(APIView):
         return Response({})
 
 
-    def post(self, request,format=None):
-        values = request.data
-        print(values)
-        # webhook_response = WebhookResponse.objects.create(message_response=values)
-        # webhook_response.save()
+    def post(self, request):
+        data = request.data
+        values = json.dumps(data)
+        values = json.loads(values)
+        if values.get('from') and values.get('to'):
+            from_contact = Contact.objects.filter(mobile=values.get('from'))
+            if from_contact:
+                from_contact = Contact.objects.get(mobile=values.get('from'))
+                from_message = values.get('message')
+                if not Messages.objects.filter(contact=from_contact, message=from_message, is_inbound=True):
+                    inbound_message = Messages.objects.create(contact=from_contact, message=from_message, is_inbound=True)
+        if values.get('data') and  values.get('data').get('event_type') == 'message.received':
+            from_phone_number = values.get('data').get('payload').get('from').get('phone_number')[-10:]
+            from_contact = Contact.objects.filter(mobile=from_phone_number)
+            if from_contact:
+                from_contact = Contact.objects.get(mobile=from_phone_number)
+                from_message = values.get('data').get('payload').get('text')
+                if not Messages.objects.create(contact=from_contact,message=from_message,is_inbound=True):
+                    inbound_message = Messages.objects.create(contact=from_contact,message=from_message,is_inbound=True)
         return redirect('message-response')
 
 

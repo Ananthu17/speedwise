@@ -42,7 +42,7 @@
         padding: 0px;
         white-space: pre-line;
         width: 20rem;
-        height: 19rem;
+        height: 23rem;
         z-index: 2000;
     }
   </style>
@@ -275,14 +275,25 @@
       <div class="content ml-4">
         
         <div class="dropdown-menu-custom shadow d-none" id="details" style="position: absolute;margin-left: 54rem!important;" > 
-          <div class="col-12">
-            <button id="closebar" class="close mr-4 mt-0" style="font-size: 2rem;"> &times;</button>
+          <div class="row float-right">
+            <button id="closebar" class="close" style="font-size: 2rem;margin-right: 2.3rem!important;"> &times;</button>
           </div>
-          <div class="text-center text-info">
-            <h3>{{user.username}}</h3>
-            <p>{{user.email}}</p>
-            <a href="{% url 'enable-2fa' %}" class="btn btn-primary btn-sm"> Two Factor Authentication </a>
+          <div class="row justify-content-center">
+            <div class="col-6 ml-6 justify-content-center text-center">
+              <img class="img-thumbnail" src="/media/{{logged_client.logo}}" alt="..." style="border-radius: 50%;">
+              <h5 class="font-weight-bold mt-1">{{logged_client.user}}</h5>
+              <p class="text-secondary" style="margin-top: -25px">{{logged_client.mobile}}</p>
+              <div class="row justify-content-center" style="margin-top: -20px">
+                <div class="col-6">
+                  <h6 class="pt-3 font-weight-bold text-danger" style="margin-top: -44px">{{ logged_client.credit_in }}<br><small class="text-secondary">Credits</small></h6>
+                </div>
+              </div>
+            </div>
           </div>
+          <div style="margin-top: -80px" class="p-3">
+            <a href="{% url 'enable-2fa' %}" class="btn btn-danger btn-block btn-sm">Multi Factor Auth</a>
+          </div>
+          
         </div>
         
         <div class="row">
@@ -318,12 +329,12 @@
     </div>
   </div>
 
+  
   <script
     src="https://code.jquery.com/jquery-2.2.4.js"
     integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
     crossorigin="anonymous">
   </script>
-
   {% block add_script %}
     
    
@@ -331,9 +342,10 @@
   
   <script>
       $(document).ready(()=>{
-        console.log('reshmi')
+    
+        
       $('#myaccount').on('click',()=>{
-        console.log('reshmi raj')
+        
         $('#details').toggleClass('d-none')
         $('#navbarDropdownMenuLink').attr('data-toggle','')
       })
@@ -341,7 +353,9 @@
         $('#details').toggleClass('d-none')
         $('#navbarDropdownMenuLink').attr('data-toggle','dropdown')
       })
+      
     })
+    
   </script>
   
   

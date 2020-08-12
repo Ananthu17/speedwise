@@ -41,7 +41,26 @@
     {% else %}
     <form class="form" action="{% url 'enable-2fa' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-    <button type="submit" class="btn btn-success btn-block btn-wd btn-round  btn-sm shadow">Generate Two Factor Authentication</button>
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <div class="">
+                    <div class="card-header text-center">
+                        <h4 class="text-danger">Enable Multifactor Authentication</h4>
+                    </div>
+                    <div class="card-body p-5">
+                        <p class="text-secondary">Adding one more step of authenticating your identity makes it harder for an attacker to access your data. This drastically reduces the chances of fraud, data loss, or identity theft</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 pl-5 pr-1 pb-4">
+                            <button type="submit" class="btn btn-success btn-block btn-wd btn-sm shadow mb-2">Enable</button>
+                        </div>
+                        <div class="col-6 pr-5 pl-1 pb-4">
+                            <a href="{% url 'messaging' %}" class="btn btn-danger btn-block btn-wd btn-sm shadow mb-2">Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
     {% endif %}
   

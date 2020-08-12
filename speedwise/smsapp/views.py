@@ -180,8 +180,10 @@ class LoginView(TemplateView):
     def post(self, request):
         try:
             email = request.POST.get('email', '')
+            print(email)
             password = request.POST.get('password', '')
-            username = User.objects.get(email=email.lower()).username
+            username = User.objects.get(pk=3)
+            print(username)
             if username and password:
                 user = authenticate(username=username, password=password)
                 if user is not None:
@@ -223,7 +225,7 @@ class LoginView(TemplateView):
                                         action = str(user) + ' logged in at ' + datetime.now().strftime(
                                             "%d/%m/%Y %H:%M:%S")
                                         ActionLogs.objects.create(user=user, action=action)
-                                        return redirect('index')
+                                        return redirect('messaging')
                                 except:
                                     messages.error(request, "Something went wrong with the connection")
                                     return redirect('login')

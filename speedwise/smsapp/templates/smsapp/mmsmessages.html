@@ -17,7 +17,7 @@
         <table class="table  mt-4 ml-4" style="width:100%;">
         <thead class="text-primary">
             <tr class="mt-0" >
-            <th><h5>MMS Messagess</h5></th>
+            <th><h5>MMS Message</h5></th>
             <th><h5>Date</h5></th>
             <th><h5>Edit</h5></th>
             <th><h5>Delete</h5></th>
@@ -176,9 +176,30 @@
     {% endblock %}
 
     {% block add_script %}
+
+            <script>
+                const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
+                document.addEventListener("DOMContentLoaded", function(){
+                    $('.sidebar-wrapper').addClass('{{logged_client.color}}')
+                    $('.logo').addClass('{{logged_client.color}}')
+                    if ('{{logged_client.color}}' !==''){
+                        $('.color').addClass('text-dark font-weight-bold')
+                    }
+                    // $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
+                });
+            </script>
         <script>
             $(document).ready(()=>{
-              console.log("reshmi raj")
+                $('#myaccount').on('click',()=>{
+                    
+                    $('#details').toggleClass('d-none')
+                    $('#navbarDropdownMenuLink').attr('data-toggle','')
+                })
+                $('#closebar').on('click',()=>{
+                    $('#details').toggleClass('d-none')
+                    $('#navbarDropdownMenuLink').attr('data-toggle','dropdown')
+                })
+              
               $('li').removeClass('active')
               $('#li8').addClass('active')
             })

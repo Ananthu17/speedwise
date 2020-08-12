@@ -204,7 +204,7 @@ select:focus {
                     <div class="col-3 font-weight-bold text-secondary">Countries <span class="float-right">:</span></div>
                     <div class="col-9">
                       {% for country in client.countries.all %}
-                        <button class="btn btn-primary btn-sm" style="margin: auto;">{{country}}</button>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-sm" style="margin: auto;">{{country}} <i class="nc-icon nc-tag-content"></i></a>
                       {% endfor %}
                     </div>
                   </div>
@@ -247,9 +247,11 @@ select:focus {
             <label for="tab2-2" class="text-primary font-weight-bold">Logs</label>
             <input id="tab2-2" name="tabs-two" type="radio">
             <div>
+              <ul>
               {% for action_log in action_logs %}
-              {{action_log}}<br>
+                <li><h5 class="text-secondary">{{action_log}}</h5></li>
               {% endfor %}
+            </ul>
             </div>
           </div>
         </div>

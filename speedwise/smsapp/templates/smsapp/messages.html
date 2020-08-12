@@ -351,18 +351,35 @@
         </div>
         </div>
     </div>
+    <h1></h1>
     {% endblock %}
 
     {% block add_script %}
-    
-       
-        <script>
-            $(document).ready(()=>{
-              console.log("reshmi raj")
+    <script>
+      const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
+      document.addEventListener("DOMContentLoaded", function(){
+          $('.sidebar-wrapper').addClass('{{logged_client.color}}')
+          $('.logo').addClass('{{logged_client.color}}')
+          if ('{{logged_client.color}}' !==''){
+            $('.color').addClass('text-dark font-weight-bold')
+          }
+          console.log(color['{{logged_client.color}}'])
+          // $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
+          $('.border').addClass('border-dark')
+          $('#myaccount').on('click',()=>{
+                
+                $('#details').toggleClass('d-none')
+                $('#navbarDropdownMenuLink').attr('data-toggle','')
+              })
+              $('#closebar').on('click',()=>{
+                $('#details').toggleClass('d-none')
+                $('#navbarDropdownMenuLink').attr('data-toggle','dropdown')
+              })
               $('li').removeClass('active')
               $('#li1').addClass('active')
-            })
-          </script>
+        });
+    </script>
+      
         <script>
             $(document).ready( function () {
                 $('#table_id').DataTable();

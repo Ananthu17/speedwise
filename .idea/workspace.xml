@@ -20,10 +20,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts_group.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/mmsmessages.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/mmsmessages.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/sidebar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,19 +74,19 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../master" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/speedwise/smsapp" />
-      <recent name="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp" />
       <recent name="$PROJECT_DIR$/speedwise/assets/js" />
       <recent name="$PROJECT_DIR$/speedwise/media/media/mmsattachments" />
       <recent name="$PROJECT_DIR$/speedwise/smsapp" />
       <recent name="$PROJECT_DIR$/speedwise" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/speedwise/smsapp" />
+      <recent name="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -308,14 +311,20 @@
       <option name="project" value="LOCAL" />
       <updated>1597263430648</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Changed backend for MMSMessage template change.">
+      <created>1597294936115</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1597294936115</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Message send functionality added" />
     <MESSAGE value="Merged frondend_login and dev_backend" />
     <MESSAGE value="Fixed client add pop-up issue" />
     <MESSAGE value="Merged branch" />
@@ -340,7 +349,8 @@
     <MESSAGE value="Added operators into clientprofile" />
     <MESSAGE value="Added action logs in client profile page, Logged in client in all pages can accedd by {{logged_client}}" />
     <MESSAGE value="Changed backend for message template change. Webhook inbound added (will create each reply as a new message with is_inbound flag). Merged color brach." />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed backend for message template change. Webhook inbound added (will create each reply as a new message with is_inbound flag). Merged color brach." />
+    <MESSAGE value="Changed backend for MMSMessage template change." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed backend for MMSMessage template change." />
   </component>
   <component name="WindowStateProjectService">
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594120959657">
@@ -351,10 +361,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="719" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597222322962" />
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1597263430497">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1597294935067">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1597263430497" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1597294935067" />
     <state x="152" y="127" width="1668" height="853" key="DiffContextDialog" timestamp="1595928759275">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -363,10 +373,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1597227288548" />
-    <state width="579" height="903" key="Git.Branch.Popup" timestamp="1597263197226">
+    <state width="585" height="909" key="Git.Branch.Popup" timestamp="1597343874801">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state width="579" height="903" key="Git.Branch.Popup/52.27.1868.1053@52.27.1868.1053" timestamp="1597263197226" />
+    <state width="585" height="909" key="Git.Branch.Popup/52.27.1868.1053@52.27.1868.1053" timestamp="1597343874801" />
     <state x="234" y="117" width="1494" height="879" key="MergeDialog" timestamp="1597145865381">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -375,10 +385,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1596388915781" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1597263437393">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1597294939107">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1597263437393" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1597294939107" />
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1595233255295">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>

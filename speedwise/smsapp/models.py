@@ -72,10 +72,22 @@ class AuthInformation(models.Model):
     def __str__(self):
         return self.user.username
 
+class ContactGroup(models.Model):
+    name=models.CharField(max_length=100,blank=True, null=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    create_date = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Contact(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
     mobile = models.CharField(max_length=20, blank=True, null=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    group = models.ForeignKey(ContactGroup, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True)
     is_active = models.BooleanField(default=True)

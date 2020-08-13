@@ -711,6 +711,79 @@ def delete_contact(request, contact_pk):
         messages.error(request, "Something went wrong")
         return redirect('contacts')
 
+class ContactsGroup_View(LoginRequiredMixin,TemplateView):
+    template_name = 'smsapp/contacts_group.html'
+    login_url = 'login'
+
+    def get_context_data(self, **kwargs):
+        context = super(ContactsGroup_View, self).get_context_data(**kwargs)
+        contactgroupform = ContactGroupForm
+        user = self.request.user
+        if user.is_authenticated:
+            if Client.objects.filter(user=self.request.user):
+                logged_client = Client.objects.get(user=self.request.user)
+                context['logged_client'] = logged_client
+            if ClientSubUser.objects.filter(user=self.request.user):
+                logged_client = ClientSubUser.objects.get(user=self.request.user).client
+                context['logged_client'] = logged_client
+            if self.request.user.is_superuser:
+                contact_groups = ContactGroup.objects.all()
+                clients = Client.objects.all()
+                context['contactgroupform'] = contactgroupform
+                context['clients'] = clients
+                context['contact_groups'] = contact_groups
+            else:
+                if Client.objects.filter(user=self.request.user):
+                    client = Client.objects.get(user=self.request.user)
+                if ClientSubUser.objects.filter(user=self.request.user):
+                    client = ClientSubUser.objects.get(user=self.request.user).client
+                contact_groups = ContactGroup.objects.filter(client=client)
+                context['contactgroupform'] = contactgroupform
+                context['contact_groups'] = contact_groups
+        else:
+            pass
+        return context
+
+    def post(self, request):
+        # try:
+        if ContactGroup.objects.filter(id=request.POST.get('contact_group_id')):
+            contact_group = ContactGroup.objects.get(id=request.POST.get('contact_group_id'))
+            contact_group.name = request.POST.get('name')
+            contact_group.user = self.request.user
+            contact_group.save()
+            action = str(self.request.user) + ' updated '+str(contact_group)+' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            ActionLogs.objects.create(user=request.user, action=action)
+            return redirect('contacts-groups')
+        elif request.POST.get('action_type') == 'enable_contact_group':
+            contact_group = ContactGroup.objects.get(id=request.POST.get('id'))
+            contact_group.is_active = request.POST.get('is_active') == 'true'
+            contact_group.save()
+            action = str(self.request.user) + ' enabled/disabled '+str(contact_group)+' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            ActionLogs.objects.create(user=request.user, action=action)
+            return redirect('contacts-groups')
+        else:
+            contactgroupform = ContactGroupForm(request.POST, request.FILES or None)
+            if contactgroupform.is_valid():
+                contact_group = contactgroupform.save()
+                if self.request.user.is_superuser:
+                    client = Client.objects.get(pk=request.POST.get('client'))
+                    contact_group.client = client
+                if Client.objects.filter(user=self.request.user):
+                    client = Client.objects.get(user=self.request.user)
+                    contact_group.client=client
+                if ClientSubUser.objects.filter(user=self.request.user):
+                    client = ClientSubUser.objects.get(user=self.request.user).client
+                    contact_group.client = client
+                contact_group.user = self.request.user
+                contact_group.save()
+                action = str(self.request.user) + ' created contact ' + str(contact_group) + ' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
+            return redirect('contacts-groups')
+        # except:
+        #     messages.error(request, "Something went wrong")
+        #     return redirect('contacts-groups')
+
+
 class Messages_View(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/messages.html'
     login_url = 'login'

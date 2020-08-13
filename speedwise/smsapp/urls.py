@@ -27,6 +27,7 @@ urlpatterns = [
     path('clients_sub_users', ClientSubUserView.as_view(), name='clients_sub_users'),
     path('operators', Operators.as_view(), name='operators'),
     path('operators/delete/<operator_pk>', views.delete_operator, name='deleteoperator'),
+    path('contacts-groups', ContactsGroup_View.as_view(), name='contacts-groups'),
     path('contacts', Contacts_View.as_view(), name='contacts'),
     path('contacts/delete/<contact_pk>', views.delete_contact, name='deletecontact'),
     path('contacts/import', views.import_contacts, name='importcontact'),

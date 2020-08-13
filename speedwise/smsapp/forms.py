@@ -60,11 +60,15 @@ class OperatorForm(forms.ModelForm):
             'is_active':forms.CheckboxInput(attrs={'class':'ml-1 mt-2'}),
         }
 
+class ContactGroupForm(forms.ModelForm):
+    class Meta:
+        model=ContactGroup
+        fields=['name','client','user','is_active','create_date']
 
 class ContactForm(forms.ModelForm):
     class Meta:
         model=Contact
-        fields=['name','mobile','user','country','is_active','create_date']
+        fields=['name','mobile','user','group','country','is_active','create_date']
         widgets = {
             'name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Name'}),
             'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile'}),

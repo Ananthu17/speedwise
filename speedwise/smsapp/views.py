@@ -881,6 +881,14 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
         context['mmsmessagingform'] = mmsmessagingform
         context['mmsmessageslist'] = mmsmessages
         context['contacts'] = contacts
+        threads = []
+        for contact in contacts:
+            thread = {
+                'contact': Contact.objects.get(id=contact.id),
+                'message': MMSMessages.objects.filter(contact=contact)
+            }
+            threads.append(thread)
+        context['messages_threads'] = threads
         context['templates'] = templates
         return context
 
@@ -889,7 +897,8 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
             contacts = request.POST.get('contactsList')
             destination_contacts = contacts.split(",")
             message_subject = request.POST.get("message_subject")
-            msg = request.POST.get("message_out")
+            msg = request.POST.get("message")
+            print(request.POST)
             for item in destination_contacts:
                 destination_contact = Contact.objects.get(id=item)
                 country_tele_code = destination_contact.country.country_tele_code
@@ -917,9 +926,8 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
                                 send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
                             if client.operator.code == 'TLX':
                                 telnyx.api_key = token
-                                mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message_out=msg,attachment=request.FILES.get('attachment'))
-                                print('http://localhost:8000'+str(mms_message_entry.attachment.url))
-                                print(country_tele_code+destination_contact_number)
+                                mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message=msg,attachment=request.FILES.get('attachment'))
+
                                 send_msg = telnyx.Message.create(
                                     from_=source_number,
                                     to=country_tele_code+destination_contact_number,

@@ -87,14 +87,14 @@ class MessagesForm(forms.ModelForm):
 class MMSMessagesForm(forms.ModelForm):
     class Meta:
         model=MMSMessages
-        fields=['client','user','contact','template','attachment','message_subject','message_out','message_reply','create_date','reply_date']
+        fields=['client','user','contact','template','attachment','message_subject','message','create_date']
         widgets ={
             'client':forms.Select(attrs={'class': 'form-control mb-1'}),
             'user':forms.Select(attrs={'class': 'form-control mb-1'}),
             'template': forms.Select(attrs={'class': 'form-control mb-1'}),
             'attachment':forms.FileInput(attrs={'class':"custom-file-input","id":"customFile"}),
             'message_subject':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'}),
-            'message_out':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'})
+            'message':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'})
         }
 
 class TemplateForm(forms.ModelForm):

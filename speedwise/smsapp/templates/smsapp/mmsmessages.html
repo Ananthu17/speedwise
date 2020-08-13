@@ -10,10 +10,16 @@
     </div>
     <div class="table mt-4" style="width: 96% !important;">
 
-
-<!--        {% for notification in notifications %}-->
-<!--            {{notification}}-->
-<!--        {% endfor %}-->
+        {% for thread in messages_threads %}
+        <b>{{thread.contact}}</b>
+        {% for message in thread.message%}
+        {% if message.is_inbound %}
+        <i>{{message}}</i>
+        {% elif message.is_inbound == False %}
+        {{message}}
+        {% endif %}
+        {% endfor %}<br>
+        {% endfor %}
         <table class="table  mt-4 ml-4" style="width:100%;">
         <thead class="text-primary">
             <tr class="mt-0" >
@@ -62,10 +68,8 @@
                             </select>
                             <label for="message_subject">Subject :</label>
                             <textarea name="message_subject" id="message_subject"  value="{{message.message_subject}}" class="form-control">{{message.message_subject}}</textarea>
-                            <label for="msgout">Message Out :</label>
-                            <textarea name="msgout" id="msgout"  value="{{message.message_out}}" class="form-control">{{message.message_out}}</textarea>
-                            <label for="msgrply">Message Reply :</label>
-                            <textarea name="msgrply" id="msgrply"  value="{{message.message_reply}}" class="form-control">{{message.message_reply}}</textarea>
+                            <label for="msgout">Message :</label>
+                            <textarea name="msgout" id="msgout"  value="{{message.message}}" class="form-control">{{message.message}}</textarea>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary btn-sm">change</button>
@@ -139,7 +143,7 @@
                         </div>
                         <div>
                             <label for="msg_out">Message :</label>
-                            {{ mmsmessagingform.message_out }}
+                            {{ mmsmessagingform.message }}
                         </div>
                         <div>
                             <label for="attachment">Attachment :</label>

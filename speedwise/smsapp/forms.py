@@ -57,13 +57,20 @@ class OperatorForm(forms.ModelForm):
             'token':forms.TextInput(attrs={'class': 'form-control','placeholder':'Token'}),
             'operator_number':forms.TextInput(attrs={'class': 'form-control','placeholder':'Number'}),
             'create_date':forms.TextInput(attrs={'class': 'form-control'}),
-            'is_active':forms.CheckboxInput(attrs={'class':'ml-1 mt-2'}),
+            'is_active':forms.CheckboxInput(attrs={'class':'ml-1 mt-1'}),
         }
 
 class ContactGroupForm(forms.ModelForm):
     class Meta:
         model=ContactGroup
         fields=['name','client','user','is_active','create_date']
+        widgets={
+            'name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Name'}),
+            'client':forms.Select(attrs={'class': 'form-control'}),
+            'user':forms.Select(attrs={'class': 'form-control'}),
+            'create_date':forms.TextInput(attrs={'class': 'form-control','placeholder':''}),
+            'is_active':forms.CheckboxInput(attrs={'class':'ml-2 mt-1'}),
+        }
 
 class ContactForm(forms.ModelForm):
     class Meta:

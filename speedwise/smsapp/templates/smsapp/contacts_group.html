@@ -103,7 +103,24 @@
 {% endblock %}
 
 {% block add_script %}
-
+<script>
+    const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
+    document.addEventListener("DOMContentLoaded", function(){
+        setTimeout(()=>{
+            $('.panel').addClass('d-none');
+            
+          }, 700);
+        $('.sidebar-wrapper').addClass('{{logged_client.color}}')
+        $('.logo').addClass('{{logged_client.color}}')
+        if ('{{logged_client.color}}' !==''){
+			$('.color').addClass('text-dark font-weight-bold')
+		}
+        $('li').removeClass('active')
+        $('#li9').addClass('active')
+        $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
+        
+    });
+</script>
 
 
 {% endblock%}

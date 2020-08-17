@@ -18,6 +18,10 @@
 <script>
 	const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
 	document.addEventListener("DOMContentLoaded", function(){
+		setTimeout(()=>{
+            $('.panel').addClass('d-none');
+            
+          }, 500);
 		$('li').removeClass('active')
       	$('#li7').addClass('active')
 		$('.sidebar-wrapper').addClass('{{logged_client.color}}')
@@ -25,7 +29,7 @@
 		if ('{{logged_client.color}}' !==''){
 			$('.color').addClass('text-dark font-weight-bold')
 		}
-		// $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
+		$('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
 	  });
   </script>
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>

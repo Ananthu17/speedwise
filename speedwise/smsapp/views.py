@@ -814,11 +814,13 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                 notifications = Notifications.objects.filter(client=client)
                 context['notifications'] = notifications
             messages = Messages.objects.filter(client=client)
+        contacts_gp = ContactGroup.objects.all()
 
         templates = Templates.objects.all()
         context['messagingform'] = messagingform
         context['messageslist'] = messages
         context['contacts'] = contacts
+        context['contacts_group'] = contacts_gp
         threads = []
         for contact in contacts:
             thread = {
@@ -962,6 +964,8 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
             }
             threads.append(thread)
         context['messages_threads'] = threads
+        contacts_gp = ContactGroup.objects.all()
+        context['contacts_group'] = contacts_gp
         context['templates'] = templates
         return context
 

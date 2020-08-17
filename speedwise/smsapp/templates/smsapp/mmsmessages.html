@@ -9,174 +9,192 @@
         <button class="btn btn-success btn-sm  float-right mr-5" data-toggle="modal" data-target="#exampleModal"> <i class="nc-icon nc-simple-add mr-1"></i>Add</button>
     </div>
     <div class="table mt-4" style="width: 96% !important;">
-
-        {% for thread in messages_threads %}
-        <b>{{thread.contact}}</b>
-        {% for message in thread.message%}
-        {% if message.is_inbound %}
-        <i>{{message}}</i>
-        {% elif message.is_inbound == False %}
-        {{message}}
-        {% endif %}
-        {% endfor %}<br>
-        {% endfor %}
         <table class="table  mt-4 ml-4" style="width:100%;">
-        <thead class="text-primary">
-            <tr class="mt-0" >
-            <th><h5>MMS Message</h5></th>
-            <th><h5>Date</h5></th>
-            <th><h5>Edit</h5></th>
-            <th><h5>Delete</h5></th>
-            </tr>
-        </thead>
-        <tbody >
-            {% for message in mmsmessageslist %}
-            <tr>
-            <td><h6>{{message}}</h6></td>
-            <td><h6>{{message.create_date}}</h6></td>
-            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-secondary" data-toggle="modal" data-target="#exampleeditModal{{message.id}}"><i class="fa fa-edit"></i></a></h6></td>
-            <td ><h6 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal{{message.id}}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
-            </tr>
-            <!-- Modal edit -->
-            <div class="modal fade" id="exampleeditModal{{message.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form action="" method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
+            <thead class="text-primary">
+                <tr class="mt-0" >
+                <th><h5>Messages</h5></th>
+                <th><h5>Chat</h5></th>
+                <th><h5>Delete</h5></th>
+                </tr>
+            </thead>
+            <tbody >
+                {% for message in messages_threads %}
+                <tr>
+                <td><h6><a href="javascript:void(0)" class="btn btn-link btn-info">{{message.contact}}</a></h6></td>
+                <td><h5 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#msgModal{{message.id}}" class="text-success"><i class=" fas fa-comments"></i></a></h5></td>
+                <td ><h6 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal{{message.id}}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+                </tr>
+                <!-- Modal Chat -->
+                <div class="modal fade" id="msgModal{{message.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form action="" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Conversation</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <section class="">
+                                    <main class="msger-chat">
+                                      {% for msg in message.message %}
+                                        {% if msg.is_inbound == False %}
+                                        <div class="msg left-msg">
+                                          <div
+                                          class="msg-img"
+                                          style="background-image: url(https://image.flaticon.com/icons/svg/327/327779.svg)"
+                                          ></div>
+                                    
+                                          <div class="msg-bubble">
+                                            <div class="msg-info">
+                                              <div class="msg-info-name">{{msg.client}}</div>
+                                              <div class="msg-info-time">{{msg.create_date}}</div>
+                                            </div>
+                                    
+                                            <div class="msg-text">
+                                              {{msg}}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="msg right-msg">
+                                          <div
+                                          class="msg-img"
+                                          style="background-image: url(https://image.flaticon.com/icons/svg/145/145867.svg)"
+                                          ></div>
+                                    
+                                          <div class="msg-bubble">
+                                            <div class="msg-info">
+                                              <div class="msg-info-name">{{message.contact}}</div>
+                                              <div class="msg-info-time">{{msg.create_date}}</div>
+                                            </div>
+                                    
+                                            <div class="msg-text">
+                                              {{msg}}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        {% endif %}
+                                      {% endfor %}
+                                    </main>
+                                  </section>
+                            </div>
+                            
+                        </form>
+                    </div>
+                    </div>
+                </div>
+                <!-- edit modal end  -->
+                <!-- Modal HTML -->
+              <div id="myModal{{message.id}}" class="modal fade">
+                <div class="modal-dialog modal-confirm">
+                    <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Message Profile</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <div class="row " style="margin-left: 120px;">
+                                <div class="icon-box">
+                                    <i class="fas fa-times"></i>
+                                </div>	
+                            </div>
+                            <div class="row">
+                                
+                            </div>
+                                                
+                            
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <label for="name"> Client :</label>
-                            <select name="name" id="name" class="form-control" disabled>
-                                <option value="{{message.client}}" selected>{{message.client}}</option>
-                            </select>
-                            <label for="user"> User :</label>
-                            <select name="user" id="user" class="form-control" disabled>
-                                <option value="{{message.user}}" selected>{{message.user}}</option>
-                            </select>
-                            <label for="contact"> Contact :</label>
-                            <select name="contact" id="contact" class="form-control" disabled>
-                                <option value="{{message.contact}}" selected>{{message.contact}}</option>
-                            </select>
-                            <label for="template"> Template :</label>
-                            <select name="template" id="template" class="form-control">
-                                <option value="{{message.template}}" selected>{{message.template}}</option>
-                            </select>
-                            <label for="message_subject">Subject :</label>
-                            <textarea name="message_subject" id="message_subject"  value="{{message.message_subject}}" class="form-control">{{message.message_subject}}</textarea>
-                            <label for="msgout">Message :</label>
-                            <textarea name="msgout" id="msgout"  value="{{message.message}}" class="form-control">{{message.message}}</textarea>
+                            <h4 class="mb-3 mt-0">Are you sure?</h4>
+                            <p>Do you really want to delete these records? This process cannot be undone.</p>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary btn-sm">change</button>
+                        <div class="modal-footer row" style="padding: 12px 53px 25px;">
+                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                            <a href="" class="btn btn-danger text-white pt-2">Delete</a>
                         </div>
-                    </form>
+                    </div>
                 </div>
-                </div>
-            </div>
-            <!-- edit modal end  -->
-            <!-- Modal HTML -->
-          <div id="myModal{{message.id}}" class="modal fade">
-            <div class="modal-dialog modal-confirm">
-                <div class="modal-content">
+            </div>  
+            <!-- delete modal end  -->
+            {% endfor %}
+    
+            </tbody>
+            </table>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{% url 'mmsmessaging' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="modal-header">
-                        <div class="row " style="margin-left: 120px;">
-                            <div class="icon-box">
-                                <i class="fas fa-times"></i>
-                            </div>
-                        </div>
-                        <div class="row">
-
-                        </div>
-
-
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h5 class="modal-title" id="exampleModalLabel">Add Message</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
-                        <h4 class="mb-3 mt-0">Are you sure?</h4>
-                        <p>Do you really want to delete these records? This process cannot be undone.</p>
-                    </div>
-                    <div class="modal-footer row" style="padding: 12px 53px 25px;">
-                        <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                        <a href="{% url 'deletemessage' message.id %}" class="btn btn-danger text-white pt-2">Delete</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- delete modal end  -->
-            {% endfor %}
-
-        </tbody>
-        </table>
-    </div>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form action="{% url 'mmsmessaging' %}" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add Message</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="msg" class="">
-                        {% if user.is_superuser %}
-                        <div>
-                            <label for="client">Client :</label>
-                            {{ mmsmessagingform.client }}
-                        </div>
-                        {% endif %}
-                        <div>
-                            <label for="tmp">Template :</label>
-                            {{ mmsmessagingform.template }}
-                        </div>
-                        <div>
-                            <label for="message_subject">Subject :</label>
-                            {{ mmsmessagingform.message_subject }}
-                        </div>
-                        <div>
-                            <label for="msg_out">Message :</label>
-                            {{ mmsmessagingform.message }}
-                        </div>
-                        <div>
-                            <label for="attachment">Attachment :</label>
-                            <div class="custom-file">
-                                {{ mmsmessagingform.attachment }}
-                                <label class="custom-file-label" for="customFile">Choose file</label>
+                        <div id="msg" class="">
+                            {% if user.is_superuser %}
+                            <div>
+                                <label for="client">Client :</label>
+                                {{ mmsmessagingform.client }}
+                            </div>
+                            {% endif %}
+                            <div>
+                                <label for="tmp">Template :</label>
+                                <select name="" id="tmp" class="form-control" onchange="add_temp()">
+                                    <option value="1" selected hidden>None</option>
+                                    {% for tmp in templates %}
+                                      <option value="{{tmp.message_template}}">{{tmp}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label for="message_subject">Subject :</label>
+                                {{ mmsmessagingform.message_subject }}
+                            </div>
+                            <div>
+                                <label for="msg_out">Message :</label>
+                                {{ mmsmessagingform.message }}
+                            </div>
+                            <div>
+                                <label for="attachment">Attachment :</label>
+                                <div class="custom-file">
+                                    {{ mmsmessagingform.attachment }}
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                </div>
                             </div>
                         </div>
+                        <div class="d-none" id="contactsTable">
+                            <table id="table_id" class="display">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Select</th>
+                                </tr>
+                                {% for name in contacts_group %}
+                                    <tr>
+                                        <td><span class="text-danger">{{name}} Group</span></td>
+                                        <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
+                                    </tr>
+                                    {% endfor %}
+                                {% for name in contacts %}
+                                <tr>
+                                    <td>{{name}}</td>
+                                    <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
                     </div>
-                    <div class="d-none" id="contactsTable">
-                        <table id="table_id" class="display">
-                            <tr>
-                                <th>Name</th>
-                                <th>Select</th>
-                            </tr>
-                            {% for name in contacts %}
-                            <tr>
-                                <td>{{name}}</td>
-                                <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
-                            </tr>
-                            {% endfor %}
-                        </table>
+                    <div class="modal-footer">
+                        <input type="hidden" name="contactsList"  id="con" value="">
+                        <button type="button" class="btn btn-primary btn-sm" id="next" onclick="rem()">Next</button>
+                        <button type="submit" class="btn btn-primary btn-sm d-none" id="submit">Send</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="hidden" name="contactsList"  id="con" value="">
-                    <button type="button" class="btn btn-primary btn-sm" id="next" onclick="rem()">Next</button>
-                    <button type="submit" class="btn btn-primary btn-sm d-none" id="submit">Send</button>
-                </div>
-            </form>
+                </form>
+            </div>
+            </div>
         </div>
-        </div>
-    </div>
     {% endblock %}
 
     {% block add_script %}
@@ -184,12 +202,16 @@
             <script>
                 const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
                 document.addEventListener("DOMContentLoaded", function(){
+                    setTimeout(()=>{
+                    $('.panel').addClass('d-none');
+                    
+                }, 700);
                     $('.sidebar-wrapper').addClass('{{logged_client.color}}')
                     $('.logo').addClass('{{logged_client.color}}')
                     if ('{{logged_client.color}}' !==''){
                         $('.color').addClass('text-dark font-weight-bold')
                     }
-                    // $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
+                    $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
                 });
             </script>
         <script>
@@ -228,6 +250,12 @@
                 array.push(data)
                 console.log(array)
                 $('#con').attr('value',`${array}`)
+            }
+            const add_temp = ()=>{
+              console.log('resh')
+              console.log(document.getElementById('tmp').value)
+              const textarea = document.getElementById('id_message')
+              textarea.value = document.getElementById('tmp').value
             }
         </script>
         <script>

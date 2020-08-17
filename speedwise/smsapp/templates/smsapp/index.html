@@ -26,13 +26,60 @@
   <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
   <!-- data tables  -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-  
-  
-  
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />  
 </head>
 
 <body class="">
+  
+ <style>
+   body {
+  background: #34495e;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 48%;
+}
+
+.line {
+  animation: expand 1s ease-in-out infinite;
+  border-radius: 10px;
+  display: inline-block;
+  transform-origin: center center;
+  margin: 0 3px;
+  width: 1px;
+  height: 25px;
+}
+
+.line:nth-child(1) {
+  background: #27ae60;
+}
+
+.line:nth-child(2) {
+  animation-delay: 180ms;
+  background: #f1c40f;
+}
+
+.line:nth-child(3) {
+  animation-delay: 360ms;
+  background: #e67e22;
+}
+
+.line:nth-child(4) {
+  animation-delay: 540ms;
+  background: #2980b9;
+}
+
+@keyframes expand {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(2);
+  }
+}
+ </style>
   <style>
     .dropdown-menu-custom {
         background-color: #FFFFFF;
@@ -209,17 +256,32 @@
     line-height: 1.4em;
     margin-bottom: 15px;
 }
+    .panel{
+      width: 100%;
+      height: 100%;
+    }
     </style>
     {% block css %}
     
     {% endblock %}
+    
+    
+  
   <div class="wrapper ">
+    <div class="panel bg-white" style="position: fixed;z-index: 3000;">
+      <div class="loader">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    </div>
     <!-- sidebar -->
     {% include 'smsapp/sidebar.html' %}
     <!-- end sidebar  -->
     <div class="main-panel" style="height: 1200px;">
       <!-- Navbar -->
-      <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent">
+      <nav class="navbar navbar-expand-lg navbar-absolute fixed-top navbar-transparent color">
         <div class="container-fluid">
           <div class="navbar-wrapper">
             <div class="navbar-toggle">
@@ -297,6 +359,7 @@
         </div>
         
         <div class="row">
+          
           <div class="col-md-12">
             <div class="card mt-4" id="card" style="position: relative;">
             {% block content %} {% endblock %}
@@ -335,6 +398,13 @@
     integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
     crossorigin="anonymous">
   </script>
+
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+  <script>
+    $(document).ready( function () {
+    $('#myTable').DataTable();
+    } );
+  </script>
   {% block add_script %}
     
    
@@ -342,6 +412,10 @@
   
   <script>
       $(document).ready(()=>{
+        setTimeout(()=>{
+            $('.panel').addClass('d-none');
+            
+          }, 500);
     
         
       $('#myaccount').on('click',()=>{
@@ -373,7 +447,7 @@
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static 'assets/js/paper-dashboard.min.js" type="text/javascript"></script>
 
-  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+  
 </body>
 
 </html>

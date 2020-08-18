@@ -21,7 +21,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp.zip" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts_group.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts_group.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +55,7 @@
     </favorite-branches>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Contact-Groups" />
+        <entry key="$PROJECT_DIR$" value="Notifications_and_Merged_Aug_17" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -389,18 +391,18 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="769" y="311" width="424" height="491" key="FileChooserDialogImpl/52.27.1868.1053@52.27.1868.1053" timestamp="1597742390330" />
-    <state width="607" height="931" key="Git.Branch.Popup" timestamp="1597765216274">
+    <state width="611" height="935" key="Git.Branch.Popup" timestamp="1597765371279">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state width="607" height="931" key="Git.Branch.Popup/52.27.1868.1053@52.27.1868.1053" timestamp="1597765216274" />
+    <state width="611" height="935" key="Git.Branch.Popup/52.27.1868.1053@52.27.1868.1053" timestamp="1597765371279" />
     <state x="234" y="117" width="1494" height="879" key="MergeDialog" timestamp="1597145865381">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="234" y="117" width="1494" height="879" key="MergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597145865381" />
-    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1596388915781">
+    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog" timestamp="1597765391029">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1596388915781" />
+    <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597765391029" />
     <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1597730757264">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -417,10 +419,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="676" y="292" width="881" height="522" key="find.popup/52.27.1868.1053@52.27.1868.1053" timestamp="1597346913395" />
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1597684550173">
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog" timestamp="1597765374396">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597684550173" />
+    <state x="647" y="247" width="668" height="619" key="git4idea.branch.GitSmartOperationDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597765374396" />
     <state x="649" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1597754239417">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>

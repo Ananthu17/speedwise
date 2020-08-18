@@ -35,6 +35,12 @@ class DashboardView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
         context['client'] = Client.objects.all()
+        if Client.objects.filter(user=self.request.user):
+            logged_client = Client.objects.get(user=self.request.user)
+            context['logged_client'] = logged_client
+        if ClientSubUser.objects.filter(user=self.request.user):
+            logged_client = ClientSubUser.objects.get(user=self.request.user).client
+            context['logged_client'] = logged_client
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -277,6 +283,7 @@ class LoginView(TemplateView):
 
 def enable_2fa(request):
     if request.method=='GET':
+
         user_exist = AuthInformation.objects.filter(user=request.user)
         if user_exist:
             user_2fa = AuthInformation.objects.get(user=request.user)
@@ -641,7 +648,6 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                 ActionLogs.objects.create(user=request.user, action=action)
                 return redirect('contacts')
             elif request.POST.get('action_type') == 'enable_contact':
-                print(request.POST.get('id'),request.POST.get('is_active'),"fffffff")
                 contact = Contact.objects.get(id=request.POST.get('id'))
                 contact.is_active = request.POST.get('is_active') == 'true'
                 contact.save()

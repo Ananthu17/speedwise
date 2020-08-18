@@ -202,9 +202,16 @@ label[for="et_pb_contact_brand_file_request_0"] {
                 </div>
             </div>  
             <!-- delete modal end  -->
-            
+            <script
+                src="https://code.jquery.com/jquery-2.2.4.js"
+                integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+                crossorigin="anonymous">
+                </script>
                 <script>
                     $(document).ready(()=>{
+
+                    $('li').removeClass('active')
+                    $('#li4').addClass('active')
                     $('#contact_enable{{contact.id}}').change(function() {
                         $.post("{% url 'contacts' %}", {
                             action_type:'enable_contact',

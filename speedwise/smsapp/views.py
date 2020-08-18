@@ -5,6 +5,7 @@ from .models import *
 import pandas as pd
 import json
 import datetime
+from datetime import timedelta
 import dateutil.relativedelta
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -1249,7 +1250,7 @@ class MessageResposeView(APIView):
                 from_contact = Contact.objects.get(mobile=values.get('from'))
                 from_message = values.get('message')
                 if not Messages.objects.filter(contact=from_contact, message=from_message, is_inbound=True):
-                    inbound_message = Messages.objects.create(contact=from_contact, message=from_message, is_inbound=True)
+                    inbound_message = Messages.objects.create(contact=from_contact,client=from_contact.client,message=from_message, is_inbound=True)
                     notification = 'Message received from '+str(from_contact)
                     notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
                                                                       contact=from_contact, client=from_contact.client,
@@ -1261,7 +1262,7 @@ class MessageResposeView(APIView):
                 from_contact = Contact.objects.get(mobile=from_phone_number)
                 from_message = values.get('data').get('payload').get('text')
                 if not Messages.objects.create(contact=from_contact,message=from_message,is_inbound=True):
-                    inbound_message = Messages.objects.create(contact=from_contact,message=from_message,is_inbound=True)
+                    inbound_message = Messages.objects.create(contact=from_contact,client=from_contact.client,message=from_message,is_inbound=True)
                     notification = 'Message received from ' + str(from_contact)
                     notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
                                                                       contact=from_contact, client=from_contact.client,
@@ -1282,10 +1283,126 @@ class ReportsView(TemplateView):
             logged_client = ClientSubUser.objects.get(user=self.request.user).client
             context['logged_client'] = logged_client
         now = datetime.now()
+        last_three_month = now + dateutil.relativedelta.relativedelta(months=-3)
         last_month = now + dateutil.relativedelta.relativedelta(months=-1)
+        last_week = now + dateutil.relativedelta.relativedelta(weeks=-1)
+        # bar chart start
+        if self.request.user.is_superuser:
+            delta = now - last_three_month
+            periods = []
+            sms_telnyx = []
+            sms_thinq = []
+            mms_telnyx = []
+            mms_thinq = []
+            for i in range(delta.days):
+                week=(last_three_month+dateutil.relativedelta.relativedelta(days=i)).isocalendar()[:2]
+                yearweek = '{}/{:02}'.format(*week)
+                periods.append(yearweek)
+            for i in sorted(set(periods)):
+                year=i.split('/')[0]
+                week=i.split('/')[1]
+                sms_telnyx.append(Messages.objects.filter(is_inbound=False,create_date__year=year,create_date__week=week,client__operator__code='TLX').count())
+                sms_thinq.append(Messages.objects.filter(is_inbound=False,create_date__year=year,create_date__week=week,client__operator__code='THQ').count())
+                mms_telnyx.append(MMSMessages.objects.filter(is_inbound=False,create_date__year=year,create_date__week=week,client__operator__code='TLX').count())
+                mms_thinq.append(MMSMessages.objects.filter(is_inbound=False,create_date__year=year,create_date__week=week,client__operator__code='THQ').count())
 
-        total_sms_sent = Messages.objects.filter(is_inbound=False).count()
-        total_sms_sent_last_month = Messages.objects.filter(is_inbound=False).filter(create_date__gte=now,create_date__lte=last_month).count()
-        print(total_sms_sent_last_month)
-        total_mms_sent = MMSMessages.objects.filter(is_inbound=False).count()
+            total_sms_sent = Messages.objects.filter(is_inbound=False).count()
+            total_sms_sent_telnyx = Messages.objects.filter(is_inbound=False, client__operator__code='TLX').count()
+            total_sms_sent_thinq = Messages.objects.filter(is_inbound=False, client__operator__code='THQ').count()
+
+            total_mms_sent = MMSMessages.objects.filter(is_inbound=False).count()
+            total_mms_sent_telnyx = MMSMessages.objects.filter(is_inbound=False, client__operator__code='TLX').count()
+            total_mms_sent_thinq = MMSMessages.objects.filter(is_inbound=False, client__operator__code='THQ').count()
+
+            total_sms_sent_last_month = Messages.objects.filter(is_inbound=False).filter(create_date__gte=now,create_date__lte=last_month).count()
+            total_sms_sent_last_month_telnyx = Messages.objects.filter(is_inbound=False,client__operator__code='TLX').filter(create_date__gte=now,create_date__lte=last_month).count()
+            total_sms_sent_last_month_thinq = Messages.objects.filter(is_inbound=False,client__operator__code='THQ').filter(create_date__gte=now,create_date__lte=last_month).count()
+
+            total_mms_sent_last_month = MMSMessages.objects.filter(is_inbound=False).filter(create_date__gte=now,create_date__lte=last_month).count()
+            total_mms_sent_last_month_telnyx = MMSMessages.objects.filter(is_inbound=False,client__operator__code='TLX').filter(create_date__gte=now, create_date__lte=last_month).count()
+            total_mms_sent_last_month_thinq = MMSMessages.objects.filter(is_inbound=False,client__operator__code='THQ').filter(create_date__gte=now, create_date__lte=last_month).count()
+
+            total_sms_sent_last_week = Messages.objects.filter(is_inbound=False).filter(create_date__gte=now,create_date__lte=last_week).count()
+            total_sms_sent_last_week_telnyx = Messages.objects.filter(is_inbound=False,client__operator__code='TLX').filter(create_date__gte=now,create_date__lte=last_week).count()
+            total_sms_sent_last_week_thinq = Messages.objects.filter(is_inbound=False,client__operator__code='THQ').filter(create_date__gte=now,create_date__lte=last_week).count()
+
+            total_mms_sent_last_week = MMSMessages.objects.filter(is_inbound=False).filter(create_date__gte=now,create_date__lte=last_week).count()
+            total_mms_sent_last_week_telnyx = MMSMessages.objects.filter(is_inbound=False,client__operator__code='TLX').filter(create_date__gte=now, create_date__lte=last_week).count()
+            total_mms_sent_last_week_thinq = MMSMessages.objects.filter(is_inbound=False, client__operator__code='THQ').filter(create_date__gte=now, create_date__lte=last_week).count()
+
+            # bar chart end
+            # pie chart start
+            client_names = []
+            sms_sent_by_clients = []
+            mms_sent_by_clients = []
+            clients = Client.objects.all()
+            for client in clients:
+                client_names.append(Client.objects.get(id=client.id).user.first_name)
+                sms_sent_by_clients.append(Messages.objects.filter(is_inbound=False,client=client).count())
+                mms_sent_by_clients.append(MMSMessages.objects.filter(is_inbound=False,client=client).count())
+            # pie chart end
+
+            context['client_names'] = client_names
+            context['sms_sent_by_clients'] = sms_sent_by_clients
+            context['sms_sent_by_clients'] = sms_sent_by_clients
+
+            context['total_sms_sent'] = total_sms_sent
+            context['total_sms_sent_telnyx'] = total_sms_sent_telnyx
+            context['total_sms_sent_thinq'] = total_sms_sent_thinq
+            context['total_mms_sent'] = total_mms_sent
+            context['total_mms_sent_telnyx'] = total_mms_sent_telnyx
+            context['total_mms_sent_thinq'] = total_mms_sent_thinq
+            context['total_sms_sent_last_month'] = total_sms_sent_last_month
+            context['total_sms_sent_last_month_telnyx'] = total_sms_sent_last_month_telnyx
+            context['total_sms_sent_last_month_thinq'] = total_sms_sent_last_month_thinq
+            context['total_mms_sent_last_month'] = total_mms_sent_last_month
+            context['total_mms_sent_last_month_telnyx'] = total_mms_sent_last_month_telnyx
+            context['total_mms_sent_last_month_thinq'] = total_mms_sent_last_month_thinq
+            context['total_sms_sent_last_week'] = total_sms_sent_last_week
+            context['total_sms_sent_last_week_telnyx'] = total_sms_sent_last_week_telnyx
+            context['total_sms_sent_last_week_thinq'] = total_sms_sent_last_week_thinq
+            context['total_mms_sent_last_week'] = total_mms_sent_last_week
+            context['total_mms_sent_last_week_telnyx'] = total_mms_sent_last_week_telnyx
+            context['total_mms_sent_last_week_thinq'] = total_mms_sent_last_week_thinq
+            context['sms_telnyx'] = sms_telnyx
+            context['sms_thinq'] = sms_thinq
+            context['mms_telnyx'] = mms_telnyx
+            context['mms_telnyx'] = mms_telnyx
+            context['period'] = sorted(set(periods))
+        else:
+            total_sms_sent = Messages.objects.filter(is_inbound=False,client=logged_client).count()
+            total_sms_sent_last_month = Messages.objects.filter(is_inbound=False,client=logged_client).filter(create_date__gte=now,create_date__lte=last_month).count()
+            total_sms_sent_last_week = Messages.objects.filter(is_inbound=False,client=logged_client).filter(create_date__gte=now,create_date__lte=last_month).count()
+
+            delta = now - last_three_month
+            periods = []
+            sms_out = []
+            sms_in = []
+            for i in range(delta.days):
+                week = (last_three_month + dateutil.relativedelta.relativedelta(days=i)).isocalendar()[:2]
+                yearweek = '{}/{:02}'.format(*week)
+                periods.append(yearweek)
+            for i in sorted(set(periods)):
+                year = i.split('/')[0]
+                week = i.split('/')[1]
+                sms_out.append(Messages.objects.filter(is_inbound=False, create_date__year=year, create_date__week=week,client=logged_client).count())
+                sms_in.append(Messages.objects.filter(is_inbound=True, create_date__year=year, create_date__week=week,client=logged_client).count())
+
+            # pie chart start
+            contact_group_names = []
+            sms_sent_by_contact_groups = []
+            mms_sent_by_contact_groups = []
+            contact_groups = ContactGroup.objects.filter(client=logged_client)
+            for contact_group in contact_groups:
+                contact_group_names.append(ContactGroup.objects.get(id=contact_group.id).name)
+                sms_sent_by_contact_groups.append(Messages.objects.filter(is_inbound=False,contact__group=contact_group).count())
+                mms_sent_by_contact_groups.append(MMSMessages.objects.filter(is_inbound=False,contact__group=contact_group).count())
+            # pie chart end
+
+            context['total_sms_sent']=total_sms_sent
+            context['total_sms_sent_last_month']=total_sms_sent_last_month
+            context['total_sms_sent_last_week']=total_sms_sent_last_week
+            context['sms_out']=sms_out
+            context['sms_in']=sms_in
+            context['period'] = sorted(set(periods))
         return context

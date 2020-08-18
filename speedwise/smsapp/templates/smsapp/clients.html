@@ -200,12 +200,15 @@
                 <span class="mb-1">Credits Limit :</span>
                 {{ clientform.credit_limit }}
               </div>
-              <select class="form-control mb-1" multiple="multiple" name="countries" id="countries">
-                  <option value="">Enter the option</option>
+              <div class="row p-2">
+                <span class="mb-1">Block Countries:</span>
+                <select class="js-example-basic-multiple" name="countries[]" multiple  id="countries">
+                  <option selected hidden >None</option>
                   {% for country in countries %}
                      <option value="{{ country.id }}">{{ country }}</option>
                   {% endfor %}
               </select>
+              </div>
               <div class="row p-2">
                 <span class="mb-1">Theme :</span>
                 {{ clientform.color }}

@@ -7,8 +7,33 @@
 {% block navbar_title %}Client Profile{% endblock %}
 {% block css %}
 <style>
- 
-
+ .pagination li {
+  display:inline-block;
+  padding:5px;
+  margin-left: .25rem!important;
+  user-select: none;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+}
+.pagination a {
+  /* border-width: 2px; */
+    font-weight: 600;
+    font-size: 0.9971em;
+    line-height: 1.35em;
+    text-transform: uppercase;
+    /* border: none; */
+    margin: 10px 1px;
+    border-radius: 3px;
+    /* padding: 11px 22px; */
+    cursor: pointer;
+    /* background-color: #51cbce; */
+    color: #51cbce;
+    transition: all 150ms linear;
+    border: 0;
+    padding: 0.5rem 0.7rem;
+    background-color: transparent;
+}
 .custom-file-input {
   /* padding: 5px; */
   /* color: #999; */
@@ -146,9 +171,15 @@ select:focus {
 {% endblock %}
 
 {% block link %}
+  {% if user.is_admin %}
   <ul class="navbar-nav">
     <a href="{% url 'clients' %}" class="ml-2">Back</a>
   </ul>
+  {% else %}
+  <ul class="navbar-nav">
+    <a href="{% url 'messaging' %}" class="ml-2">Back</a>
+  </ul>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -167,6 +198,7 @@ select:focus {
         <div class="text-center">
           <button class="btn btn-sm btn-info"  data-toggle="modal" data-target="#exampleModalcredit"><i class="nc-icon nc-simple-add"></i>&nbspAdd</button>
           <a href="javascript:void(0)" class="btn btn-sm btn-success shadow" data-toggle="modal" data-target="#myModal"><i class="nc-icon nc-simple-add"></i> User</a>
+          <a href="{% url 'enable-2fa' %}" class="btn btn-sm btn-danger shadow"><i class="nc-icon nc-button-power"></i> MFA</a>
         </div>
         <div class="p-4">
           <table class="table table-hover" style="border-style:solid;border-width:2px;border-width:2px;">
@@ -253,17 +285,20 @@ select:focus {
           <div class="tab-2">
             <label for="tab2-2" class="text-primary font-weight-bold">Logs</label>
             <input id="tab2-2" name="tabs-two" type="radio">
-            <div>
-              <table id="myTable">
-                <tr>
-                  <th>Logs</th>
-                </tr>
+            <div id="test-list">
+              <ul class="list">
                 {% for action_log in action_logs %}
-                  <tr>
-                    <td><h5 class="text-secondary">{{action_log}}</h5></td>
-                  </tr>
+                  <div class="row">
+                    <h6 class="text-danger mt-1">#</h6> &nbsp<h5 class="text-secondary"> {{action_log}}</h5>
+                  </div>
                 {% endfor %}
-              </table>
+              </ul>
+              <div class="p-3">
+                <div class="border-bottom"></div>
+              </div>
+              <div class="float-right mr-4">
+                <ul class="pagination"></ul>
+              </div>
             </div>
           </div>
         </div>
@@ -356,7 +391,7 @@ select:focus {
       </div>
     </div>
   </div>
-  
+
 {% endblock %}
 
 {% block add_script %}
@@ -365,7 +400,14 @@ select:focus {
     integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
     crossorigin="anonymous">
   </script>
-  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+  <script>
+    var monkeyList = new List('test-list', {
+      valueNames: ['name'],
+      page: 10,
+      pagination: true
+    });
+  </script>
   <script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function() {
@@ -382,9 +424,21 @@ select:focus {
   
 
   <script>
+    const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
     $(document).ready(()=>{
+      $('.sidebar-wrapper').addClass('{{logged_client.color}}')
+          $('.logo').addClass('{{logged_client.color}}')
+          $('').attr('style','border-right: 17px solid #382607;')
+          if ('{{logged_client.color}}' !==''){
+            $('.color').addClass('text-dark font-weight-bold')
+
+          }
+          console.log(color['{{logged_client.color}}'])
+      $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
+      $('.border').addClass('border-dark')
       $('#id_password1').attr('class','form-control mb-1')
       $('#id_password2').attr('class','form-control mb-1')
+      // $('.page').addClass('btn btn-link ml-1')
       $('span').addClass('d-none')
       $('#th').on('click',()=>{
         $('td').toggleClass('d-none')

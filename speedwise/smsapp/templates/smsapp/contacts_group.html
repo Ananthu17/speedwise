@@ -106,6 +106,16 @@
 <script>
     const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
     document.addEventListener("DOMContentLoaded", function(){
+        var styleNode = document.createElement('style');
+          styleNode.type = "text/css";
+          // browser detection (based on prototype.js)
+          if(!!(window.attachEvent && !window.opera)) {
+              styleNode.styleSheet.cssText = '.active::after{border-right: 17px solid '+ color['{{logged_client.color}}']+'!important;border-top: 17px solid transparent;border-bottom: 17px solid transparent;content: "";display: inline-block;position: absolute;right: -2px;opacity: 1;top: 160px;transition: opacity 150ms ease-in;}';
+          } else {
+              var styleText = document.createTextNode('.active::after{border-right: 17px solid'+ color['{{logged_client.color}}']+'!important;border-top: 17px solid transparent;border-bottom: 17px solid transparent;content: "";display: inline-block;position: absolute;right: -2px;opacity: 1;top: 146px;transition: opacity 150ms ease-in;}');
+              styleNode.appendChild(styleText);
+          }
+          document.getElementsByTagName('head')[0].appendChild(styleNode);
         setTimeout(()=>{
             $('.panel').addClass('d-none');
             

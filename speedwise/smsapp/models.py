@@ -41,8 +41,7 @@ class Client(models.Model):
     country = models.ForeignKey(Country,related_name='related_country',on_delete=models.CASCADE, null=True, blank=True)
     logo = models.FileField(upload_to='media/logos',blank=True, null=True)
     operator = models.ForeignKey(Operator, on_delete=models.CASCADE, null=True, blank=True)
-    credit_in = models.FloatField(null=True, blank=True, default=0.0)
-    credit_out = models.FloatField(null=True, blank=True, default=0.0)
+    credit = models.FloatField(null=True, blank=True, default=0.0)
     credit_limit = models.FloatField(null=True, blank=True, default=0.0)
     is_active = models.BooleanField(default=False)
     create_date = models.DateTimeField(default=datetime.now, blank=True)
@@ -63,6 +62,15 @@ class ClientSubUser(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class ClientCreditInOuts(models.Model):
+    amount = models.FloatField(null=True, blank=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
+    is_credit = models.BooleanField(default=False)
+    create_date = models.DateTimeField(default=datetime.now, blank=True)
+
+    def __str__(self):
+        return self.amount
 
 class AuthInformation(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
@@ -142,7 +150,7 @@ class Notifications(models.Model):
     create_date = models.DateTimeField(default=datetime.now, blank=True)
 
     def __str__(self):
-        return self.message_out
+        return self.notification
 
 class ActionLogs(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

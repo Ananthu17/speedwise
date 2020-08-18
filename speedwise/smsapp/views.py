@@ -4,6 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import *
 import pandas as pd
 import json
+import datetime
+import dateutil.relativedelta
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse
@@ -106,8 +108,7 @@ class ClientView(LoginRequiredMixin,TemplateView):
                     client.country = Country.objects.get(id=request.POST.get('own_country',''))
                 except:
                     None
-                client.credit_in = request.POST.get('credin', '')
-                client.credit_out = request.POST.get('credout', '')
+                client.credit = request.POST.get('credin', '')
                 client.credit_limit = request.POST.get('credlimit', '')
                 client.is_active = True if request.POST.get('active_status', '') == 'on' else False
                 try:
@@ -152,12 +153,14 @@ class ClientSubUserView(LoginRequiredMixin,TemplateView):
                 user = userform.save()
                 user.is_staff = False
                 user.save()
+                client = Client.objects.get(id=request.POST.get('client'))
                 clientsubuser = clientsubuserform.save()
                 clientsubuser.user = user
+                clientsubuser.client = client
                 clientsubuser.save()
                 action = str(request.user) + ' created ' +str(clientsubuser)+' at '+ datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 ActionLogs.objects.create(user=request.user, action=action)
-            return redirect('clientprofile',request.POST.get('client'))
+            return redirect('clientprofile',client.id)
         except:
             messages.error(request,"Something went wrong")
             return redirect('clients')
@@ -390,6 +393,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
         countries= Country.objects.all()
         operators = Operator.objects.all()
         action_logs = ActionLogs.objects.all()
+        credit_objects = ClientCreditInOuts.objects.filter(is_credit=True)
         if Client.objects.filter(user=self.request.user):
             logged_client = Client.objects.get(user=self.request.user)
             context['logged_client'] = logged_client
@@ -405,6 +409,9 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['userform'] = userform
             context['operators'] = operators
             context['action_logs'] = action_logs
+            context['credit_objects'] = credit_objects
+            notifications = Notifications.objects.all()
+            context['notifications'] = notifications
 
         else:
             client_sub_user_objects = ClientSubUser.objects.filter(client=Client.objects.get(user=self.request.user))
@@ -415,8 +422,10 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['userform'] = userform
             context['operators'] = operators
             context['action_logs'] = action_logs
+            context['credit_objects'] = credit_objects
 
         context['client'] = client_object
+        print(client_object.countries.all())
         context['countries']= countries
         return context
 
@@ -442,7 +451,8 @@ def add_client_credit(request,user_pk):
     try:
         client_object = Client.objects.get(pk=user_pk)
         credit_amount = request.POST.get('credit')
-        client_object.credit_in+=float(credit_amount)
+        credit_obj = ClientCreditInOuts.objects.create(amount=float(credit_amount),client=client_object,is_credit=True)
+        client_object.credit+=float(credit_amount)
         client_object.save()
         return redirect('clientprofile',user_pk)
     except:
@@ -453,7 +463,10 @@ def remove_client_credit(request,user_pk):
     try:
         client_object = Client.objects.get(pk=user_pk)
         remove_amount = request.POST.get('removecredit')
-        client_object.credit_in-=float(remove_amount)
+        if ClientCreditInOuts.objects.filter(id=request.POST.get('credit_id')):
+            credit_obj = ClientCreditInOuts.objects.get(id=request.POST.get('credit_id'))
+            credit_obj.delete()
+        client_object.credit-=float(remove_amount)
         client_object.save()
         return redirect('clientprofile',user_pk)
     except:
@@ -516,12 +529,17 @@ class Operators(LoginRequiredMixin,TemplateView):
         if Client.objects.filter(user=self.request.user):
             logged_client = Client.objects.get(user=self.request.user)
             context['logged_client'] = logged_client
+            notifications = Notifications.objects.filter(client=logged_client)
+            context['notifications'] = notifications
         if ClientSubUser.objects.filter(user=self.request.user):
             logged_client = ClientSubUser.objects.get(user=self.request.user).client
             context['logged_client'] = logged_client
+            notifications = Notifications.objects.filter(client=logged_client)
+            context['notifications'] = notifications
         if self.request.user.is_superuser:
             operators = Operator.objects.all()
             context['operators'] = operators
+            context['notifications'] = Notifications.objects.all()
         return context
 
     def post(self,request):
@@ -580,14 +598,18 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
             if ClientSubUser.objects.filter(user=self.request.user):
                 logged_client = ClientSubUser.objects.get(user=self.request.user).client
                 context['logged_client'] = logged_client
+
             if self.request.user.is_superuser:
                 countries = Country.objects.all()
                 contacts = Contact.objects.all()
                 clients = Client.objects.all()
+                notifications = Notifications.objects.all()
+                context['notifications'] = notifications
                 context['contactsform'] = contactform
                 context['contacts'] = contacts
                 context['countries'] = countries
                 context['clients'] = clients
+
             else:
                 if Client.objects.filter(user=self.request.user):
                     client = Client.objects.get(user=self.request.user)
@@ -595,6 +617,8 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                     client = ClientSubUser.objects.get(user=self.request.user).client
                 countries = client.countries.all()
                 contacts = Contact.objects.filter(client=client)
+                notifications = Notifications.objects.filter(client=client)
+                context['notifications'] = notifications
                 context['contactsform'] = contactform
                 context['contacts'] = contacts
                 context['countries'] = countries
@@ -666,29 +690,32 @@ def import_contacts(request):
                     client = Client.objects.get(user=request.user)
                     user = request.user
                     country = Country.objects.get(country_code=j[2])
+                    group = ContactGroup.objects.get(name=j[3]) or None
                     mobile = [character for character in str(j[1]) if character.isalnum()]
                     mobile = "".join(mobile)
                     if not Contact.objects.filter(name=j[0], mobile=mobile):
                         contact = Contact.objects.create(name=j[0], mobile=mobile, client=client, user=user,
-                                                         country=country)
+                                                         country=country,group=group)
                         contact.save()
                 elif ClientSubUser.objects.filter(user=request.user):
                     client = ClientSubUser.objects.get(user=request.user).client
                     user = request.user
                     country = Country.objects.get(country_code=j[2])
+                    group = ContactGroup.objects.get(name=j[3]) or None
                     mobile = [character for character in str(j[1]) if character.isalnum()]
                     mobile = "".join(mobile)
                     if not Contact.objects.filter(name=j[0], mobile=mobile):
                         contact = Contact.objects.create(name=j[0], mobile=mobile, client=client, user=user,
-                                                         country=country)
+                                                         country=country,group=group)
                         contact.save()
                 else:
                     user = request.user
                     country = Country.objects.get(country_code=j[2])
+                    group = ContactGroup.objects.get(name=j[3]) or None
                     mobile = [character for character in str(j[1]) if character.isalnum()]
                     mobile = "".join(mobile)
                     if not Contact.objects.filter(name=j[0], mobile=mobile):
-                        contact = Contact.objects.create(name=j[0], mobile=mobile, user=user,country=country)
+                        contact = Contact.objects.create(name=j[0], mobile=mobile, user=user,country=country,group=group)
                         contact.save()
             action = str(request.user) + ' imported contacts at ' + datetime.now().strftime(
                 "%d/%m/%Y %H:%M:%S")
@@ -729,6 +756,8 @@ class ContactsGroup_View(LoginRequiredMixin,TemplateView):
             if self.request.user.is_superuser:
                 contact_groups = ContactGroup.objects.all()
                 clients = Client.objects.all()
+                notifications = Notifications.objects.all()
+                context['notifications'] = notifications
                 context['contactgroupform'] = contactgroupform
                 context['clients'] = clients
                 context['contact_groups'] = contact_groups
@@ -737,6 +766,8 @@ class ContactsGroup_View(LoginRequiredMixin,TemplateView):
                     client = Client.objects.get(user=self.request.user)
                 if ClientSubUser.objects.filter(user=self.request.user):
                     client = ClientSubUser.objects.get(user=self.request.user).client
+                notifications = Notifications.objects.filter(client=client)
+                context['notifications'] = notifications
                 contact_groups = ContactGroup.objects.filter(client=client)
                 context['contactgroupform'] = contactgroupform
                 context['contact_groups'] = contact_groups
@@ -745,43 +776,43 @@ class ContactsGroup_View(LoginRequiredMixin,TemplateView):
         return context
 
     def post(self, request):
-        # try:
-        if ContactGroup.objects.filter(id=request.POST.get('contact_group_id')):
-            contact_group = ContactGroup.objects.get(id=request.POST.get('contact_group_id'))
-            contact_group.name = request.POST.get('name')
-            contact_group.user = self.request.user
-            contact_group.save()
-            action = str(self.request.user) + ' updated '+str(contact_group)+' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            ActionLogs.objects.create(user=request.user, action=action)
-            return redirect('contacts-groups')
-        elif request.POST.get('action_type') == 'enable_contact_group':
-            contact_group = ContactGroup.objects.get(id=request.POST.get('id'))
-            contact_group.is_active = request.POST.get('is_active') == 'true'
-            contact_group.save()
-            action = str(self.request.user) + ' enabled/disabled '+str(contact_group)+' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            ActionLogs.objects.create(user=request.user, action=action)
-            return redirect('contacts-groups')
-        else:
-            contactgroupform = ContactGroupForm(request.POST, request.FILES or None)
-            if contactgroupform.is_valid():
-                contact_group = contactgroupform.save()
-                if self.request.user.is_superuser:
-                    client = Client.objects.get(pk=request.POST.get('client'))
-                    contact_group.client = client
-                if Client.objects.filter(user=self.request.user):
-                    client = Client.objects.get(user=self.request.user)
-                    contact_group.client=client
-                if ClientSubUser.objects.filter(user=self.request.user):
-                    client = ClientSubUser.objects.get(user=self.request.user).client
-                    contact_group.client = client
+        try:
+            if ContactGroup.objects.filter(id=request.POST.get('contact_group_id')):
+                contact_group = ContactGroup.objects.get(id=request.POST.get('contact_group_id'))
+                contact_group.name = request.POST.get('name')
                 contact_group.user = self.request.user
                 contact_group.save()
-                action = str(self.request.user) + ' created contact ' + str(contact_group) + ' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                action = str(self.request.user) + ' updated '+str(contact_group)+' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 ActionLogs.objects.create(user=request.user, action=action)
+                return redirect('contacts-groups')
+            elif request.POST.get('action_type') == 'enable_contact_group':
+                contact_group = ContactGroup.objects.get(id=request.POST.get('id'))
+                contact_group.is_active = request.POST.get('is_active') == 'true'
+                contact_group.save()
+                action = str(self.request.user) + ' enabled/disabled '+str(contact_group)+' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                ActionLogs.objects.create(user=request.user, action=action)
+                return redirect('contacts-groups')
+            else:
+                contactgroupform = ContactGroupForm(request.POST, request.FILES or None)
+                if contactgroupform.is_valid():
+                    contact_group = contactgroupform.save()
+                    if self.request.user.is_superuser:
+                        client = Client.objects.get(pk=request.POST.get('client'))
+                        contact_group.client = client
+                    if Client.objects.filter(user=self.request.user):
+                        client = Client.objects.get(user=self.request.user)
+                        contact_group.client=client
+                    if ClientSubUser.objects.filter(user=self.request.user):
+                        client = ClientSubUser.objects.get(user=self.request.user).client
+                        contact_group.client = client
+                    contact_group.user = self.request.user
+                    contact_group.save()
+                    action = str(self.request.user) + ' created contact ' + str(contact_group) + ' at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+                    ActionLogs.objects.create(user=request.user, action=action)
+                return redirect('contacts-groups')
+        except:
+            messages.error(request, "Something went wrong")
             return redirect('contacts-groups')
-        # except:
-        #     messages.error(request, "Something went wrong")
-        #     return redirect('contacts-groups')
 
 
 class Messages_View(LoginRequiredMixin,TemplateView):
@@ -823,12 +854,13 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         context['contacts_group'] = contacts_gp
         threads = []
         for contact in contacts:
-            thread = {
-                'contact': Contact.objects.get(id=contact.id),
-                'message': Messages.objects.filter(contact=contact)
-            }
-            threads.append(thread)
-        context['messages_threads'] = threads
+            if Messages.objects.filter(contact=contact):
+                thread = {
+                    'contact': Contact.objects.get(id=contact.id),
+                    'message': Messages.objects.filter(contact=contact)
+                }
+                threads.append(thread)
+                context['messages_threads'] = threads
         context['templates'] = templates
 
         return context
@@ -859,11 +891,15 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                 authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
                 source_number = client.operator.operator_number
                 destination_contact_number = destination_contact.mobile
+                no_country_perms=[]
+                country_not_active=[]
+                contact_not_active=[]
                 if not destination_contact.is_active == False:
                     if not destination_contact.country.is_active == False:
                         if destination_contact.country in client.countries.all():
-                            if client.credit_limit == (client.credit_in - client.credit_out):
+                            if client.credit_limit == client.credit:
                                 messages.info(request, "You  have reached your credit limit. Kindly add credits.")
+                                notification_entry = Notifications.objects.create(client=client,user=self.request.user,notification="You  have reached your credit limit. Kindly add credits.")
                                 send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
                             if client.operator.code == 'TLX':
                                 telnyx.api_key = token
@@ -873,7 +909,8 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                     text=msg,
                                 )
                                 message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message=msg)
-                                client.credit_out+=1
+                                credit_obj = ClientCreditInOuts.objects.create(amount=1.0,client=client)
+                                client.credit-=1
                                 client.save()
                             if client.operator.code == 'THQ':
                                 url = "https://api.thinq.com/account/" + str(
@@ -888,19 +925,24 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                                 messages.info(request, response.text.encode('utf8'))
                                 message_entry = Messages.objects.create(client=client, user=self.request.user,
                                                                         contact=destination_contact, message=msg)
-                                client.credit_out += 1
+                                credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
+                                client.credit-=1
                                 client.save()
                         else:
-                            notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                    contact=destination_contact, client=client,notification="The country is not permitted for the client")
+                            no_country_perms.append(destination_contact)
                     else:
-                        notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                          contact=destination_contact, client=client,
-                                                                          notification="The country is not activated for this contact")
+                        country_not_active.append(destination_contact)
                 else:
-                    notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                      contact=destination_contact, client=client,
-                                                                      notification="The contact is not activated")
+                    contact_not_active.append(destination_contact)
+            if no_country_perms:
+                notification = str(len(no_country_perms))+' messages failed. Countries of the contacts are not permitted for the client.'
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
+            if country_not_active:
+                notification = str(len(country_not_active)) + ' messages failed. Countries of the contacts are not active.'
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
+            if contact_not_active:
+                notification = str(len(contact_not_active)) + ' messages failed. Contacts are not active.'
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
             action = str(request.user) + ' sent some messages at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             ActionLogs.objects.create(user=request.user, action=action)
             return redirect('messaging')
@@ -958,12 +1000,13 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
         context['contacts'] = contacts
         threads = []
         for contact in contacts:
-            thread = {
-                'contact': Contact.objects.get(id=contact.id),
-                'message': MMSMessages.objects.filter(contact=contact)
-            }
-            threads.append(thread)
-        context['messages_threads'] = threads
+            if Messages.objects.filter(contact=contact):
+                thread = {
+                    'contact': Contact.objects.get(id=contact.id),
+                    'message': Messages.objects.filter(contact=contact)
+                }
+                threads.append(thread)
+                context['messages_threads'] = threads
         contacts_gp = ContactGroup.objects.all()
         context['contacts_group'] = contacts_gp
         context['templates'] = templates
@@ -975,7 +1018,6 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
             destination_contacts = contacts.split(",")
             message_subject = request.POST.get("message_subject")
             msg = request.POST.get("message")
-            print(request.POST)
             for item in destination_contacts:
                 destination_contact = Contact.objects.get(id=item)
                 country_tele_code = destination_contact.country.country_tele_code
@@ -995,11 +1037,15 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
                 authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
                 source_number = client.operator.operator_number
                 destination_contact_number = destination_contact.mobile
+                no_country_perms = []
+                country_not_active = []
+                contact_not_active = []
                 if not destination_contact.is_active == False:
                     if not destination_contact.country.is_active == False:
                         if destination_contact.country in client.countries.all():
-                            if client.credit_limit == (client.credit_in - client.credit_out):
+                            if client.credit_limit == client.credit:
                                 messages.info(request, "You  have reached your credit limit. Kindly add credits.")
+                                notification_entry = Notifications.objects.create(user=self.request.user,notification="You  have reached your credit limit. Kindly add credits.")
                                 send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
                             if client.operator.code == 'TLX':
                                 telnyx.api_key = token
@@ -1012,19 +1058,42 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
                                     text=msg,
                                     media_urls=['http://localhost:8000'+str(mms_message_entry.attachment.url)],
                                 )
-                                client.credit_out+=1
+                                credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
+                                client.credit-=1
+                                client.save()
+                            if client.operator.code == 'THQ':
+                                mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message=msg,attachment=request.FILES.get('attachment'))
+                                url = "https://api.thinq.com/account/" + str(account_id) + "/product/origination/mms/send"
+                                file_path = 'http://localhost:8000' + str(mms_message_entry.attachment.url)
+                                payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" + destination_contact_number + "\",\n  \"message\": \"" + str(msg) + "\",\n  \"media_url\": \"" + file_path + "\"}"
+
+
+                                files = []
+                                headers = {
+                                    'Authorization': 'Basic ' + str(authentication_bytes_base64_decode),
+                                    'Content-Type': 'application/json'
+                                }
+                                response = requests.request("POST", url, headers=headers, data=payload, files=files)
+                                print(response,"rrrrrrrrrr")
+                                messages.info(request, response.text.encode('utf8'))
+                                credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
+                                client.credit -= 1
                                 client.save()
                         else:
-                            notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                    contact=destination_contact, client=client,notification="The country is not permitted for the client")
+                            no_country_perms.append(destination_contact)
                     else:
-                        notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                          contact=destination_contact, client=client,
-                                                                          notification="The country is not activated for this contact")
+                        country_not_active.append(destination_contact)
                 else:
-                    notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,
-                                                                      contact=destination_contact, client=client,
-                                                                      notification="The contact is not activated")
+                    contact_not_active.append(destination_contact)
+            if no_country_perms:
+                notification = str(len(no_country_perms))+' messages failed. Countries of the contacts are not permitted for the client.'
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
+            if country_not_active:
+                notification = str(len(country_not_active)) + ' messages failed. Countries of the contacts are not active.'
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
+            if contact_not_active:
+                notification = str(len(contact_not_active)) + ' messages failed. Contacts are not active.'
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
             action = str(request.user) + ' sent some MMS messages at ' + datetime.now().strftime(
                 "%d/%m/%Y %H:%M:%S")
             ActionLogs.objects.create(user=request.user, action=action)
@@ -1048,12 +1117,16 @@ class Templates_View(LoginRequiredMixin,TemplateView):
             context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             sms_templates_object = Templates.objects.all()
+            notifications = Notifications.objects.all()
+            context['notifications'] = notifications
         else:
             if Client.objects.filter(user=self.request.user):
                 client = Client.objects.get(user=self.request.user)
             else:
                 client = ClientSubUser.objects.get(user=self.request.user).client
             sms_templates_object = Templates.objects.filter(created_by=client)
+            notifications = Notifications.objects.filter(client=client)
+            context['notifications'] = notifications
         context['templateform'] = TemplateForm
         context['templates'] = sms_templates_object
         return context
@@ -1104,6 +1177,8 @@ class Country_View(LoginRequiredMixin,TemplateView):
             context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             countries = Country.objects.all()
+            notifications = Notifications.objects.all()
+            context['notifications'] = notifications
             context['countryform'] = CountryForm
             context['countries'] = countries
         else:
@@ -1175,6 +1250,10 @@ class MessageResposeView(APIView):
                 from_message = values.get('message')
                 if not Messages.objects.filter(contact=from_contact, message=from_message, is_inbound=True):
                     inbound_message = Messages.objects.create(contact=from_contact, message=from_message, is_inbound=True)
+                    notification = 'Message received from '+str(from_contact)
+                    notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
+                                                                      contact=from_contact, client=from_contact.client,
+                                                                      notification=notification)
         if values.get('data') and  values.get('data').get('event_type') == 'message.received':
             from_phone_number = values.get('data').get('payload').get('from').get('phone_number')[-10:]
             from_contact = Contact.objects.filter(mobile=from_phone_number)
@@ -1183,6 +1262,10 @@ class MessageResposeView(APIView):
                 from_message = values.get('data').get('payload').get('text')
                 if not Messages.objects.create(contact=from_contact,message=from_message,is_inbound=True):
                     inbound_message = Messages.objects.create(contact=from_contact,message=from_message,is_inbound=True)
+                    notification = 'Message received from ' + str(from_contact)
+                    notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
+                                                                      contact=from_contact, client=from_contact.client,
+                                                                      notification=notification)
         return redirect('message-response')
 
 
@@ -1198,4 +1281,11 @@ class ReportsView(TemplateView):
         if ClientSubUser.objects.filter(user=self.request.user):
             logged_client = ClientSubUser.objects.get(user=self.request.user).client
             context['logged_client'] = logged_client
+        now = datetime.now()
+        last_month = now + dateutil.relativedelta.relativedelta(months=-1)
+
+        total_sms_sent = Messages.objects.filter(is_inbound=False).count()
+        total_sms_sent_last_month = Messages.objects.filter(is_inbound=False).filter(create_date__gte=now,create_date__lte=last_month).count()
+        print(total_sms_sent_last_month)
+        total_mms_sent = MMSMessages.objects.filter(is_inbound=False).count()
         return context

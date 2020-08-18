@@ -52,6 +52,8 @@
                             <input type="text" name="name" class="form-control" value="{{contact.name}}">
                             <label for="mobile"> Mobile :</label>
                             <input type="text" name="mobile" class="form-control" value="{{contact.mobile}}">
+                            <label for="group"> Group :</label>
+                            <input type="text" name="group" class="form-control" value="{{contact.group}}">
                             <label for="clients">Clients :</label>
                             <select name="clients" id="clients" class="form-control" disabled>
                                 <option value="{{contact.client.id}}" selected >{{contact.client}}</option>
@@ -142,6 +144,10 @@
                     <div class="row p-2">
                         <span class="mb-1">Mobile :</span>
                         {{ contactsform.mobile }}
+                    </div>
+                    <div class="row p-2">
+                        <span class="mb-1">Group :</span>
+                        {{ contactsform.group }}
                     </div>
                     {% if user.is_superuser %}
                     <div class="row p-2">

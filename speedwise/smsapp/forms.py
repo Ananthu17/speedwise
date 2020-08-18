@@ -7,13 +7,12 @@ from .models import *
 class ClientForm(forms.ModelForm):
     class Meta:
         model=Client
-        fields=['mobile','logo','operator','credit_in','credit_out','credit_limit','is_active','create_date','country','color']
+        fields=['mobile','logo','operator','credit','credit_limit','is_active','create_date','country','color']
         widgets={
             'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile Number'}),
             'logo':forms.FileInput(attrs={'class':"custom-file-input","id":"customFile"}),
             'operator':forms.Select(attrs={'class': 'form-control'}),
-            'credit_in':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
-            'credit_out':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
+            'credit':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
             'credit_limit':forms.NumberInput(attrs={'class': 'form-control','placeholder':'0.0'}),
             'is_active':forms.CheckboxInput(attrs={'class':'mt-1'}),
             'country': forms.Select(attrs={'class': 'form-control'}),
@@ -80,6 +79,7 @@ class ContactForm(forms.ModelForm):
             'name':forms.TextInput(attrs={'class': 'form-control','placeholder':'Name'}),
             'mobile':forms.TextInput(attrs={'class': 'form-control','placeholder':'Mobile'}),
             # 'client':forms.Select(attrs={'class': 'form-control'}),
+            'group':forms.Select(attrs={'class': 'form-control',}),
             'country':forms.Select(attrs={'class': 'form-control',}),
             'create_date':forms.TextInput(attrs={'class': 'form-control','placeholder':''}),
         }
@@ -104,7 +104,7 @@ class MMSMessagesForm(forms.ModelForm):
             'user':forms.Select(attrs={'class': 'form-control mb-1'}),
             'template': forms.Select(attrs={'class': 'form-control mb-1'}),
             'attachment':forms.FileInput(attrs={'class':"custom-file-input","id":"customFile"}),
-            'message_subject':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'}),
+            'message_subject':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Subject..'}),
             'message':forms.Textarea(attrs={'class': 'form-control mb-1','placeholder':'Enter Your Messages..'})
         }
 

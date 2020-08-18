@@ -197,8 +197,7 @@ select:focus {
                     <div class="col-3 font-weight-bold text-secondary">Operator <span class="float-right">:</span></div>
                     <div class="col-9"><h5>{{client.operator}}</h5></div>
                   </div>
-                  <div class="row"><div class="col-3 font-weight-bold text-secondary">Credits<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit_in}}</h5></div></div>
-                  <div class="row"><div class="col-3 font-weight-bold text-secondary">Credits Used<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit_out }}</h5></div></div>
+                  <div class="row"><div class="col-3 font-weight-bold text-secondary">Credits<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit}}</h5></div></div>
                   <div class="row"><div class="col-3 font-weight-bold text-secondary">Credit Limit<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit_limit}}</h5></div></div>
                   <div class="row">
                     <div class="col-3 font-weight-bold text-secondary">Countries <span class="float-right">:</span></div>
@@ -218,7 +217,7 @@ select:focus {
                         <option value="{{client.operator}}" selected hidden>{{client.operator}}</option>
                         {% for operator in operators %}
                           <option value="{{operator.id}}">{{operator}}</option>
-                        {% endfor %} 
+                        {% endfor %}
                       </select>
                     </h5></div>
                   </div>
@@ -240,7 +239,7 @@ select:focus {
                   </div>
                   <div class="row mt-3">
                     <div class="col-4">
-      
+
                     </div>
                     <div class="col-4">
                       <button type="submit" class="btn btn-success btn-sm btn-round width-lg float-right">Save</button>
@@ -284,6 +283,7 @@ select:focus {
                 <div class="modal-body">
                     {{ userform.as_p }}
                     {{ clientsubuserform.as_p }}
+                    <input type="hidden" name="client" value="{{client.id}}">
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-round btn-primary btn-sm">Add</button>

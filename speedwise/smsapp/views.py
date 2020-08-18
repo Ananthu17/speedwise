@@ -640,7 +640,7 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                 ActionLogs.objects.create(user=request.user, action=action)
                 return redirect('contacts')
             elif request.POST.get('action_type') == 'enable_contact':
-                print(request.POST.get('id'),request.POST.get('is_active'))
+                print(request.POST.get('id'),request.POST.get('is_active'),"fffffff")
                 contact = Contact.objects.get(id=request.POST.get('id'))
                 contact.is_active = request.POST.get('is_active') == 'true'
                 contact.save()
@@ -993,17 +993,17 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
                 contacts = Contact.objects.filter(client=client)
                 notifications = Notifications.objects.filter(client=client)
                 context['notifications'] = notifications
-            mmsmessages = Messages.objects.filter(client=client)
+            mmsmessages = MMSMessages.objects.filter(client=client)
         templates = Templates.objects.all()
         context['mmsmessagingform'] = mmsmessagingform
         context['mmsmessageslist'] = mmsmessages
         context['contacts'] = contacts
         threads = []
         for contact in contacts:
-            if Messages.objects.filter(contact=contact):
+            if MMSMessages.objects.filter(contact=contact):
                 thread = {
                     'contact': Contact.objects.get(id=contact.id),
-                    'message': Messages.objects.filter(contact=contact)
+                    'message': MMSMessages.objects.filter(contact=contact)
                 }
                 threads.append(thread)
                 context['messages_threads'] = threads

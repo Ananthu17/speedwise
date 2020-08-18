@@ -167,22 +167,32 @@
                         </div>
                         <div class="d-none" id="contactsTable">
                             <table id="table_id" class="display">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Select</th>
-                                </tr>
-                                {% for name in contacts_group %}
+                                <thead>
                                     <tr>
-                                        <td><span class="text-danger">{{name}} Group</span></td>
-                                        <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
+                                      <th>Id</th>
+                                      <th>Name</th>
+                                      <th>Active</th>
+                                      <th>Select</th>
                                     </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for name in contacts_group %}
+                                      <tr>
+                                          <td><span class="text-danger">{{name.id}}</span></td>
+                                          <td><span class="text-danger">{{name}} Group</span></td>
+                                          <td><span class="text-danger">{{name.is_active}}</span></td>
+                                          <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
+                                      </tr>
                                     {% endfor %}
-                                {% for name in contacts %}
-                                <tr>
-                                    <td>{{name}}</td>
-                                    <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
-                                </tr>
-                                {% endfor %}
+                                    {% for name in contacts %}
+                                      <tr>
+                                          <td><span class="text-danger">{{name.id}}</span></td>
+                                          <td>{{name}}</td>
+                                          <td><span class="text-danger">{{name.is_active}}</span></td>
+                                          <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
+                                      </tr>
+                                    {% endfor %}
+                                  </tbody>
                             </table>
                         </div>
                     </div>
@@ -202,6 +212,16 @@
             <script>
                 const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
                 document.addEventListener("DOMContentLoaded", function(){
+                    var styleNode = document.createElement('style');
+                    styleNode.type = "text/css";
+                    // browser detection (based on prototype.js)
+                    if(!!(window.attachEvent && !window.opera)) {
+                        styleNode.styleSheet.cssText = '.active::after{border-right: 17px solid '+ color['{{logged_client.color}}']+'!important;border-top: 17px solid transparent;border-bottom: 17px solid transparent;content: "";display: inline-block;position: absolute;right: -2px;opacity: 1;top: 54px;transition: opacity 150ms ease-in;}';
+                    } else {
+                        var styleText = document.createTextNode('.active::after{border-right: 17px solid'+ color['{{logged_client.color}}']+'!important;border-top: 17px solid transparent;border-bottom: 17px solid transparent;content: "";display: inline-block;position: absolute;right: -2px;opacity: 1;top: 86px;transition: opacity 150ms ease-in;}');
+                        styleNode.appendChild(styleText);
+                    }
+                    document.getElementsByTagName('head')[0].appendChild(styleNode);
                     setTimeout(()=>{
                     $('.panel').addClass('d-none');
                     

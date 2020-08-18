@@ -24,7 +24,7 @@
         {% for client in clients %}
         <tr>
           <td><h6>{{client}}</h6></td>
-          <td><h6>{{client.credit}}</h6></td>
+          <td><h6>{{client.credit_in}}</h6></td>
           <td><h6 class="ml-2"><a href="{% url 'clientprofile' client.id %}" class="text-secondary" ><i class="fa fa-edit"></i></a></h6></td>
           <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{client.id}}"><i class="fa fa-trash"></i></a></h6></td>
         </tr>
@@ -66,7 +66,9 @@
                           {% endfor %}
                         </select>
                         <label for="credin">Credit In :</label>
-                        <input type="number" name="credin" class="form-control mb-1" value={{client.credit}}>
+                        <input type="number" name="credin" class="form-control mb-1" value={{client.credit_in}}>
+                        <label for="credout">Credit Out :</label>
+                        <input type="number" name="credout" class="form-control mb-1" value={{client.credit_out}}>
                         <label for="credlimit">Credit Limit :</label>
                         <input type="number" name="credlimit" class="form-control mb-1" value={{client.credit_limit}}>
                         <div class="mt-2 mb-2">
@@ -186,12 +188,27 @@
                 <span class="mb-1">Operator :</span> 
                 {{ clientform.operator }}
               </div>
-              <select class="form-control mb-1" multiple="multiple" name="countries" id="countries">
-                  <option value="">Enter the option</option>
+              <div class="row p-2">
+                <span class="mb-1">Credits In :</span> 
+                {{ clientform.credit_in }}
+              </div>
+              <div class="row p-2">
+                <span class="mb-1">Credits Out :</span> 
+                {{ clientform.credit_out }}
+              </div>
+              <div class="row p-2">
+                <span class="mb-1">Credits Limit :</span>
+                {{ clientform.credit_limit }}
+              </div>
+              <div class="row p-2">
+                <span class="mb-1">Block Countries:</span>
+                <select class="js-example-basic-multiple" name="countries[]" multiple  id="countries">
+                  <option selected hidden >None</option>
                   {% for country in countries %}
                      <option value="{{ country.id }}">{{ country }}</option>
                   {% endfor %}
               </select>
+              </div>
               <div class="row p-2">
                 <span class="mb-1">Theme :</span>
                 {{ clientform.color }}

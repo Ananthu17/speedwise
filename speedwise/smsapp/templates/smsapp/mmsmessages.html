@@ -181,7 +181,7 @@
                                           <td><span class="text-danger">{{name.id}}</span></td>
                                           <td><span class="text-danger">{{name}} Group</span></td>
                                           <td><span class="text-danger">{{name.is_active}}</span></td>
-                                          <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
+                                          <td><input type="checkbox" onclick="add_id_group({{name.id}})"></td>
                                       </tr>
                                     {% endfor %}
                                     {% for name in contacts %}
@@ -198,6 +198,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="hidden" name="contactsList"  id="con" value="">
+                        <input type="hidden" name="contactsgroupList"  id="con_group" value="">
                         <button type="button" class="btn btn-primary btn-sm" id="next" onclick="rem()">Next</button>
                         <button type="submit" class="btn btn-primary btn-sm d-none" id="submit">Send</button>
                     </div>
@@ -264,12 +265,15 @@
             }
         </script>
         <script>
-            let array=[]
+            let array_contact=[]
+            let array_group=[]
             const add_id = (data)=>{
-                console.log(data)
-                array.push(data)
-                console.log(array)
-                $('#con').attr('value',`${array}`)
+                array_contact.push(data)
+                $('#con').attr('value',`${array_contact}`)
+            }
+            const add_id_group = (data)=>{
+                array_group.push(data)
+                $('#con_group').attr('value',`${array_group}`)
             }
             const add_temp = ()=>{
               console.log('resh')

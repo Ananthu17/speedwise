@@ -21,9 +21,10 @@
   <component name="ChangeListManager">
     <list default="true" id="2afcf06d-c151-4f08-9a09-162f5723e11f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp.zip" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/client_profile.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts_group.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/contacts_group.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/messages.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/mmsmessages.html" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/templates/smsapp/mmsmessages.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/speedwise/smsapp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/speedwise/smsapp/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -336,14 +337,20 @@
       <option name="project" value="LOCAL" />
       <updated>1597730754804</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="fixed contact and contact group activate switch">
+      <created>1597776253152</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1597776253153</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Registration backend" />
     <MESSAGE value="Contacts view fix" />
     <MESSAGE value="Login message change" />
     <MESSAGE value="Merge frondend and backend" />
@@ -368,7 +375,8 @@
     <MESSAGE value="Added contact groups backend" />
     <MESSAGE value="Added Notifications backend and merged aug_17 branch" />
     <MESSAGE value="Fixed MMS context" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed MMS context" />
+    <MESSAGE value="fixed contact and contact group activate switch" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed contact and contact group activate switch" />
   </component>
   <component name="WindowStateProjectService">
     <state x="682" y="355" width="598" height="403" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594120959657">
@@ -379,10 +387,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="719" y="302" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597684868254" />
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1597730753370">
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2" timestamp="1597776251973">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1597730753370" />
+    <state x="525" y="101" width="912" height="911" key="CommitChangelistDialog2/52.27.1868.1053@52.27.1868.1053" timestamp="1597776251973" />
     <state x="152" y="127" width="1668" height="853" key="DiffContextDialog" timestamp="1595928759275">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
@@ -403,10 +411,10 @@
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
     <state x="617" y="314" width="728" height="485" key="MultipleFileMergeDialog/52.27.1868.1053@52.27.1868.1053" timestamp="1597765391029" />
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1597730757264">
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1597776258522">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>
-    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1597730757264" />
+    <state x="581" y="289" width="800" height="535" key="Vcs.Push.Dialog.v2/52.27.1868.1053@52.27.1868.1053" timestamp="1597776258522" />
     <state x="152" y="127" width="1668" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1595233255295">
       <screen x="52" y="27" width="1868" height="1053" />
     </state>

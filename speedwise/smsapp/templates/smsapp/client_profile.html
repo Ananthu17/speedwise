@@ -233,7 +233,7 @@ select:focus {
                   <div class="row">
                     <div class="col-3 font-weight-bold text-secondary">Countries <span class="float-right">:</span></div>
                     <div class="col-9">
-                      {% for country in client.countries.all %}
+                        {% for country in client.countries.all %}
                         <a href="javascript:void(0)" class="btn btn-primary btn-sm" style="margin: auto;">{{country}} <i class="nc-icon nc-tag-content"></i></a>
                       {% endfor %}
                     </div>
@@ -254,6 +254,7 @@ select:focus {
                   </div>
                   <div class="row"><div class="col-4 font-weight-bold text-secondary">Credit Limit<span class="float-right">:</span></div><div class="col-4"><h5><input type="number"  class="form-control" value="{{client.credit_limit}}"></h5></div></div>
                   <div class="row"><div class="col-4 font-weight-bold text-secondary">Logo<span class="float-right">:</span></div><div class="col-4"><h5><input type="file" id="upload" class="custom-file-input form-control"></h5></div></div>
+
                   <div class="row">
                       <div class="col-4 font-weight-bold text-secondary">Countries <span class="float-right">:</span></div>
                       <div class="col-4">
@@ -420,7 +421,7 @@ select:focus {
       });
   </script>
   
-  
+
 
   <script>
     const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}

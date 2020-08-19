@@ -876,7 +876,11 @@ class Messages_View(LoginRequiredMixin,TemplateView):
     def post(self, request):
         try:
             contacts = request.POST.get('contactsList')
+            contacts_groups = request.POST.get('contactsgroupList')
             destination_contacts = contacts.split(",")
+            for group in contacts_groups.split(","):
+                for contact in Contact.objects.filter(group=group):
+                    destination_contacts.append(str(contact.id))
             msg = request.POST.get("message")
             print(msg)
             for item in destination_contacts:
@@ -1022,7 +1026,11 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
     def post(self, request):
         try:
             contacts = request.POST.get('contactsList')
+            contacts_groups = request.POST.get('contactsgroupList')
             destination_contacts = contacts.split(",")
+            for group in contacts_groups.split(","):
+                for contact in Contact.objects.filter(group=group):
+                    destination_contacts.append(str(contact.id))
             message_subject = request.POST.get("message_subject")
             msg = request.POST.get("message")
             for item in destination_contacts:

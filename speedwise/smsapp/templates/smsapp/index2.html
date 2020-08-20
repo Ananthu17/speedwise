@@ -1,4 +1,4 @@
-  {% load static %}
+{% load static %}
 <!doctype html>
 <html lang="en">
 
@@ -361,16 +361,10 @@
           </div>
           
         </div>
-        
-        <div class="row">
-          
-          <div class="col-md-12">
-            <div class="card mt-4" id="card" style="position: relative;">
-            {% block content %} {% endblock %}
-            </div>
-          </div>
-        </div>
-      </div>
+
+        {% block content %} {% endblock %}
+         
+    </div>
 
     </div>
   </div>

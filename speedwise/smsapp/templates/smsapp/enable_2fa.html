@@ -63,7 +63,6 @@
         </div>
     </form>
     {% endif %}
-  
 {% endblock %}
 
 {% block add_script %}
@@ -79,5 +78,20 @@
             });
         })();
 
+    </script>
+    <script>
+        const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
+        $(document).ready(()=>{
+            $('.sidebar-wrapper').addClass('{{logged_client.color}}')
+          $('.logo').addClass('{{logged_client.color}}')
+          $('').attr('style','border-right: 17px solid #382607;')
+          if ('{{logged_client.color}}' !==''){
+            $('.color').addClass('text-dark font-weight-bold')
+
+          }
+          console.log(color['{{logged_client.color}}'])
+        $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
+        $('.border').addClass('border-dark')
+        })
     </script>
 {% endblock %}%}

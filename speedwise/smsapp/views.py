@@ -47,8 +47,20 @@ class DashboardView(TemplateView):
         if not request.user.is_authenticated:
             return redirect(reverse('login'))
         else:
-            context = super(DashboardView, self).dispatch(request, *args, **kwargs)
-        return context
+            # context = super(DashboardView, self).dispatch(request, *args, **kwargs)
+            if Client.objects.filter(user=self.request.user):
+                client_id = Client.objects.get(user=self.request.user).id
+                if client_id:
+                    return redirect('clientprofile', client_id)
+            elif ClientSubUser.objects.filter(user=self.request.user):
+                client_id = ClientSubUser.objects.get(user=self.request.user).client.id
+                if client_id:
+                    return redirect('clientprofile', client_id)
+            else:
+                logout(request)
+                messages.error(request, "No active profile found")
+                return redirect('login')
+
 
 class ClientView(LoginRequiredMixin,TemplateView):
     template_name = 'smsapp/clients.html'
@@ -235,7 +247,7 @@ class LoginView(TemplateView):
                                         action = str(user) + ' logged in at ' + datetime.now().strftime(
                                             "%d/%m/%Y %H:%M:%S")
                                         ActionLogs.objects.create(user=user, action=action)
-                                        return redirect('messaging')
+                                        return redirect('index')
                                 except:
                                     messages.error(request, "Something went wrong with the connection")
                                     return redirect('login')
@@ -282,32 +294,35 @@ class LoginView(TemplateView):
 
 
 def enable_2fa(request):
-    if request.method=='GET':
-
-        user_exist = AuthInformation.objects.filter(user=request.user)
-        if user_exist:
-            user_2fa = AuthInformation.objects.get(user=request.user)
-            if user_2fa.is_active:
-                secret_url = 'otpauth://totp/Speedwise%20App:speedwise%40google.com?secret=' + str(user_2fa.secret_key) + '&issuer=Speedwise%20App'
-                return render(request, 'smsapp/enable_2fa.html',{'secret_key': user_2fa.secret_key, 'user': request.user.id ,'secret_url':secret_url})
+    try:
+        if request.method=='GET':
+            user_exist = AuthInformation.objects.filter(user=request.user)
+            if user_exist:
+                user_2fa = AuthInformation.objects.get(user=request.user)
+                if user_2fa.is_active:
+                    secret_url = 'otpauth://totp/Speedwise%20App:speedwise%40google.com?secret=' + str(user_2fa.secret_key) + '&issuer=Speedwise%20App'
+                    return render(request, 'smsapp/enable_2fa.html',{'secret_key': user_2fa.secret_key, 'user': request.user.id ,'secret_url':secret_url})
+                else:
+                    return render(request, 'smsapp/enable_2fa.html')
             else:
                 return render(request, 'smsapp/enable_2fa.html')
-        else:
-            return render(request, 'smsapp/enable_2fa.html')
-    if request.method == 'POST':
-        if request.POST.get('disable_2fa'):
-            user_2fa = AuthInformation.objects.filter(user=request.user)
-            if user_2fa:
-                user_2fa = AuthInformation.objects.get(user=request.user)
-                return render(request, 'smsapp/verify-2fa-token.html',{'disable_secret_key': user_2fa.secret_key,'user': request.user.id})
-        else:
-            user_2fa = AuthInformation.objects.filter(user=request.user)
-            if not user_2fa:
-                AuthInformation.objects.create(user=request.user,is_active=True,secret_key=pyotp.random_base32())
-                action = str(request.user) + ' enabled two factor authentication at ' + datetime.now().strftime(
-                    "%d/%m/%Y %H:%M:%S")
-                ActionLogs.objects.create(user=request.user, action=action)
-            return redirect('enable-2fa')
+        if request.method == 'POST':
+            if request.POST.get('disable_2fa'):
+                user_2fa = AuthInformation.objects.filter(user=request.user)
+                if user_2fa:
+                    user_2fa = AuthInformation.objects.get(user=request.user)
+                    return render(request, 'smsapp/verify-2fa-token.html',{'disable_secret_key': user_2fa.secret_key,'user': request.user.id})
+            else:
+                user_2fa = AuthInformation.objects.filter(user=request.user)
+                if not user_2fa:
+                    AuthInformation.objects.create(user=request.user,is_active=True,secret_key=pyotp.random_base32())
+                    action = str(request.user) + ' enabled two factor authentication at ' + datetime.now().strftime(
+                        "%d/%m/%Y %H:%M:%S")
+                    ActionLogs.objects.create(user=request.user, action=action)
+                return redirect('enable-2fa')
+    except:
+        messages.info(request,"Timed out. Please try again.")
+        return redirect('login')
 
 def verify_2fa_token(request):
     try:
@@ -400,7 +415,6 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
         client_object = Client.objects.get(pk=kwargs['user_pk'])
         countries= Country.objects.all()
         operators = Operator.objects.all()
-        action_logs = ActionLogs.objects.all()
         credit_objects = ClientCreditInOuts.objects.filter(is_credit=True)
         if Client.objects.filter(user=self.request.user):
             logged_client = Client.objects.get(user=self.request.user)
@@ -410,6 +424,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['logged_client'] = logged_client
         if self.request.user.is_superuser:
             client_sub_user_objects = ClientSubUser.objects.all()
+            action_logs = ActionLogs.objects.all()
             userform = UsercreateForm
             clientsubuserform = ClientSubUserForm
             context['clientsubusers'] = client_sub_user_objects
@@ -422,7 +437,8 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['notifications'] = notifications
 
         else:
-            client_sub_user_objects = ClientSubUser.objects.filter(client=Client.objects.get(user=self.request.user))
+            client_sub_user_objects = ClientSubUser.objects.filter(client=client_object)
+            action_logs = ActionLogs.objects.all()
             userform = UsercreateForm
             clientsubuserform = ClientSubUserForm
             context['clientsubusers'] = client_sub_user_objects
@@ -439,6 +455,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
 
     def post(self,request,user_pk):
         if request.method == "POST":
+            print(request.POST)
             client = Client.objects.get(id=user_pk)
             allowed_countries = request.POST.getlist('states[]')
             if allowed_countries:
@@ -448,10 +465,13 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
                         country_object = Country.objects.get(pk=country)
                         client.countries.add(country_object)
                         client.save()
-                    return redirect('clientprofile', client.id)
                 except:
                     messages.error(request, "Something went wrong")
                     return redirect('clientprofile', client.id)
+            client.credit_limit=request.POST.get('credit_limit')
+            client.operator=Operator.objects.get(id=request.POST.get('operator'))
+            client.save()
+            return redirect('clientprofile', client.id)
         return redirect('clientprofile',client.id)
 
 
@@ -867,7 +887,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                     'message': Messages.objects.filter(contact=contact)
                 }
                 threads.append(thread)
-                context['messages_threads'] = threads
+        context['messages_threads'] = threads
         context['templates'] = templates
 
         return context
@@ -878,11 +898,11 @@ class Messages_View(LoginRequiredMixin,TemplateView):
             contacts = request.POST.get('contactsList')
             contacts_groups = request.POST.get('contactsgroupList')
             destination_contacts = contacts.split(",")
-            for group in contacts_groups.split(","):
-                for contact in Contact.objects.filter(group=group):
-                    destination_contacts.append(str(contact.id))
+            if contacts_groups:
+                for group in contacts_groups.split(","):
+                    for contact in Contact.objects.filter(group=group):
+                        destination_contacts.append(str(contact.id))
             msg = request.POST.get("message")
-            print(msg)
             for item in destination_contacts:
                 destination_contact = Contact.objects.get(id=item)
                 country_tele_code = destination_contact.country.country_tele_code
@@ -902,43 +922,47 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                 authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
                 source_number = client.operator.operator_number
                 destination_contact_number = destination_contact.mobile
+                no_credits=[]
                 no_country_perms=[]
                 country_not_active=[]
                 contact_not_active=[]
                 if not destination_contact.is_active == False:
                     if not destination_contact.country.is_active == False:
                         if destination_contact.country in client.countries.all():
-                            if client.credit_limit == client.credit:
-                                messages.info(request, "You  have reached your credit limit. Kindly add credits.")
-                                notification_entry = Notifications.objects.create(client=client,user=self.request.user,notification="You  have reached your credit limit. Kindly add credits.")
-                                send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
-                            if client.operator.code == 'TLX':
-                                telnyx.api_key = token
-                                send_msg = telnyx.Message.create(
-                                    from_=source_number,
-                                    to=country_tele_code+destination_contact_number,
-                                    text=msg,
-                                )
-                                message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message=msg)
-                                credit_obj = ClientCreditInOuts.objects.create(amount=1.0,client=client)
-                                client.credit-=1
-                                client.save()
-                            if client.operator.code == 'THQ':
-                                url = "https://api.thinq.com/account/" + str(
-                                    account_id) + "/product/origination/sms/send"
-                                payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" +destination_contact_number+ "\",\n  \"message\": \"" + str(
-                                    msg) + "\"\n}"
-                                headers = {
-                                    'Authorization': 'Basic ' + str(authentication_bytes_base64_decode),
-                                    'Content-Type': 'application/json'
-                                }
-                                response = requests.request("POST", url, headers=headers, data=payload)
-                                messages.info(request, response.text.encode('utf8'))
-                                message_entry = Messages.objects.create(client=client, user=self.request.user,
-                                                                        contact=destination_contact, message=msg)
-                                credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
-                                client.credit-=1
-                                client.save()
+                            if not client.credit == 0.0:
+                                if client.credit_limit == client.credit:
+                                    messages.info(request, "You  have reached your credit limit. Kindly add credits.")
+                                    notification_entry = Notifications.objects.create(client=client,user=self.request.user,notification="You  have reached your credit limit. Kindly add credits.")
+                                    send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
+                                if client.operator.code == 'TLX':
+                                    telnyx.api_key = token
+                                    send_msg = telnyx.Message.create(
+                                        from_=source_number,
+                                        to=country_tele_code+destination_contact_number,
+                                        text=msg,
+                                    )
+                                    message_entry = Messages.objects.create(client=client,user=self.request.user,contact=destination_contact,message=msg)
+                                    credit_obj = ClientCreditInOuts.objects.create(amount=1.0,client=client)
+                                    client.credit-=1
+                                    client.save()
+                                if client.operator.code == 'THQ':
+                                    url = "https://api.thinq.com/account/" + str(
+                                        account_id) + "/product/origination/sms/send"
+                                    payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" +destination_contact_number+ "\",\n  \"message\": \"" + str(
+                                        msg) + "\"\n}"
+                                    headers = {
+                                        'Authorization': 'Basic ' + str(authentication_bytes_base64_decode),
+                                        'Content-Type': 'application/json'
+                                    }
+                                    response = requests.request("POST", url, headers=headers, data=payload)
+                                    messages.info(request, response.text.encode('utf8'))
+                                    message_entry = Messages.objects.create(client=client, user=self.request.user,
+                                                                            contact=destination_contact, message=msg)
+                                    credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
+                                    client.credit-=1
+                                    client.save()
+                            else:
+                                no_credits.append(destination_contact)
                         else:
                             no_country_perms.append(destination_contact)
                     else:
@@ -953,6 +977,9 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                 notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
             if contact_not_active:
                 notification = str(len(contact_not_active)) + ' messages failed. Contacts are not active.'
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
+            if no_credits:
+                notification = str(len(no_credits)) + ' messages failed. Credits over.'
                 notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
             action = str(request.user) + ' sent some messages at ' + datetime.now().strftime("%d/%m/%Y %H:%M:%S")
             ActionLogs.objects.create(user=request.user, action=action)
@@ -1028,9 +1055,10 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
             contacts = request.POST.get('contactsList')
             contacts_groups = request.POST.get('contactsgroupList')
             destination_contacts = contacts.split(",")
-            for group in contacts_groups.split(","):
-                for contact in Contact.objects.filter(group=group):
-                    destination_contacts.append(str(contact.id))
+            if contacts_groups:
+                for group in contacts_groups.split(","):
+                    for contact in Contact.objects.filter(group=group):
+                        destination_contacts.append(str(contact.id))
             message_subject = request.POST.get("message_subject")
             msg = request.POST.get("message")
             for item in destination_contacts:
@@ -1052,48 +1080,51 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
                 authentication_bytes_base64_decode = authentication_bytes_base64.decode('ascii')
                 source_number = client.operator.operator_number
                 destination_contact_number = destination_contact.mobile
+                no_credits = []
                 no_country_perms = []
                 country_not_active = []
                 contact_not_active = []
                 if not destination_contact.is_active == False:
                     if not destination_contact.country.is_active == False:
                         if destination_contact.country in client.countries.all():
-                            if client.credit_limit == client.credit:
-                                messages.info(request, "You  have reached your credit limit. Kindly add credits.")
-                                notification_entry = Notifications.objects.create(user=self.request.user,notification="You  have reached your credit limit. Kindly add credits.")
-                                send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
-                            if client.operator.code == 'TLX':
-                                telnyx.api_key = token
-                                mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message=msg,attachment=request.FILES.get('attachment'))
+                            if not client.credit == 0.0:
+                                if client.credit_limit == client.credit:
+                                    messages.info(request, "You  have reached your credit limit. Kindly add credits.")
+                                    notification_entry = Notifications.objects.create(user=self.request.user,notification="You  have reached your credit limit. Kindly add credits.")
+                                    send_mail('Add your Credits', 'You have reached the credit limits', 'techspeedwise@gmail.com',[client.email], fail_silently=False)
+                                if client.operator.code == 'TLX':
+                                    telnyx.api_key = token
+                                    mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message=msg,attachment=request.FILES.get('attachment'))
 
-                                send_msg = telnyx.Message.create(
-                                    from_=source_number,
-                                    to=country_tele_code+destination_contact_number,
-                                    subject=message_subject,
-                                    text=msg,
-                                    media_urls=['http://localhost:8000'+str(mms_message_entry.attachment.url)],
-                                )
-                                credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
-                                client.credit-=1
-                                client.save()
-                            if client.operator.code == 'THQ':
-                                mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message=msg,attachment=request.FILES.get('attachment'))
-                                url = "https://api.thinq.com/account/" + str(account_id) + "/product/origination/mms/send"
-                                file_path = 'http://localhost:8000' + str(mms_message_entry.attachment.url)
-                                payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" + destination_contact_number + "\",\n  \"message\": \"" + str(msg) + "\",\n  \"media_url\": \"" + file_path + "\"}"
+                                    send_msg = telnyx.Message.create(
+                                        from_=source_number,
+                                        to=country_tele_code+destination_contact_number,
+                                        subject=message_subject,
+                                        text=msg,
+                                        media_urls=['http://localhost:8000'+str(mms_message_entry.attachment.url)],
+                                    )
+                                    credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
+                                    client.credit-=1
+                                    client.save()
+                                if client.operator.code == 'THQ':
+                                    mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message=msg,attachment=request.FILES.get('attachment'))
+                                    url = "https://api.thinq.com/account/" + str(account_id) + "/product/origination/mms/send"
+                                    file_path = 'http://localhost:8000' + str(mms_message_entry.attachment.url)
+                                    payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" + destination_contact_number + "\",\n  \"message\": \"" + str(msg) + "\",\n  \"media_url\": \"" + file_path + "\"}"
 
 
-                                files = []
-                                headers = {
-                                    'Authorization': 'Basic ' + str(authentication_bytes_base64_decode),
-                                    'Content-Type': 'application/json'
-                                }
-                                response = requests.request("POST", url, headers=headers, data=payload, files=files)
-                                print(response,"rrrrrrrrrr")
-                                messages.info(request, response.text.encode('utf8'))
-                                credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
-                                client.credit -= 1
-                                client.save()
+                                    files = []
+                                    headers = {
+                                        'Authorization': 'Basic ' + str(authentication_bytes_base64_decode),
+                                        'Content-Type': 'application/json'
+                                    }
+                                    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+                                    messages.info(request, response.text.encode('utf8'))
+                                    credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
+                                    client.credit -= 1
+                                    client.save()
+                            else:
+                                no_credits.append(destination_contact)
                         else:
                             no_country_perms.append(destination_contact)
                     else:
@@ -1108,6 +1139,9 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
                 notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
             if contact_not_active:
                 notification = str(len(contact_not_active)) + ' messages failed. Contacts are not active.'
+                notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
+            if no_credits:
+                notification = str(len(no_credits)) + ' messages failed. Credits over.'
                 notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
             action = str(request.user) + ' sent some MMS messages at ' + datetime.now().strftime(
                 "%d/%m/%Y %H:%M:%S")
@@ -1258,6 +1292,7 @@ class MessageResposeView(APIView):
         data = request.data
         values = json.dumps(data)
         values = json.loads(values)
+        webhook = WebhookResponse.objects.create(message_response=str(values))
         if values.get('from') and values.get('to'):
             from_contact = Contact.objects.filter(mobile=values.get('from'))
             if from_contact:
@@ -1269,6 +1304,7 @@ class MessageResposeView(APIView):
                     notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
                                                                       contact=from_contact, client=from_contact.client,
                                                                       notification=notification)
+                    messages.info(self.request, notification)
         if values.get('data') and  values.get('data').get('event_type') == 'message.received':
             from_phone_number = values.get('data').get('payload').get('from').get('phone_number')[-10:]
             from_contact = Contact.objects.filter(mobile=from_phone_number)
@@ -1281,6 +1317,7 @@ class MessageResposeView(APIView):
                     notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
                                                                       contact=from_contact, client=from_contact.client,
                                                                       notification=notification)
+                    messages.info(self.request, notification)
         return redirect('message-response')
 
 

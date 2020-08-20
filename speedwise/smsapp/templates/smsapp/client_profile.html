@@ -195,8 +195,9 @@ select:focus {
         <div class="text-center text-secondary">
           <h6><i class="nc-icon nc-mobile mr-2"></i>{{ client.mobile }}</h6>
         </div>
+        {% if user.is_superuser %}
         <div class="text-center">
-          <button class="btn btn-sm btn-info"  data-toggle="modal" data-target="#exampleModalcredit"><i class="nc-icon nc-simple-add"></i>&nbspAdd</button>
+          <button class="btn btn-sm btn-info"  data-toggle="modal" data-target="#exampleModalcredit"><i class="nc-icon nc-simple-add"></i>&nbspAdd Credit</button>
           <a href="javascript:void(0)" class="btn btn-sm btn-success shadow" data-toggle="modal" data-target="#myModal"><i class="nc-icon nc-simple-add"></i> User</a>
         </div>
         <div class="p-4">
@@ -213,6 +214,7 @@ select:focus {
             </tr>
           </table>
         </div>
+        {% endif %}
       </div>
       <div class="col-8">
         <div class="tabs mt-5 ">
@@ -220,7 +222,7 @@ select:focus {
             <label for="tab2-1" class="text-primary font-weight-bold">Profile</label>
             <input id="tab2-1" name="tabs-two" type="radio" checked="checked">
             <div>
-              <h4 class="mb-4">Client Details <button class="btn-link btn-sm" id="btn" style="color: #101110;"><i class="fas fa-pen-square mb-2"></i></button></h4>
+              <h4 class="mb-4">Client Details {% if user.is_superuser %}<button class="btn-link btn-sm" id="btn" style="color: #101110;"><i class="fas fa-pen-square mb-2"></i></button>{% endif %}</h4>
               <form action="{% url 'clientprofile' client.id %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div id="eVisible">
@@ -245,22 +247,23 @@ select:focus {
                     <div class="col-4 font-weight-bold text-secondary">Operator <span class="float-right">:</span></div>
                     <div class="col-4"><h5>
                       <select name="operator" id="opr" class="form-control">
-                        <option value="{{client.operator}}" selected hidden>{{client.operator}}</option>
+                        <option value="{{client.operator.id}}" selected hidden>{{client.operator}}</option>
                         {% for operator in operators %}
                           <option value="{{operator.id}}">{{operator}}</option>
                         {% endfor %}
                       </select>
                     </h5></div>
                   </div>
-                  <div class="row"><div class="col-4 font-weight-bold text-secondary">Credit Limit<span class="float-right">:</span></div><div class="col-4"><h5><input type="number"  class="form-control" value="{{client.credit_limit}}"></h5></div></div>
+                  <div class="row"><div class="col-4 font-weight-bold text-secondary">Credit Limit<span class="float-right">:</span></div><div class="col-4"><h5><input type="number" name="credit_limit" class="form-control" value="{{client.credit_limit}}"></h5></div></div>
                   <div class="row"><div class="col-4 font-weight-bold text-secondary">Logo<span class="float-right">:</span></div><div class="col-4"><h5><input type="file" id="upload" class="custom-file-input form-control"></h5></div></div>
 
                   <div class="row">
                       <div class="col-4 font-weight-bold text-secondary">Countries <span class="float-right">:</span></div>
                       <div class="col-4">
-                        <select class="js-example-basic-multiple" name="states[]" multiple>
+                        <select name="states[]" multiple>
                           {% for country in client.countries.all %}
-                          <option value="{{ country.id }}" selected>{{ country }}</option>{% endfor %}
+                          <option value="{{ country.id }}" selected>{{ country }}</option>
+                          {% endfor %}
                           {% for country in countries %}
                             {% if country not in client.countries.all %}
                             <option value="{{country.id}}">{{country}}</option>
@@ -418,8 +421,7 @@ select:focus {
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
   <script>$(document).ready(function() {
           $('.js-example-basic-multiple').select2();
-      });
-  </script>
+      });</script>
   
 
 

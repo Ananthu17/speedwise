@@ -1,20 +1,282 @@
-{% extends "smsapp/index.html" %}
+{% extends "smsapp/index2.html" %}
 
 {% block title %}Speedwise : Reports {% endblock %}
 
 {% block navbar_title %}Reports{% endblock %}
 
+{% block css %}
+
+{% endblock %}
+
 {% block content %}
-<div class="border p-3">
-    <div class="chartContainer shadow mb-5" style="height: 300px; width: 100%;"></div>
-</div>
-<div class="border p-3">
-    <div id="chartContainer" style="width: 100%; height: 300px" class="shadow"></div>
-</div>
+<div class="row">
+	<div class="col-lg-4 col-md-6 col-sm-6 p-3">
+	  <div class="card card-stats">
+		<div class="card-body ">
+		  <div class="row">
+			<div class="col-5 col-md-4">
+			  <div class="icon-big text-center icon-warning">
+				<i class="nc-icon nc-email-85 text-warning"></i>
+			  </div>
+			</div>
+			<div class="col-7 col-md-8">
+			  <div class="numbers">
+				<p class="card-category">Total SMS</p>
+				<p class="card-title">{{total_sms_sent}}<p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		<div class="card-footer ">
+		  <hr>
+		  <div class="stats">
+			<i class="fa fa-refresh"></i>
+			Till Now
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="col-lg-4 col-md-6 col-sm-6 p-3">
+	  <div class="card card-stats">
+		<div class="card-body ">
+		  <div class="row">
+			<div class="col-5 col-md-4">
+			  <div class="icon-big text-center icon-warning">
+				<i class="nc-icon nc-email-85 text-success"></i>
+			  </div>
+			</div>
+			<div class="col-7 col-md-8">
+			  <div class="numbers">
+				<p class="card-category">SMS</p>
+				<p class="card-title">{{total_sms_sent_last_month}}<p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		<div class="card-footer ">
+		  <hr>
+		  <div class="stats">
+			<i class="fa fa-calendar-o"></i>
+			Current Month
+		  </div>
+		</div>
+	  </div>
+	</div>
+	<div class="col-lg-4 col-md-6 col-sm-6 p-3">
+	  <div class="card card-stats">
+		<div class="card-body ">
+		  <div class="row">
+			<div class="col-5 col-md-4">
+			  <div class="icon-big text-center icon-warning">
+				<i class="nc-icon nc-email-85 text-danger"></i>
+			  </div>
+			</div>
+			<div class="col-7 col-md-8">
+			  <div class="numbers">
+				<p class="card-category">SMS</p>
+				<p class="card-title">{{total_sms_sent_last_week}}<p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		<div class="card-footer ">
+		  <hr>
+		  <div class="stats">
+			<i class="fa fa-clock-o"></i>
+			Current Week
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </div>
+  {% if user.is_superuser %}
+  <div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-6 p-3">
+		<div class="card card-stats">
+		  <div class="card-body ">
+			<div class="row">
+			  <div class="col-5 col-md-4">
+				<div class="icon-big text-center icon-warning">
+				  <img src="https://assets.telnyx.com/assets/logo-dark.adc10.svg"  alt="telynix" height="150.2px">
+				</div>
+			  </div>
+			  <div class="col-7 col-md-8">
+				<div class="numbers">
+				  <h6 class="card-category">Total SMS</h6>
+				  <h4 class="card-title pl-2">{{total_sms_sent_telnyx}}<h4>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  <div class="card-footer ">
+			<hr>
+			<div class="stats">
+				<i class="fa fa-refresh"></i>
+				Till Now
+			</div>
+		  </div>
+		</div>
+	</div>
+	<div class="col-lg-6 col-md-6 col-sm-6 p-3">
+		<div class="card card-stats">
+		  <div class="card-body ">
+			<div class="row">
+			  <div class="col-5 col-md-4">
+				<div class="icon-big text-center icon-warning">
+				  <img src="https://www.thinq.com/wp-content/uploads/2019/07/thinq-log.svg" width="80%" alt="thinq" height="150.2 px">
+				</div>
+			  </div>
+			  <div class="col-7 col-md-8">
+				<div class="numbers">
+				  <h6 class="card-category">Total SMS</h6>
+				  <h4 class="card-title pl-2">{{total_sms_sent_thinq}}</h4>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  <div class="card-footer ">
+			<hr>
+			<div class="stats">
+				<i class="fa fa-refresh"></i>
+				Till Now
+			</div>
+		  </div>
+		</div>
+	  </div>
+  </div>
+  {% else %}
+  <div class="row">
+	<div class="col-lg-6 col-md-6 col-sm-6 p-3">
+		<div class="card card-stats">
+		  <div class="card-body ">
+			<div class="row">
+			  <div class="col-5 col-md-4">
+				<div class="icon-big text-center text-white bg-success border border-success mt-3">
+				  <i class="fas fa-check p-4"></i>
+				</div>
+			  </div>
+			  <div class="col-7 col-md-8">
+				<div class="numbers">
+				  <h6 class="card-category">Available Credit</h6>
+				  <h4 class="card-title pl-2">{{logged_client.credit}}</h4>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  <div class="card-footer ">
+			<hr>
+			<div class="stats">
+				<i class="fa fa-refresh"></i>
+				Till Now
+			</div>
+		  </div>
+		</div>
+	  </div>
+	<div class="col-lg-6 col-md-6 col-sm-6 p-3">
+		<div class="card card-stats">
+		  <div class="card-body ">
+			<div class="row">
+			  <div class="col-5 col-md-4">
+				<div class="icon-big text-center text-white bg-warning mt-3 border border-warning">
+				  <i class="fas fa-exclamation p-4"></i>
+				</div>
+			  </div>
+			  <div class="col-7 col-md-8">
+				<div class="numbers">
+				  <h6 class="card-category">Credit Limit</h6>
+				  <h4 class="card-title pl-2">{{logged_client.credit_limit}}</h4>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		  <div class="card-footer ">
+			<hr>
+			<div class="stats">
+				<i class="fa fa-refresh"></i>
+				Till Now
+			</div>
+		  </div>
+		</div>
+	  </div>
+  </div>
+  {% endif %}
+  <div class="row">
+	  <div class="col-lg-6 col-md-6 col-sm-6 p-3">
+		<div class="card card-stats p-3">
+			<div class="row ">
+				<div class="col-12 text-center">
+					<p class="text-secondary font-weight-bold">SMS sent and received over 3 Months</p>
+				</div>
+			</div>
+			<canvas id="myChart"></canvas>
+		</div>
+	  </div>
+	  <div class="col-lg-6 col-md-6 col-sm-6 p-3">
+		<div class="card card-stats p-3">
+			<div class="row ">
+				<div class="col-12 text-center">
+					<p class="text-secondary font-weight-bold">SMS to each group</p>
+				</div>
+			</div>
+			<canvas id="myChart2" class="p-2"></canvas>
+		</div>
+	  </div>
+  </div>
+
 
 {% endblock %}
 
 {% block add_script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<!-- charts -->
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45]
+        }]
+    },
+
+    // Configuration options go here
+    options: {scales: {
+            xAxes: [{
+                stacked: true
+            }],
+            yAxes: [{
+                stacked: true
+            }]
+        }}
+});
+</script>
+<!-- end chart  -->
+<!-- pie chart -->
+<script>
+	var ctx = document.getElementById('myChart2').getContext('2d');
+	var myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Red',
+        'Yellow',
+        'Blue'],
+        datasets: [{
+        data: [10, 20, 30],
+		backgroundColor: ['rgb(255, 99, 132)','#fbc658','#0c78e5'],
+        borderColor: ['rgb(255, 99, 132)','#fbc658','#0c78e5'],
+    }]
+    },
+    
+});
+</script>
+<!-- pie chart end  -->
 <script>
 	const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
 	document.addEventListener("DOMContentLoaded", function(){

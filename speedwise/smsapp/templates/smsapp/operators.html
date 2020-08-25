@@ -83,7 +83,7 @@
         <tbody >
             {% for operator in operators %}
             <tr>
-            <td><h6 class="ml-2">{{operator}}</h6></td>
+            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{operator.id}}"><h6 class="ml-2">{{operator}}</h6></a></td>
             <td><h6>{{operator.code}}</h6></td>
             <td ><h6 class="ml-2"><label class="switch">
                 {% if operator.is_active %}

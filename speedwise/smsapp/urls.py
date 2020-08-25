@@ -35,6 +35,7 @@ urlpatterns = [
     path('messaging/delete/<message_pk>', views.delete_message, name='deletemessage'),
     path('mmsmessaging', MMSMessages_View.as_view(), name='mmsmessaging'),
     path('templates', Templates_View.as_view(), name='templates'),
+    path('templates/delete/<template_pk>', views.delete_template, name='deletetemplate'),
     path('countries', Country_View.as_view(), name='countries'),
     path('countries/delete/<country_pk>', views.delete_country, name='deletecountry'),
     path('message-response', MessageResposeView.as_view(), name='message-response'),

@@ -224,6 +224,28 @@ label[for="et_pb_contact_brand_file_request_0"] {
                 </script>
                 {% endfor %}
 
+        {% if contacts.has_other_pages %}
+  <ul class="pagination">
+    {% if contacts.has_previous %}
+      <li><a href="?page={{ contacts.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in contacts.paginator.page_range %}
+      {% if contacts.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if contacts.has_next %}
+      <li><a href="?page={{ contacts.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
         </tbody>
         </table>
     </div>
@@ -305,7 +327,7 @@ label[for="et_pb_contact_brand_file_request_0"] {
                         <div class="modal-body bg-light">
                             <div class="container">
                                 <label for="et_pb_contact_brand_file_request_0" class="et_pb_contact_form_label">Enter</label>
-                                <input type="file" id="et_pb_contact_brand_file_request_0" class="file-upload" accept=".csv" data-allowed-file-extensions="csv xlsx" required>
+                                <input type="file" name=file_upload id="et_pb_contact_brand_file_request_0" class="file-upload" accept=".csv" data-allowed-file-extensions="csv xlsx" required>
                             </div> 
                            
                         </div>

@@ -15,11 +15,17 @@ from django.contrib.auth.models import User,auth
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate,login,logout
 import requests
+import os
+from urllib.parse import urlparse
+from tempfile import TemporaryFile
+from urllib.parse import urlsplit
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import *
 import telnyx
 import base64
 from django.conf import settings
+from django.core.files import File
+from django.core.paginator import Paginator,PageNotAnInteger
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
@@ -436,8 +442,14 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['notifications'] = notifications
 
         else:
-            client_sub_user_objects = ClientSubUser.objects.filter(client=client_object)
-            action_logs = ActionLogs.objects.all()
+            client_sub_user_objects = ClientSubUser.objects.filter(client=client_object).select_related('user')
+            client_user_object = Client.objects.filter(user=self.request.user).select_related('user')
+            client_user_list = []
+            for client_sub_user in client_sub_user_objects:
+                client_user_list.append(client_sub_user.user.id)
+            for client_user in client_user_object:
+                client_user_list.append(client_user.user.id)
+            action_logs = ActionLogs.objects.filter(user__in = client_user_list)
             userform = UsercreateForm
             clientsubuserform = ClientSubUserForm
             context['clientsubusers'] = client_sub_user_objects
@@ -448,7 +460,6 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             context['credit_objects'] = credit_objects
 
         context['client'] = client_object
-        print(client_object.countries.all())
         context['countries']= countries
         return context
 
@@ -618,6 +629,7 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
         context = super(Contacts_View, self).get_context_data(**kwargs)
         contactform = ContactForm
         user=self.request.user
+        page = self.request.GET.get('page')
         if user.is_authenticated:
             if Client.objects.filter(user=self.request.user):
                 logged_client = Client.objects.get(user=self.request.user)
@@ -629,11 +641,15 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
             if self.request.user.is_superuser:
                 countries = Country.objects.all()
                 contacts = Contact.objects.all()
+                paginator = Paginator(contacts, 50)
                 clients = Client.objects.all()
                 notifications = Notifications.objects.all()
                 context['notifications'] = notifications
                 context['contactsform'] = contactform
-                context['contacts'] = contacts
+                try:
+                    context['contacts'] = paginator.page(page)
+                except PageNotAnInteger:
+                    context['contacts'] = paginator.page(1)
                 context['countries'] = countries
                 context['clients'] = clients
 
@@ -644,10 +660,14 @@ class Contacts_View(LoginRequiredMixin,TemplateView):
                     client = ClientSubUser.objects.get(user=self.request.user).client
                 countries = client.countries.all()
                 contacts = Contact.objects.filter(client=client)
+                paginator = Paginator(contacts, 50)
                 notifications = Notifications.objects.filter(client=client)
                 context['notifications'] = notifications
                 context['contactsform'] = contactform
-                context['contacts'] = contacts
+                try:
+                    context['contacts'] = paginator.page(page)
+                except PageNotAnInteger:
+                    context['contacts'] = paginator.page(1)
                 context['countries'] = countries
         else:
             pass
@@ -711,12 +731,11 @@ def import_contacts(request):
                 return redirect('contacts')
 
             for i,j in data.iterrows():
-
                 if Client.objects.filter(user=request.user):
                     client = Client.objects.get(user=request.user)
                     user = request.user
                     country = Country.objects.get(country_code=j[2])
-                    group = ContactGroup.objects.get(name=j[3]) or None
+                    group = ContactGroup.objects.get(name__iexact=j[3]) or None
                     mobile = [character for character in str(j[1]) if character.isalnum()]
                     mobile = "".join(mobile)
                     if not Contact.objects.filter(name=j[0], mobile=mobile):
@@ -787,6 +806,11 @@ class ContactsGroup_View(LoginRequiredMixin,TemplateView):
                 context['contactgroupform'] = contactgroupform
                 context['clients'] = clients
                 context['contact_groups'] = contact_groups
+                groups_and_contacts = []
+                for group in contact_groups:
+                    contacts_by_groups = {'group': group, 'contacts': Contact.objects.filter(group=group)}
+                    groups_and_contacts.append(contacts_by_groups)
+                context['groups_and_contacts'] = groups_and_contacts
             else:
                 if Client.objects.filter(user=self.request.user):
                     client = Client.objects.get(user=self.request.user)
@@ -797,6 +821,11 @@ class ContactsGroup_View(LoginRequiredMixin,TemplateView):
                 contact_groups = ContactGroup.objects.filter(client=client)
                 context['contactgroupform'] = contactgroupform
                 context['contact_groups'] = contact_groups
+                groups_and_contacts = []
+                for group in contact_groups:
+                    contacts_by_groups = {'group':group,'contacts':Contact.objects.filter(group=group)}
+                    groups_and_contacts.append(contacts_by_groups)
+                context['groups_and_contacts'] = groups_and_contacts
         else:
             pass
         return context
@@ -854,24 +883,31 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         if ClientSubUser.objects.filter(user=self.request.user):
             logged_client = ClientSubUser.objects.get(user=self.request.user).client
             context['logged_client'] = logged_client
+        page = self.request.GET.get('page')
         if self.request.user.is_superuser:
             messages = Messages.objects.all()
-            contacts = Contact.objects.all()
+            contacts = Contact.objects.filter(id__in=[x.contact.id for x in messages])
+            contacts_gp = ContactGroup.objects.all()
+            paginator = Paginator(contacts, 50)
             notifications = Notifications.objects.all()
             context['notifications'] = notifications
         else:
             if Client.objects.filter(user=self.request.user):
                 client = Client.objects.get(user=self.request.user)
-                contacts = Contact.objects.filter(client=client)
+                mmsmessages = MMSMessages.objects.filter(client=client)
+                contacts = Contact.objects.filter(client=client).filter(id__in=[x.contact.id for x in mmsmessages])
+                paginator = Paginator(contacts, 50)
                 notifications = Notifications.objects.filter(client=client)
                 context['notifications'] = notifications
             else:
                 client = ClientSubUser.objects.get(user=self.request.user).client
-                contacts = Contact.objects.filter(client=client)
+                messages = Messages.objects.filter(client=client)
+                contacts = Contact.objects.filter(client=client).filter(id__in=[x.contact.id for x in messages])
+                contacts_gp = ContactGroup.objects.filter(client=client)
+                paginator = Paginator(contacts, 50)
                 notifications = Notifications.objects.filter(client=client)
                 context['notifications'] = notifications
             messages = Messages.objects.filter(client=client)
-        contacts_gp = ContactGroup.objects.all()
 
         templates = Templates.objects.all()
         context['messagingform'] = messagingform
@@ -879,7 +915,11 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         context['contacts'] = contacts
         context['contacts_group'] = contacts_gp
         threads = []
-        for contact in contacts:
+        try:
+            contact_threads = paginator.page(page)
+        except PageNotAnInteger:
+            contact_threads = paginator.page(1)
+        for contact in contact_threads:
             if Messages.objects.filter(contact=contact):
                 thread = {
                     'contact': Contact.objects.get(id=contact.id),
@@ -887,6 +927,7 @@ class Messages_View(LoginRequiredMixin,TemplateView):
                 }
                 threads.append(thread)
         context['messages_threads'] = threads
+        context['contact_threads'] = contact_threads
         context['templates'] = templates
 
         return context
@@ -1014,20 +1055,27 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
         if ClientSubUser.objects.filter(user=self.request.user):
             logged_client = ClientSubUser.objects.get(user=self.request.user).client
             context['logged_client'] = logged_client
+        page = self.request.GET.get('page')
         if self.request.user.is_superuser:
             mmsmessages = MMSMessages.objects.all()
-            contacts = Contact.objects.all()
+            contacts = Contact.objects.filter(id__in=[x.contact.id for x in mmsmessages])
+            paginator = Paginator(contacts, 50)
             notifications = Notifications.objects.all()
             context['notifications'] = notifications
         else:
             if Client.objects.filter(user=self.request.user):
                 client = Client.objects.get(user=self.request.user)
-                contacts = Contact.objects.filter(client=client)
+                messages = Messages.objects.filter(client=client)
+                contacts = Contact.objects.filter(client=client).filter(id__in=[x.contact.id for x in messages])
+                contacts_gp = ContactGroup.objects.filter(client=client)
+                paginator = Paginator(contacts, 50)
                 notifications = Notifications.objects.filter(client=client)
                 context['notifications'] = notifications
             else:
                 client = ClientSubUser.objects.get(user=self.request.user).client
-                contacts = Contact.objects.filter(client=client)
+                mmsmessages = MMSMessages.objects.filter(client=client)
+                contacts = Contact.objects.filter(client=client).filter(id__in=[x.contact.id for x in mmsmessages])
+                paginator = Paginator(contacts, 50)
                 notifications = Notifications.objects.filter(client=client)
                 context['notifications'] = notifications
             mmsmessages = MMSMessages.objects.filter(client=client)
@@ -1036,14 +1084,19 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
         context['mmsmessageslist'] = mmsmessages
         context['contacts'] = contacts
         threads = []
-        for contact in contacts:
+        try:
+            contact_threads = paginator.page(page)
+        except PageNotAnInteger:
+            contact_threads = paginator.page(1)
+        for contact in contact_threads:
             if MMSMessages.objects.filter(contact=contact):
                 thread = {
                     'contact': Contact.objects.get(id=contact.id),
                     'message': MMSMessages.objects.filter(contact=contact)
                 }
                 threads.append(thread)
-                context['messages_threads'] = threads
+        context['messages_threads'] = threads
+        context['contact_threads'] = contact_threads
         contacts_gp = ContactGroup.objects.all()
         context['contacts_group'] = contacts_gp
         context['templates'] = templates
@@ -1100,24 +1153,23 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
                                         to=country_tele_code+destination_contact_number,
                                         subject=message_subject,
                                         text=msg,
-                                        media_urls=['http://localhost:8000'+str(mms_message_entry.attachment.url)],
+                                        media_urls=['http://speedwise.goodbits.in'+str(mms_message_entry.attachment.url)],
                                     )
                                     credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
                                     client.credit-=1
                                     client.save()
                                 if client.operator.code == 'THQ':
                                     mms_message_entry = MMSMessages.objects.create(client=client, user=self.request.user,contact=destination_contact,message_subject=message_subject,message=msg,attachment=request.FILES.get('attachment'))
-                                    url = "https://api.thinq.com/account/" + str(account_id) + "/product/origination/mms/send"
-                                    file_path = 'http://localhost:8000' + str(mms_message_entry.attachment.url)
-                                    payload = "{\n  \"from_did\": \"" + source_number + "\",\n  \"to_did\": \"" + destination_contact_number + "\",\n  \"message\": \"" + str(msg) + "\",\n  \"media_url\": \"" + file_path + "\"}"
-
-
+                                    url = 'https://api.thinq.com/account/' + str(account_id) + '/product/origination/mms/send'
+                                    file_path = 'http://speedwise.goodbits.in' + str(mms_message_entry.attachment.url)
+                                    payload = '{\n  \'from_did\': \''+source_number+'\',\n  \'to_did\': \''+destination_contact_number+'\',\n  \'message\': \''+str(msg)+'\',\n  \'media_url\': \''+file_path+'\'}'
                                     files = []
                                     headers = {
                                         'Authorization': 'Basic ' + str(authentication_bytes_base64_decode),
                                         'Content-Type': 'application/json'
                                     }
                                     response = requests.request("POST", url, headers=headers, data=payload, files=files)
+                                    notification_entry = Notifications.objects.create(user=self.request.user,notification=str(response.text.encode('utf8')))
                                     messages.info(request, response.text.encode('utf8'))
                                     credit_obj = ClientCreditInOuts.objects.create(amount=1.0, client=client)
                                     client.credit -= 1
@@ -1142,7 +1194,7 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
             if no_credits:
                 notification = str(len(no_credits)) + ' messages failed. Credits over.'
                 notification_entry = Notifications.objects.create(message_out=msg, user=self.request.user,client=client,notification=notification)
-            action = str(request.user) + ' sent some MMS messages at ' + datetime.now().strftime(
+            action = str(request.user) + ' sent some MMS messages on ' + datetime.now().strftime(
                 "%d/%m/%Y %H:%M:%S")
             ActionLogs.objects.create(user=request.user, action=action)
             return redirect('mmsmessaging')
@@ -1181,18 +1233,24 @@ class Templates_View(LoginRequiredMixin,TemplateView):
 
     def post(self, request):
         try:
-            templateform = TemplateForm(request.POST, request.FILES or None)
             if Client.objects.filter(user=self.request.user):
                 client = Client.objects.get(user=self.request.user)
             else:
                 client = ClientSubUser.objects.get(user=self.request.user).client
-            if templateform.is_valid():
-                templates = templateform.save()
-                templates.created_by=client
-                templates.save()
-                action = str(request.user) + ' created message template at ' + datetime.now().strftime(
-                    "%d/%m/%Y %H:%M:%S")
-                ActionLogs.objects.create(user=request.user, action=action)
+            if Templates.objects.filter(id=request.POST.get('template_id')):
+                template = Templates.objects.get(id=request.POST.get('template_id'))
+                template.message_title = request.POST.get('message_title')
+                template.message_template = request.POST.get('message_template')
+                template.save()
+            else:
+                templateform = TemplateForm(request.POST, request.FILES or None)
+                if templateform.is_valid():
+                    templates = templateform.save()
+                    templates.created_by=client
+                    templates.save()
+                    action = str(request.user) + ' created message template at ' + datetime.now().strftime(
+                        "%d/%m/%Y %H:%M:%S")
+                    ActionLogs.objects.create(user=request.user, action=action)
             return redirect('templates')
         except:
             messages.error(request, "Something went wrong")
@@ -1288,36 +1346,55 @@ class MessageResposeView(APIView):
 
 
     def post(self, request):
-        data = request.data
-        values = json.dumps(data)
-        values = json.loads(values)
-        webhook = WebhookResponse.objects.create(message_response=str(values))
-        if values.get('from') and values.get('to'):
-            from_contact = Contact.objects.filter(mobile=values.get('from'))
-            if from_contact:
-                from_contact = Contact.objects.get(mobile=values.get('from'))
-                from_message = values.get('message')
-                if not Messages.objects.filter(contact=from_contact, message=from_message, is_inbound=True):
-                    inbound_message = Messages.objects.create(contact=from_contact,client=from_contact.client,message=from_message, is_inbound=True)
-                    notification = 'Message received from '+str(from_contact)
-                    notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
-                                                                      contact=from_contact, client=from_contact.client,
-                                                                      notification=notification)
-                    messages.info(self.request, notification)
-        if values.get('data') and  values.get('data').get('event_type') == 'message.received':
-            from_phone_number = values.get('data').get('payload').get('from').get('phone_number')[-10:]
-            from_contact = Contact.objects.filter(mobile=from_phone_number)
-            if from_contact:
-                from_contact = Contact.objects.get(mobile=from_phone_number)
-                from_message = values.get('data').get('payload').get('text')
-                if not Messages.objects.create(contact=from_contact,message=from_message,is_inbound=True):
-                    inbound_message = Messages.objects.create(contact=from_contact,client=from_contact.client,message=from_message,is_inbound=True)
-                    notification = 'Message received from ' + str(from_contact)
-                    notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
-                                                                      contact=from_contact, client=from_contact.client,
-                                                                      notification=notification)
-                    messages.info(self.request, notification)
-        return redirect('message-response')
+        try:
+            data = request.data
+            values = json.dumps(data)
+            values = json.loads(values)
+            webhook = WebhookResponse.objects.create(message_response=str(values))
+            if values.get('from') and values.get('to'):
+                from_contact = Contact.objects.filter(mobile=values.get('from'))
+                if from_contact:
+                    from_contact = Contact.objects.get(mobile=values.get('from'))
+                    from_message = values.get('message')
+                    if not Messages.objects.filter(contact=from_contact, message=from_message, is_inbound=True):
+                        inbound_message = Messages.objects.create(contact=from_contact,client=from_contact.client,message=from_message, is_inbound=True)
+                        notification = 'Message received from '+str(from_contact)
+                        notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,
+                                                                          contact=from_contact, client=from_contact.client,
+                                                                          notification=notification)
+                        messages.info(self.request, notification)
+            if values.get('data') and  values.get('data').get('event_type') == 'message.received':
+                # [-10:] based on an assumption of dealing with only 10 digit mobile numbers
+                from_phone_number = values.get('data').get('payload').get('from').get('phone_number')[-10:]
+                from_contact = Contact.objects.filter(mobile=from_phone_number)
+                if from_contact:
+                    from_contact = Contact.objects.get(mobile=from_phone_number)
+                    from_message = values.get('data').get('payload').get('text')
+                    if values.get('data').get('payload').get('type') == 'SMS':
+                        if not Messages.objects.filter(contact=from_contact,message=from_message,is_inbound=True):
+                            inbound_message = Messages.objects.create(contact=from_contact,client=from_contact.client,message=from_message,is_inbound=True)
+                            notification = 'SMS received from ' + str(from_contact)
+                            notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,contact=from_contact, client=from_contact.client,notification=notification)
+                            messages.info(self.request, notification)
+                    if values.get('data').get('payload').get('type') == 'MMS':
+                        if not MMSMessages.objects.filter(contact=from_contact,message=from_message,is_inbound=True):
+                            inbound_message = MMSMessages.objects.create(contact=from_contact, client=from_contact.client,message=from_message, is_inbound=True)
+                            media_url =  values.get('data').get('payload').get('media')[0].get('url')
+                            filename = os.path.basename(urlparse(media_url).path)
+                            with TemporaryFile() as tf:
+                                r = requests.get(media_url, stream=True)
+                                for chunk in r.iter_content(chunk_size=4096):
+                                    tf.write(chunk)
+                                tf.seek(0)
+                                inbound_message.attachment.save(filename,File(tf),save=True)
+                            notification = 'MMS received from ' + str(from_contact)
+                            notification_entry = Notifications.objects.create(message_out=from_message, user=self.request.user,contact=from_contact, client=from_contact.client,notification=notification)
+                            messages.info(self.request, notification)
+            return redirect('message-response')
+        except:
+            messages.error(request, "Webhook response error")
+            return redirect('message-response')
+
 
 
 class ReportsView(TemplateView):

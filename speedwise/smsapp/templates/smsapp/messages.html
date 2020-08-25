@@ -156,6 +156,30 @@
             </tr>
         </thead>
         <tbody >
+
+        {% if contact_threads.has_other_pages %}
+  <ul class="pagination">
+    {% if contact_threads.has_previous %}
+      <li><a href="?page={{ contact_threads.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in contact_threads.paginator.page_range %}
+      {% if contact_threads.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if contact_threads.has_next %}
+      <li><a href="?page={{ contact_threads.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+
             {% for message in messages_threads %}
               
             <tr>
@@ -323,6 +347,8 @@
                                   <td><input type="checkbox" onclick="add_id({{name.id}})"></td>
                               </tr>
                             {% endfor %}
+
+
                           </tbody>
                       </table>
                     </div>

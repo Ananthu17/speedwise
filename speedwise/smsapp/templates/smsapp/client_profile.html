@@ -7,6 +7,67 @@
 {% block navbar_title %}Client Profile{% endblock %}
 {% block css %}
 <style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  </style>
+<style>
  .pagination li {
   display:inline-block;
   padding:5px;
@@ -197,7 +258,7 @@ select:focus {
         </div>
         {% if user.is_superuser %}
         <div class="text-center">
-          <button class="btn btn-sm btn-info"  data-toggle="modal" data-target="#exampleModalcredit"><i class="nc-icon nc-simple-add"></i>&nbspAdd Credit</button>
+          <button class="btn btn-sm btn-info"  data-toggle="modal" data-target="#exampleModalcredit"><i class="nc-icon nc-simple-add"></i>&nbsp Add</button>
           <a href="javascript:void(0)" class="btn btn-sm btn-success shadow" data-toggle="modal" data-target="#myModal"><i class="nc-icon nc-simple-add"></i> User</a>
         </div>
         <div class="p-4">
@@ -208,8 +269,113 @@ select:focus {
             <tr id="demo">
               {% for subuser in clientsubusers %}
               <tr class="text-center mt-2"  >
-                <td class="d-none">{{subuser}}</td>
+                <td class="d-none" data-toggle="modal" data-target="#myModal{{subuser.id}}">{{subuser}}</td>
               </tr>
+              <!-- Modal -->
+              <div class="modal fade" id="myModal{{subuser.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">SubUser Details</h5><h5><button class="btn-link btn-sm" id="subeditbtn{{subuser.id}}" style="color: #101110;"><i class="fas fa-pen-square mb-2"></i></button></h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                          <div class="modal-body">
+                              <div id="subedit{{subuser.id}}">
+                                <div class="row">
+                                  <div class="col-3">
+                                    <i class="nc-icon nc-mobile"><span class="m-2">Mobile :</span></i>
+                                  </div>
+                                  <div class="col-9">
+                                    <h5>{{subuser.mobile}}</h5>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-3">
+                                    <i class="nc-icon nc-world-2"><span class="m-2">Country :</span></i>
+                                  </div>
+                                  <div class="col-9">
+                                    <h5>{{subuser.country}}</h5>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                  <div class="col-3">
+                                    <i class="nc-icon nc-tap-01"><span class="m-2">Active :</span></i>
+                                  </div>
+                                  <div class="col-9">
+                                    <label class="switch">
+                                    {% if subuser.is_active == True %}
+                                    <input type="checkbox" checked>
+                                    {% else %}
+                                    <input type="checkbox" >
+                                    {% endif %}
+                                    <span class="slider round"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="d-none" id="subview{{subuser.id}}">
+                                <form action="" enctype="multipart/form-data" method="POST">
+                                  {% csrf_token %}
+                                <div class="row">
+                                  <div class="col-3">
+                                    <i class="nc-icon nc-mobile"><span class="m-2">Mobile :</span></i>
+                                  </div>
+                                  <div class="col-9">
+                                    <h5><input type="text" class="form-control" name= "mobile" value="{{subuser.mobile}}"></h5>
+                                  </div>
+                                </div>
+                                <div class="row mt-2">
+                                  <div class="col-3">
+                                    <i class="nc-icon nc-world-2"><span class="m-2">Country :</span></i>
+                                  </div>
+                                  <div class="col-9">
+                                    <select name="counsub" id="counsub" class="form-control">
+                                      <option value="{{subuser.country}}" selected hidden >{{subuser.country}}</option>
+                                      {% for country in client.countries.all %}
+                                        <option value="{{country.id}}">{{country}}</option>
+                                      {% endfor %}
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="row mt-2">
+                                  <div class="col-3">
+                                    <i class="nc-icon nc-tap-01"><span class="m-2">Active :</span></i>
+                                  </div>
+                                  <div class="col-9">
+                                    <label class="switch">
+                                    {% if subuser.is_active == True %}
+                                    <input type="checkbox" checked>
+                                    {% else %}
+                                    <input type="checkbox" >
+                                    {% endif %}
+                                    <span class="slider round"></span>
+                                    </label>
+                                  </div>
+                                </div>
+                                <div class="row">
+                                   <div class="col-12"><a href="" class="btn btn-sm float-right btn-danger ml-1">Delete</a><button type="submit" class="btn btn-sm btn-info float-right">Submit</button></div>
+                                </div>
+                                </form>
+                              </div>
+                          </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Add modal end  -->
+              <script
+                src="https://code.jquery.com/jquery-2.2.4.js"
+                integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+                crossorigin="anonymous"></script>
+              <script>
+                $(document).ready(()=>{
+                  $('#subeditbtn{{subuser.id}}').on('click',()=>{
+                  $('#subedit{{subuser.id}}').toggleClass('d-none')
+                  $('#subview{{subuser.id}}').toggleClass('d-none')
+                })
+                })
+              </script>
               {% endfor %}
             </tr>
           </table>
@@ -260,7 +426,7 @@ select:focus {
                   <div class="row">
                       <div class="col-4 font-weight-bold text-secondary">Countries <span class="float-right">:</span></div>
                       <div class="col-4">
-                        <select name="states[]" multiple>
+                        <select class="js-example-basic-multiple" name="states[]" multiple>
                           {% for country in client.countries.all %}
                           <option value="{{ country.id }}" selected>{{ country }}</option>
                           {% endfor %}
@@ -342,7 +508,7 @@ select:focus {
                 <h3 class="pt-3"><i class="fas fa-check mt-2 ml-1"></i></h3>
               </div>
               <div class="col-8">
-                <h5 class="pt-3 font-weight-bold text-secondary">{{ client.credit_in }}<br><small>Credits</small></h5>
+                <h5 class="pt-3 font-weight-bold text-secondary">{{ client.credit}}<br><small>Credits</small></h5>
               </div>
             </div>
           </div>
@@ -424,7 +590,7 @@ select:focus {
       });</script>
   
 
-
+  {% if user.is_superuser == False %}
   <script>
     const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
     $(document).ready(()=>{
@@ -438,10 +604,15 @@ select:focus {
           console.log(color['{{logged_client.color}}'])
       $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
       $('.border').addClass('border-dark')
+    })
+  </script>
+  {% endif %}
+  <script>
+    $(document).ready(()=>{
       $('#id_password1').attr('class','form-control mb-1')
       $('#id_password2').attr('class','form-control mb-1')
       // $('.page').addClass('btn btn-link ml-1')
-      $('span').addClass('d-none')
+      $('.helptext').addClass('d-none')
       $('#th').on('click',()=>{
         $('td').toggleClass('d-none')
         $('#arrow').toggleClass('nc-minimal-down')

@@ -82,7 +82,7 @@
         <tbody >
             {% for country in countries %}
             <tr>
-            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{country.id}}"><h6 class="ml-2">{{country}}</h6></a></td>
+            <td><a href="javasript:void(0)" class="btn-info btn-link btn btn-sm" data-toggle="modal" data-target="#exampleeditModal{{country.id}}">{{country}}</a></td>
             <td><h6>{{country.country_tele_code}}</h6></td>
             <td ><h6 class="ml-2"><label class="switch">
                 {% if country.is_active %}
@@ -92,7 +92,7 @@
                 {% endif %}
                 <span class="slider round"></span>
               </label></h6></td>
-            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{country.id}}"><i class="fa fa-trash"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="btn-danger btn-link" data-toggle="modal" data-target="#myModal{{country.id}}"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
             <div class="modal fade" id="exampleeditModal{{country.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -168,6 +168,8 @@
                 </script>
                 <script>
                     $(document).ready(()=>{
+                    $('#id_country_tele_code').attr('pattern',"+[0-9]{3}")
+                    $('#id_country_tele_code').attr('required','required')
                     console.log("reshmi raj")
                     $('li').removeClass('active')
                     $('#li5').addClass('active')

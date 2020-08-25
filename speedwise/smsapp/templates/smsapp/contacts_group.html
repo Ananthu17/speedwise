@@ -29,7 +29,7 @@
                     {% endif %}
                     <span class="slider round"></span>
                 </label></h6></td>
-                <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{group.id}}"><i class="fa fa-trash"></i></a></h6></td>
+                <td ><h6 class="ml-2"><a href="javascript:void(0)" class="btn-danger btn-link" data-toggle="modal" data-target="#myModal{{group.id}}"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <script
                 src="https://code.jquery.com/jquery-2.2.4.js"
@@ -110,6 +110,7 @@
 {% endblock %}
 
 {% block add_script %}
+{% if user.is_superuser == False %}
 <script>
     const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
     document.addEventListener("DOMContentLoaded", function(){
@@ -123,21 +124,26 @@
               styleNode.appendChild(styleText);
           }
           document.getElementsByTagName('head')[0].appendChild(styleNode);
-        setTimeout(()=>{
-            $('.panel').addClass('d-none');
-            
-          }, 700);
+        
         $('.sidebar-wrapper').addClass('{{logged_client.color}}')
         $('.logo').addClass('{{logged_client.color}}')
         if ('{{logged_client.color}}' !==''){
 			$('.color').addClass('text-dark font-weight-bold')
 		}
-        $('li').removeClass('active')
-        $('#li9').addClass('active')
+        
         $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
         
     });
 </script>
-
-
+{% endif %}
+<script>
+    $(document).ready( function () {
+        $('li').removeClass('active')
+        $('#li9').addClass('active')
+        setTimeout(()=>{
+            $('.panel').addClass('d-none');
+            
+          }, 700);
+    });
+</script>
 {% endblock%}

@@ -83,7 +83,7 @@
         <tbody >
             {% for operator in operators %}
             <tr>
-            <td><a href="javasript:void(0)" class="text-dark" data-toggle="modal" data-target="#exampleeditModal{{operator.id}}"><h6 class="ml-2">{{operator}}</h6></a></td>
+            <td><h6 class="ml-2">{{operator}}</h6></td>
             <td><h6>{{operator.code}}</h6></td>
             <td ><h6 class="ml-2"><label class="switch">
                 {% if operator.is_active %}
@@ -93,7 +93,7 @@
                 {% endif %}
                 <span class="slider round"></span>
               </label></h6></td>
-            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{operator.id}}"><i class="fa fa-trash"></i></a></h6></td>
+            <td ><h6 class="ml-2"><a href="javascript:void(0)" class="btn-danger btn-link" data-toggle="modal" data-target="#myModal{{operator.id}}"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
             <div class="modal fade" id="exampleeditModal{{operator.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -217,5 +217,11 @@
     src="https://code.jquery.com/jquery-2.2.4.js"
     integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
     crossorigin="anonymous">
+    </script>
+    <script>
+       $(document).ready(()=>{
+        $('#id_operator_number').attr('pattern',"[0-9]{10}")
+        $('#id_operator_number').attr('required','required')
+        })
     </script>
 {% endblock%}

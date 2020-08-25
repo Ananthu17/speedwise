@@ -13,7 +13,16 @@
             <div class="col-4">
                 <div class="card shadow">
                     <div class="card-header">
-                        <div class="title text-primary">{{tmp.message_title}}</div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="title text-primary">{{tmp.message_title}}</div>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn-link btn  btn-danger float-right" id="btn" data-toggle="modal" data-target="#myModal{{tmp.id}}"><i class="fas fa-trash pt-1"></i></button>
+                                    <button class="btn-link  btn btn-success  float-right mr-1" id="btn" data-toggle="modal" data-target="#editmodal{{tmp.id}}"><i class="fas fa-edit pt-1"></i></button>
+                                   
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <hr>
@@ -29,6 +38,65 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal -->
+            <div class="modal fade" id="editmodal{{tmp.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Template</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row p-2">
+                                <span class="mb-1">Message title:</span>
+                                <input type="text" class="form-control" value="{{tmp.message_title}}">
+                            </div>
+                            <div class="row p-2">
+                                <span class="mb-1">Message template:</span>
+                                <textarea cols="30" rows="10" class="form-control"> {{tmp.message_template}}</textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            <!-- edit modal end  -->
+            <!-- Modal HTML -->
+            <div id="myModal{{tmp.id}}" class="modal fade">
+                <div class="modal-dialog modal-confirm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="row " style="margin-left: 120px;">
+                                <div class="icon-box">
+                                    <i class="fas fa-times"></i>
+                                </div>	
+                            </div>
+                            <div class="row">
+                                
+                            </div>
+                                                
+                            
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <h4 class="mb-3 mt-0">Are you sure?</h4>
+                            <p>Do you really want to delete these records? This process cannot be undone.</p>
+                        </div>
+                        <div class="modal-footer row" style="padding: 12px 65px 25px;">
+                            <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                            <a href="" class="btn btn-danger text-white pt-2">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            <!-- delete modal end  -->
         {% endfor %}
     </div>
     
@@ -65,6 +133,7 @@
 {% endblock %}
 
 {% block add_script %}
+{% if user.is_superuser == False %}
 <script>
     const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
     document.addEventListener("DOMContentLoaded", function(){
@@ -78,9 +147,7 @@
               styleNode.appendChild(styleText);
           }
           document.getElementsByTagName('head')[0].appendChild(styleNode);
-        setTimeout(()=>{
-            $('.panel').addClass('d-none');
-          }, 700);
+        
         $('.sidebar-wrapper').addClass('{{logged_client.color}}')
         $('.logo').addClass('{{logged_client.color}}')
         if ('{{logged_client.color}}' !==''){
@@ -89,11 +156,14 @@
         $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
       });
   </script>
+  {% endif %}
 <script>
     $(document).ready(()=>{
     $('li').removeClass('active')
     $('#li6').addClass('active')
-    
+    setTimeout(()=>{
+        $('.panel').addClass('d-none');
+    }, 700);
     })
 </script>
 {% endblock%}

@@ -128,7 +128,7 @@ label[for="et_pb_contact_brand_file_request_0"] {
                     {% endif %}
                     <span class="slider round"></span>
                 </label></h6></td>
-                <td ><h6 class="ml-2"><a href="javascript:void(0)" class="text-danger" data-toggle="modal" data-target="#myModal{{contact.id}}"><i class="fa fa-trash"></i></a></h6></td>
+                <td ><h6 class="ml-2"><a href="javascript:void(0)" class="btn-danger btn-link" data-toggle="modal" data-target="#myModal{{contact.id}}"><i class="fa fa-trash"></i></a></h6></td>
             </tr>
             <!-- Modal edit -->
             <div class="modal fade" id="exampleeditModal{{contact.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -322,6 +322,13 @@ label[for="et_pb_contact_brand_file_request_0"] {
 {% block add_script %}
 <script>
     $(document).ready(function() {
+        setTimeout(()=>{
+            $('.panel').addClass('d-none');
+        }, 700);
+        $('#id_mobile').attr('pattern',"[0-9]{10}")
+        $('#id_mobile').attr('required','required')
+        $('li').removeClass('active')
+        $('#li4').addClass('active')
         $('input[type="file"]').on('click', function() {
             $(".file_names").html("");
         })
@@ -352,6 +359,7 @@ label[for="et_pb_contact_brand_file_request_0"] {
             }
         });
 </script>
+{% if user.is_superuser == False %}
 <script>
     const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
     document.addEventListener("DOMContentLoaded", function(){
@@ -365,21 +373,17 @@ label[for="et_pb_contact_brand_file_request_0"] {
               styleNode.appendChild(styleText);
           }
           document.getElementsByTagName('head')[0].appendChild(styleNode);
-        setTimeout(()=>{
-            $('.panel').addClass('d-none');
-            
-          }, 700);
+        
         $('.sidebar-wrapper').addClass('{{logged_client.color}}')
         $('.logo').addClass('{{logged_client.color}}')
         if ('{{logged_client.color}}' !==''){
 			$('.color').addClass('text-dark font-weight-bold')
 		}
-        $('li').removeClass('active')
-        $('#li4').addClass('active')
         $('.main-panel').attr('style','height: 1200px;background-color:'+color['{{logged_client.color}}']+'')
         
     });
 </script>
+{% endif %}
 
 
 {% endblock%}

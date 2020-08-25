@@ -159,9 +159,9 @@
             {% for message in messages_threads %}
               
             <tr>
-            <td><h6><a href="javascript:void(0)" class="btn btn-link btn-info">{{message.contact}}</a></h6></td>
-            <td><h5 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#msgModal{{message.message.0.id}}" class="text-success"><i class=" fas fa-comments"></i></a></h5></td>
-            <td ><h6 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal{{message.message.0.id}}" class="text-danger"><i class="fa fa-trash"></i></a></h6></td>
+            <td><h6 class="text-info">{{message.contact}}</h6></td>
+            <td><h5 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#msgModal{{message.message.0.id}}" class="  btn-success btn-link"><i class=" fas fa-comments"></i></a></h5></td>
+            <td ><h5 class="ml-2"><a href="javascript:void(0)" data-toggle="modal" data-target="#myModal{{message.message.0.id}}" class=" btn-danger btn-link"><i class="fa fa-trash"></i></a></h5></td>
             </tr>
             <!-- Modal Chat -->
             <div class="modal fade" id="msgModal{{message.message.0.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -368,7 +368,7 @@
               });
 });
     </script>
-    
+    {% if user.is_superuser == False %}
     <script>
       const color={'bg-success':'#c0ffcc','bg-danger':'#fff0d7','bg-info':'#c9f6ff','bg-warning':'#faf6b0'}
       document.addEventListener("DOMContentLoaded", function(){
@@ -384,9 +384,7 @@
           }
           document.getElementsByTagName('head')[0].appendChild(styleNode);
           
-          setTimeout(()=>{
-            $('.panel').addClass('d-none');
-          }, 700);
+          
           $('.sidebar-wrapper').addClass('{{logged_client.color}}')
           $('.logo').addClass('{{logged_client.color}}')
           $('').attr('style','border-right: 17px solid #382607;')
@@ -406,16 +404,20 @@
                 $('#details').toggleClass('d-none')
                 $('#navbarDropdownMenuLink').attr('data-toggle','dropdown')
               })
-              $('li').removeClass('active')
-              $('#li1').addClass('active')
+              
               // $('.active::after').attr('style','border-right: 17px solid #c0ffcc!important;')
         });
     </script>
-    
+    {% endif %}
       
         <script>
             $(document).ready( function () {
                 $('#table_id').DataTable();
+                $('li').removeClass('active')
+                $('#li1').addClass('active')
+                setTimeout(()=>{
+                  $('.panel').addClass('d-none');
+                }, 700);
             } );
         </script>
         <script>

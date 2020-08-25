@@ -292,7 +292,6 @@ class LoginView(TemplateView):
                            "Invalid Credentials")
             return redirect('login')
 
-
 def enable_2fa(request):
     try:
         if request.method=='GET':

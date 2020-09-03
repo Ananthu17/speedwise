@@ -18,7 +18,14 @@
   <link href="{% static 'login/css/material-kit.css' %}" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="{% static 'login/demo/demo.css' %}" rel="stylesheet" />
-
+  <style>
+    .bg-red{
+      color: #9A211F;
+    }
+    .form-control, .is-focused .form-control {
+          background-image: linear-gradient(to top, #9A211F 2px, rgba(156, 39, 176, 0) 2px), linear-gradient(to top, #d2d2d2 1px, rgba(210, 210, 210, 0) 1px);
+      }
+  </style>
   
 </head>
 
@@ -47,7 +54,7 @@
           <div class="card card-login">
             <form class="form" action="{% url 'login' %}" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
-              <div class="card-header card-header-primary text-center">
+              <div class="card-header card-header-danger text-center" style="background: linear-gradient(60deg, #9A211F, #d32f2f);">
                 <h4 class="card-title">Login</h4>
                 
               </div>
@@ -88,14 +95,14 @@
                 </div>   
                 {% endfor %}
                 <div class="text-center mt-5 p-2 pl-4">
-                  <button type="submit" class="btn btn-primary btn-block btn-wd btn-sm">Get Started</button>
+                  <button type="submit" class="btn btn-danger btn-block btn-wd btn-sm" style="background: linear-gradient(60deg, #9A211F, #d32f2f);">Get Started</button>
                 </div>
                 <div class="row">
-                  <div class="col-6">
+                  <!-- <div class="col-6">
                     <a href="{% url 'register' %}" class="btn btn-primary btn-link btn-wd btn-sm"><i class="material-icons">person_add</i>&nbsp&nbspNew User / Register</a>
-                  </div>
-                  <div class="col-6">
-                    <a href="{% url 'password_reset' %}" class="btn btn-primary btn-link btn-wd btn-sm"><i class="material-icons">engineering</i>&nbsp&nbspReset Password</a>
+                  </div> -->
+                  <div class="col-12 text-center">
+                    <a href="{% url 'password_reset' %}" class="btn btn-danger btn-link btn-wd btn-sm pl-4"><i class="material-icons">engineering</i>&nbsp&nbspReset Password</a>
                   </div>
                 </div>
               </div>

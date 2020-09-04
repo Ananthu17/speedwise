@@ -19,6 +19,7 @@ urlpatterns = [
     path('clients', ClientView.as_view(), name='clients'),
     path('clients/delete/<user_pk>', views.delete_user, name='deleteuser'),
     path('clients/<user_pk>/profile', ClientProfile.as_view(), name='clientprofile'),
+    path('clients/deletecredit/<credit_pk>', views.delete_credit, name='deletecredit'),
     path('clients/<user_pk>/addcredit', views.add_client_credit, name='addcredit'),
     path('clients/<user_pk>/removecredit', views.remove_client_credit, name='removecredit'),
     path('clients/<user_pk>/setclientcredit', views.set_client_credit_limit, name='setclientcredit'),

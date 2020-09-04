@@ -82,7 +82,7 @@ class ClientView(LoginRequiredMixin,TemplateView):
             if ClientSubUser.objects.filter(user=self.request.user):
                 logged_client = ClientSubUser.objects.get(user=self.request.user).client
                 context['logged_client'] = logged_client
-            client_objects = Client.objects.all()
+            client_objects = Client.objects.all().order_by('user__first_name')
             operators = Operator.objects.all()
             countries = Country.objects.all()
             clientform = ClientForm
@@ -109,13 +109,14 @@ class ClientView(LoginRequiredMixin,TemplateView):
                     client = clientform.save()
                     client.user = user
                     try:
-                        permitted_countries = request.POST.getlist('countries', '')
+                        permitted_countries = request.POST.getlist('countries[]', '')
                         for country_id in permitted_countries:
                             country = Country.objects.get(id=country_id)
                             client.countries.add(country)
                     except:
                         None
                     client.save()
+                    send_mail('Welcome to Speedwise', 'Thank you for signing up with our service. Please contact the Administrator for your credentials to login at http://speedwise.goodbits.in/', 'techspeedwise@gmail.com',[client.user.email], fail_silently=False)
                 return redirect('clients')
 
             else:
@@ -183,6 +184,7 @@ class ClientSubUserView(LoginRequiredMixin,TemplateView):
                 clientsubuser.user = user
                 clientsubuser.client = client
                 clientsubuser.save()
+                send_mail('Welcome to Speedwise','Thank you for signing up with our service. Please contact the Administrator for your credentials to login at http://speedwise.goodbits.in/','techspeedwise@gmail.com', [clientsubuser.user.email], fail_silently=False)
                 action = str(request.user) + ' created ' +str(clientsubuser)+' at '+ datetime.now().strftime("%d/%m/%Y %H:%M:%S")
                 ActionLogs.objects.create(user=request.user, action=action)
             return redirect('clientprofile',client.id)
@@ -428,8 +430,14 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             logged_client = ClientSubUser.objects.get(user=self.request.user).client
             context['logged_client'] = logged_client
         if self.request.user.is_superuser:
-            client_sub_user_objects = ClientSubUser.objects.all()
-            action_logs = ActionLogs.objects.all()
+            client_sub_user_objects = ClientSubUser.objects.filter(client=client_object).select_related('user').order_by('user__first_name')
+            client_user_object = Client.objects.filter(user=client_object.user).select_related('user')
+            client_user_list = []
+            for client_sub_user in client_sub_user_objects:
+                client_user_list.append(client_sub_user.user.id)
+            for client_user in client_user_object:
+                client_user_list.append(client_user.user.id)
+            action_logs = ActionLogs.objects.filter(user__in=client_user_list).order_by('-create_date')
             userform = UsercreateForm
             clientsubuserform = ClientSubUserForm
             context['clientsubusers'] = client_sub_user_objects
@@ -449,7 +457,7 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
                 client_user_list.append(client_sub_user.user.id)
             for client_user in client_user_object:
                 client_user_list.append(client_user.user.id)
-            action_logs = ActionLogs.objects.filter(user__in = client_user_list)
+            action_logs = ActionLogs.objects.filter(user__in = client_user_list).order_by('-create_date')
             userform = UsercreateForm
             clientsubuserform = ClientSubUserForm
             context['clientsubusers'] = client_sub_user_objects
@@ -483,6 +491,20 @@ class ClientProfile(LoginRequiredMixin,TemplateView):
             client.save()
             return redirect('clientprofile', client.id)
         return redirect('clientprofile',client.id)
+
+
+def delete_credit(request, credit_pk):
+    try:
+        credit = ClientCreditInOuts.objects.get(pk=credit_pk)
+        credit.delete()
+        action = str(request.user) + ' removed a credit record at ' + datetime.now().strftime(
+            "%d/%m/%Y %H:%M:%S")
+        ActionLogs.objects.create(user=request.user, action=action)
+        return redirect('clientprofile')
+    except:
+        messages.error(request, "Something went wrong")
+        return redirect('clientprofile')
+
 
 
 def add_client_credit(request,user_pk):
@@ -894,8 +916,9 @@ class Messages_View(LoginRequiredMixin,TemplateView):
         else:
             if Client.objects.filter(user=self.request.user):
                 client = Client.objects.get(user=self.request.user)
-                mmsmessages = MMSMessages.objects.filter(client=client)
-                contacts = Contact.objects.filter(client=client).filter(id__in=[x.contact.id for x in mmsmessages])
+                messages = Messages.objects.filter(client=client)
+                contacts = Contact.objects.filter(client=client).filter(id__in=[x.contact.id for x in messages])
+                contacts_gp = ContactGroup.objects.filter(client=client)
                 paginator = Paginator(contacts, 50)
                 notifications = Notifications.objects.filter(client=client)
                 context['notifications'] = notifications
@@ -1065,8 +1088,8 @@ class MMSMessages_View(LoginRequiredMixin,TemplateView):
         else:
             if Client.objects.filter(user=self.request.user):
                 client = Client.objects.get(user=self.request.user)
-                messages = Messages.objects.filter(client=client)
-                contacts = Contact.objects.filter(client=client).filter(id__in=[x.contact.id for x in messages])
+                mmsmessages = MMSMessages.objects.filter(client=client)
+                contacts = Contact.objects.filter(client=client).filter(id__in=[x.contact.id for x in mmsmessages])
                 contacts_gp = ContactGroup.objects.filter(client=client)
                 paginator = Paginator(contacts, 50)
                 notifications = Notifications.objects.filter(client=client)

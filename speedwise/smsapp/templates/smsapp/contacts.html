@@ -332,6 +332,7 @@ label[for="et_pb_contact_brand_file_request_0"] {
                            
                         </div>
                         <div class="modal-footer">
+                            <a style="font-size:11px;margin-right: 40px;" href="static/data/Contact_Import.csv">Click here to download sample import template</a>
                             <button type="submit" class="btn btn-success btn-sm">Import <i class="dripicons-cloud-download ml-1 mt-1"></i></button>
                         </div>
                     </form>
@@ -347,7 +348,7 @@ label[for="et_pb_contact_brand_file_request_0"] {
         setTimeout(()=>{
             $('.panel').addClass('d-none');
         }, 700);
-        $('#id_mobile').attr('pattern',"[0-9]{10}")
+<!--        $('#id_mobile').attr('pattern',"[0-9]{10}")-->
         $('#id_mobile').attr('required','required')
         $('li').removeClass('active')
         $('#li4').addClass('active')

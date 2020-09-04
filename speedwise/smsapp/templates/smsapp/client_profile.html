@@ -248,7 +248,11 @@ select:focus {
     <div class="row">
       <div class="col-4">
         <div class="text-center mt-5 pt-5">
+          {% if client.logo %}
           <img class="" src="/media/{{client.logo}}" alt="..." style="border-radius: 50%; width: 60%;">
+          {% else %}
+          <img class="" src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pinclipart.com%2Fpindetail%2FJRxxbm_open-person-girl-icon-png-clipart%2F&psig=AOvVaw1r8oS2pKnw4h92Saw-70_P&ust=1599216789284000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJiK-ffozOsCFQAAAAAdAAAAABAY" alt="..." style="border-radius: 50%; width: 60%;">
+          {% end %}
         </div>
         <div class="text-center mt-2">
           <h3>{{ client.user }}</h3>

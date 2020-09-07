@@ -262,7 +262,7 @@ select:focus {
         </div>
         {% if user.is_superuser %}
         <div class="text-center">
-          <button class="btn btn-sm btn-info"  data-toggle="modal" data-target="#exampleModalcredit"><i class="nc-icon nc-simple-add"></i>&nbsp Add Credit</button>
+          <button class="btn btn-sm btn-info"  data-toggle="modal" data-target="#exampleModalcredit"><i class="nc-icon nc-simple-add"></i>&nbsp Add Credits</button>
           <a href="javascript:void(0)" class="btn btn-sm btn-success shadow" data-toggle="modal" data-target="#myModal"><i class="nc-icon nc-simple-add"></i>Add SubUsers</a>
         </div>
         <div class="p-4">
@@ -396,10 +396,7 @@ select:focus {
               <form action="{% url 'clientprofile' client.id %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div id="eVisible">
-                  <div class="row">
-                    <div class="col-3 font-weight-bold text-secondary">Operator <span class="float-right">:</span></div>
-                    <div class="col-9"><h5>{{client.operator}}</h5></div>
-                  </div>
+                  
                   <div class="row"><div class="col-3 font-weight-bold text-secondary">Credits<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit}}</h5></div></div>
                   <div class="row"><div class="col-3 font-weight-bold text-secondary">Credit Limit<span class="float-right">:</span></div><div class="col-9"><h5>{{client.credit_limit}}</h5></div></div>
                   <div class="row">
